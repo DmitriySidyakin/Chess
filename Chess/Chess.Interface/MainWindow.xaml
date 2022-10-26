@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess.Interface"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" SizeChanged="Window_SizeChanged">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*"/>
+        </Grid.RowDefinitions>
+        <Menu Height="24" VerticalAlignment="Top">
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="NewGame" Name="NewGame">
+                <RibbonButton.Effect>
+                    <DropShadowEffect/>
+                </RibbonButton.Effect>
+            </RibbonButton>
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="GameLevel" x:Name="GameLevel">
+                <RibbonButton.Effect>
+                    <DropShadowEffect/>
+                </RibbonButton.Effect>
+            </RibbonButton>
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="GameLog" x:Name="GameLog">
+                <RibbonButton.Effect>
+                    <DropShadowEffect/>
+                </RibbonButton.Effect>
+            </RibbonButton>
+        </Menu>
+        <Canvas Margin="0,29,0,10" Background="#FFDEDDFF" HorizontalAlignment="Center" Width="395" Name="ChessBoard"/>
+
 
     </Grid>
 </Window>

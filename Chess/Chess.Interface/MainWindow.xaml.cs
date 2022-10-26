@@ -24,5 +24,10 @@ namespace Chess.Interface
         {
             InitializeComponent();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ChessBoard.Width = ChessBoard.ActualHeight;
+        }
     }
 }
