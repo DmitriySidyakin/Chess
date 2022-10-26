@@ -7,4 +7,16 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="chess_board.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chess.Entity\Chess.Entity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="chess_board.svg" />
+  </ItemGroup>
+
 </Project>

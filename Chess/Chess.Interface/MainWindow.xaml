@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess.Interface"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" SizeChanged="Window_SizeChanged">
+        Title="MainWindow" Height="450" Width="800" MinHeight="450" MinWidth="600"  SizeChanged="Window_SizeChanged">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100*"/>
@@ -26,8 +26,23 @@
                     <DropShadowEffect/>
                 </RibbonButton.Effect>
             </RibbonButton>
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="OpenGame" x:Name="OpenGame">
+                <RibbonButton.Effect>
+                    <DropShadowEffect/>
+                </RibbonButton.Effect>
+            </RibbonButton>
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="SaveGame" x:Name="SaveGame">
+                <RibbonButton.Effect>
+                    <DropShadowEffect/>
+                </RibbonButton.Effect>
+            </RibbonButton>
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="Language" x:Name="Language">
+                <RibbonButton.Effect>
+                    <DropShadowEffect/>
+                </RibbonButton.Effect>
+            </RibbonButton>
         </Menu>
-        <Canvas Margin="0,29,0,10" Background="#FFDEDDFF" HorizontalAlignment="Center" Width="395" Name="ChessBoard"/>
+        <Canvas Margin="0,29,0,10" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Center" Width="396"/>
 
 
     </Grid>
