@@ -8,37 +8,39 @@ namespace Chess.Entity
 {
     public class Board
     {
-        public Figure[,] Positions = new Figure[8, 8];
+        public Figure[,] Positions = new Figure[BoardCellSize, BoardCellSize];
+
+        public static readonly byte BoardCellSize = 8; 
 
         public Board()
         {
             // Заполняем доску пешками
             for(int i = 0; i < 8; i++) { 
-                Positions[1, i] = new PawnFigure(side: Side.White);
-                Positions[6, i] = new PawnFigure(side: Side.Black); ;
+                Positions[i, 6] = new PawnFigure(side: Side.White);
+                Positions[i, 1] = new PawnFigure(side: Side.Black);
             }
 
-            Positions[0, 0] = new RookFigure(side: Side.White);
-            Positions[0, 1] = new KnightFigure(side: Side.White);
-            Positions[0, 2] = new BishopFigure(side: Side.White);
-            Positions[0, 3] = new QueenFigure(side: Side.White);
-            Positions[0, 4] = new KingFigure(side: Side.White);
-            Positions[0, 5] = new BishopFigure(side: Side.White);
-            Positions[0, 6] = new KnightFigure(side: Side.White);
             Positions[0, 7] = new RookFigure(side: Side.White);
+            Positions[1, 7] = new KnightFigure(side: Side.White);
+            Positions[2, 7] = new BishopFigure(side: Side.White);
+            Positions[3, 7] = new KingFigure(side: Side.White);
+            Positions[4, 7] = new QueenFigure(side: Side.White);
+            Positions[5, 7] = new BishopFigure(side: Side.White);
+            Positions[6, 7] = new KnightFigure(side: Side.White);
+            Positions[7, 7] = new RookFigure(side: Side.White);
 
+            Positions[0, 0] = new RookFigure(side: Side.Black);
+            Positions[1, 0] = new KnightFigure(side: Side.Black);
+            Positions[2, 0] = new BishopFigure(side: Side.Black);
+            Positions[3, 0] = new KingFigure(side: Side.Black);
+            Positions[4, 0] = new QueenFigure(side: Side.Black);
+            Positions[5, 0] = new BishopFigure(side: Side.Black);
+            Positions[6, 0] = new KnightFigure(side: Side.Black);
             Positions[7, 0] = new RookFigure(side: Side.Black);
-            Positions[7, 1] = new KnightFigure(side: Side.Black);
-            Positions[7, 2] = new BishopFigure(side: Side.Black);
-            Positions[7, 3] = new QueenFigure(side: Side.Black);
-            Positions[7, 4] = new KingFigure(side: Side.Black);
-            Positions[7, 5] = new BishopFigure(side: Side.Black);
-            Positions[7, 6] = new KnightFigure(side: Side.Black);
-            Positions[7, 7] = new RookFigure(side: Side.Black);
 
-            for (int i = 3; i < 6; i++)
+            for (int i = 2; i < 6; i++)
                 for (int j = 0; j < 8; j++)
-                    Positions[i, j] = new EmptyCell(); 
+                    Positions[j, i] = new EmptyCell(); 
         }
 
         public byte[] ToByteArray()
