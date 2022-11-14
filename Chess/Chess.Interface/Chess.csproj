@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="chess_board.svg" />
+    <None Remove="chess_icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +18,7 @@
 
   <ItemGroup>
     <Resource Include="chess_board.svg" />
+    <Resource Include="chess_icon.png" />
   </ItemGroup>
 
 </Project>

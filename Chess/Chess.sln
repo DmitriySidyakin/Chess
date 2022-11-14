@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Interface", "Chess.Interface\Chess.Interface.csproj", "{A5B9B886-33CF-4CB3-A3C1-C5B4B53E3BDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess", "Chess.Interface\Chess.csproj", "{A5B9B886-33CF-4CB3-A3C1-C5B4B53E3BDD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Entity", "Chess.Entity\Chess.Entity.csproj", "{2671C9CC-D0DC-41F7-B5BF-F2D6B76810FD}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Tests", "Chess.Tests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphAlgorithms", "..\..\Graph\GraphAlgorithms\GraphAlgorithms.csproj", "{0457AE4E-E981-455A-BCFA-2B080CB3DE63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.Tutor", "Chess.Tutor\Chess.Tutor.csproj", "{A00D8381-9DEB-417F-B677-78FC42B22857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Tutor", "Chess.Tutor\Chess.Tutor.csproj", "{A00D8381-9DEB-417F-B677-78FC42B22857}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

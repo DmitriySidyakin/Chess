@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess.Interface"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MinHeight="450" MinWidth="600"  SizeChanged="Window_SizeChanged">
+        Title="Chess Mini DS 0.1" Height="450" Width="800" MinHeight="450" MinWidth="600"  SizeChanged="Window_SizeChanged" Icon="/chess_icon.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100*"/>
