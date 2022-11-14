@@ -5,11 +5,17 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <StartupObject>Chess.Interface.App</StartupObject>
+    <ApplicationIcon>chess_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="chess_board.svg" />
     <None Remove="chess_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="chess_icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
