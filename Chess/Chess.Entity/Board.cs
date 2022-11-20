@@ -10,7 +10,9 @@ namespace Chess.Entity
     {
         public Figure[,] Positions = new Figure[BoardCellSize, BoardCellSize];
 
-        public static readonly byte BoardCellSize = 8; 
+        public static readonly byte BoardCellSize = 8;
+        
+        public Side CurrentStepSide { get; set; }
 
         public Board()
         {
@@ -40,32 +42,60 @@ namespace Chess.Entity
 
             for (int i = 2; i < 6; i++)
                 for (int j = 0; j < 8; j++)
-                    Positions[j, i] = new EmptyCell(); 
+                    Positions[j, i] = new EmptyCell();
+
+            CurrentStepSide = Side.White;
         }
 
         public Board(byte[] boardBytes)
         {
-            if (boardBytes.Length != 64)
-                throw new ArgumentException("Too many bytes");
+            if (boardBytes.Length != 33)
+                throw new ArgumentException("The bytes count does not equal 33!");
 
+            int step = 0;
             for (int row = 1; row <= 8; row++)
                 for (int col = 1; col <= 8; col++)
                 {
-                    Positions[col-1, row-1] = new Figure(boardBytes[/*---*/(row - 1) * 8 + col - 1]);
+                    if(step == 0)
+                    {
+                        Positions[col - 1, row - 1] = new Figure((byte)(boardBytes[((row - 1) * 8 + col - 1)/2] >> 4));
+                        step++;
+                    }
+                    else
+                    {
+                        Positions[col - 1, row - 1] = new Figure((byte)(boardBytes[((row - 1) * 8 + col - 1)/2] & 0x0F));
+                        step = 0;
+                    }
                 }
+
+            CurrentStepSide = (Side)boardBytes[32];
         }
 
         public byte[] ToByteArray()
         {
-            byte[] bytes = new byte[64];
+            byte[] bytes = new byte[33];
 
             int position = 0;
+            int step = 0;
             for(int i = 0; i < 8; i++)
                 for(int j = 0; j < 8; j++)
                 {
-                    bytes[position] = (byte)Positions[j, i].SideMan;
-                    position++;
+                    if(step == 0)
+                    {
+                        bytes[position] = 0;
+                        bytes[position] ^= (byte)Positions[j, i].SideMan;
+                        step++;
+                    }
+                    else
+                    {
+                        bytes[position] <<= 4;
+                        bytes[position] ^= (byte)Positions[j, i].SideMan;
+                        step = 0;
+                        position++;
+                    }
                 }
+
+            bytes[32] = (byte)CurrentStepSide;
 
             return bytes;
         }
@@ -85,6 +115,8 @@ namespace Chess.Entity
                 {
                     result = Positions[column, row].SideMan == board.Positions[column, row].SideMan;
                 }
+
+            result = result && (CurrentStepSide == board.CurrentStepSide);
 
             return result;
         }
@@ -116,7 +148,7 @@ namespace Chess.Entity
 
         public override string ToString()
         {
-            string result = string.Empty;
+            string result = "Step For: " + Enum.GetName<Side>(CurrentStepSide) + Environment.NewLine;
 
             for (int row = 0; row < 8; row++)
             {

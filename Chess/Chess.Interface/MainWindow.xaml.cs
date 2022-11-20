@@ -483,6 +483,8 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             newGameSettings.Visibility = Visibility.Visible;
+            newGameSettings.Focus();
+            newGameSettings.Topmost = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
