@@ -2,6 +2,7 @@
 using Chess.Entity;
 
 PrintChessCodes();
+ConvertToBytesAndBack();
 
 void PrintChessCodes()
 {
@@ -29,4 +30,17 @@ void PrintChessCodes()
         }
         
     }
+}
+
+void ConvertToBytesAndBack()
+{
+    Console.WriteLine("Test - Convert to a byte array and back:");
+
+    Board board = new Board();
+
+    byte[] bytes = board.ToByteArray();
+
+    Board restoredBoard = new Board(bytes);
+
+    Console.WriteLine("Test passed: " + board.Equals(restoredBoard));
 }

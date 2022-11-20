@@ -43,6 +43,18 @@ namespace Chess.Entity
                     Positions[j, i] = new EmptyCell(); 
         }
 
+        public Board(byte[] boardBytes)
+        {
+            if (boardBytes.Length != 64)
+                throw new ArgumentException("Too many bytes");
+
+            for (int row = 1; row <= 8; row++)
+                for (int col = 1; col <= 8; col++)
+                {
+                    Positions[col-1, row-1] = new Figure(boardBytes[/*---*/(row - 1) * 8 + col - 1]);
+                }
+        }
+
         public byte[] ToByteArray()
         {
             byte[] bytes = new byte[64];
@@ -51,11 +63,77 @@ namespace Chess.Entity
             for(int i = 0; i < 8; i++)
                 for(int j = 0; j < 8; j++)
                 {
-                    bytes[position] = (byte)Positions[i, j].SideMan;
+                    bytes[position] = (byte)Positions[j, i].SideMan;
                     position++;
                 }
 
             return bytes;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (obj is not Board board)
+                return false;
+
+            bool result = true;
+
+            for(int row = 0; row < 8 && result; row++)
+                for(int column = 0; column < 8 && result; column++)
+                {
+                    result = Positions[column, row].SideMan == board.Positions[column, row].SideMan;
+                }
+
+            return result;
+        }
+
+        public override int GetHashCode()
+        {
+            byte[] bytes = new byte[4];
+
+            byte position = 0;
+
+            for (int row = 7; row >= 0; row--)
+                for (int column = 0; column < 8; column++)
+                {
+                    bytes[position] ^= (byte) Positions[column, row].SideMan;
+                    position++;
+                    if(position >= 4)
+                        position = 0;
+                }
+
+            int result = 0;
+            for(byte byteNum = 3; byteNum >= 0; byteNum--)
+            {
+                result ^= bytes[byteNum];
+                result <<= 8;
+            }
+
+            return result;
+        }
+
+        public override string ToString()
+        {
+            string result = string.Empty;
+
+            for (int row = 0; row < 8; row++)
+            {
+                for (int column = 0; column < 8; column++)
+                {
+                    result += Positions[column, row].ToString();
+                    
+                    if(column < 7)
+                    {
+                        result += ", ";
+                    }
+                }
+
+                result += Environment.NewLine;
+            }
+
+            return result;
+        } 
     }
 }

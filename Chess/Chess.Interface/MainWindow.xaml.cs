@@ -21,25 +21,78 @@ namespace Chess.Interface
     /// </summary>
     public partial class MainWindow : Window
     {
-        Board board = new Board();
+        #region Свойства игры
+
+        private Board board = new Board();
+
+        private bool started = false;
+
+        private Side currentStepSide = Side.White;
+
+        #endregion
+
+        #region Forms and Windows
+        
+        NewGameSettings newGameSettings;
+        
+        #endregion
 
         int ActiveFigurePathId = -1;
 
+        double size;
+
         public MainWindow()
         {
+            newGameSettings = new NewGameSettings(this);
+
             InitializeComponent();
-            DrawBoard(396);
+
+            this.Width = 800;
+            this.Height = 450;
+            this.MinWidth = 600;
+            this.MinHeight = 450;
+
+            DrawDesk(this.Height);
+        }        
+
+        public void ResetBoard()
+        {
+            this.board = new Board();
+            currentStepSide = Side.White;
         }
 
-        
+        public void StartGame() => started = true;
+
+        public void EndGame() => started = false;
+
+
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ChessBoard.Width = ChessBoard.ActualHeight;
+            DrawDesk(GetSize());
+        }
 
-            DrawBoard(ChessBoard.Width);
+        private void DrawDesk(double size)
+        {
+            ChessBoard.Width = size;
+            ChessBoard.Height = ChessBoard.Width;
+
+            DrawBoard(size);
             double scale = GetScale();
             DrawBoardFigures(scale);
+        }
+
+        private double GetSize()
+        {
+            (var width, var height) = (this.ActualWidth - 50, this.ActualHeight - 100);
+
+            double size;
+
+            if (width.CompareTo(height) >= 0)
+                size = height;
+            else
+                size = width;
+            return size;
         }
 
         private double GetScale()
@@ -58,7 +111,6 @@ namespace Chess.Interface
                     {
                         var figurePathId = DrawFigure(scale, figure.Man, figure.Side, i, j);
                         ChessBoard.Children[figurePathId].MouseEnter += ChessBoadFigure_MouseEnter;
-                        ;
                     }
                 }
             }
@@ -333,7 +385,7 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
                 <QuadraticBezierSegment Point1='{(int)((17 + 1) * scale)},{(int)(35 * scale)}' Point2='{(int)((19 + 1) * scale)},{(int)(35 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((16 + 1) * scale)},{(int)(32 * scale)}' Point2='{(int)((19 + 1) * scale)},{(int)(29 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((19 + 1) * scale)},{(int)(24.5 * scale)}' Point2='{(int)((19 + 1) * scale)},{(int)(20 * scale)}' />
-                <QuadraticBezierSegment Point1='{(int)((16 + 1) * scale)},{(int)(12 * scale)}' Point2='{(int)((23 + 1) * scale)},{(int)(6 * scale)}' />
+                <QuadraticBezierSegment Point1='{(int)((16 + 1 - 1) * scale)},{(int)(12 * scale)}' Point2='{(int)((23 + 1) * scale)},{(int)(6 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((31 + 1) * scale)},{(int)(12 * scale)}' Point2='{(int)((27 + 1) * scale)},{(int)(20 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((27 + 1) * scale)},{(int)(24.5 * scale)}' Point2='{(int)((27 + 1) * scale)},{(int)(29 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((30 + 1) * scale)},{(int)(32 * scale)}' Point2='{(int)((27 + 1) * scale)},{(int)(35 * scale)}' />
@@ -426,6 +478,17 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
         private void ChessBoard_MouseEnter(object sender, MouseEventArgs e)
         {
 
+        }
+
+        private void NewGame_Click(object sender, RoutedEventArgs e)
+        {
+            newGameSettings.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            newGameSettings.IsMainWindowClosing = true;
+            newGameSettings.Close();
         }
     }
 }

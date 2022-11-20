@@ -1,0 +1,131 @@
+﻿using Chess.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace Chess
+{
+    /// <summary>
+    /// Логика взаимодействия для NewGameSettings.xaml
+    /// </summary>
+    public partial class NewGameSettings : Window
+    {
+        public MainWindow mainWindow;
+
+        public bool IsMainWindowClosing { get; set; } = false;
+
+        public NewGameSettings(MainWindow mWindow)
+        {
+            mainWindow = mWindow;
+            InitializeComponent();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(!IsMainWindowClosing)
+            {
+                // Cancel the closure
+                e.Cancel = true;
+
+                // Hide the window
+                Hide();
+            }
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsInitialized) return;
+            ResetOppositePlayerIfIsItNeeded(e);
+        }
+
+        private void ResetOppositePlayerIfIsItNeeded(SelectionChangedEventArgs e)
+        {
+            if (e is not null)
+            {
+                if (e.AddedItems is not null && e.AddedItems.Count > 0)
+                {
+                    string text = (e.AddedItems[0] as ComboBoxItem).Name as string;
+                    PrePareForm(text);
+                }
+            }
+        }
+
+        private void PrePareForm(string text)
+        {
+            var selectedSideId = int.Parse(text.Last().ToString());
+
+            if (!text.Contains("Player"))
+            {
+                if (selectedSideId > 1)
+                {
+                    ResetOppositeComboBoxIfIsItComputerPlayer(ComboBoxPlayer1, "1");
+
+                    PlayerName2.Visibility = Visibility.Hidden;
+                    ComputerName2.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ResetOppositeComboBoxIfIsItComputerPlayer(ComboBoxPlayer2, "2");
+
+                    PlayerName1.Visibility = Visibility.Hidden;
+                    ComputerName1.Visibility = Visibility.Visible;
+                }
+
+                SetHardLevelVisibility(Visibility.Visible);
+            }
+            else
+            {
+                if (selectedSideId > 1)
+                {
+                    PlayerName2.Visibility = Visibility.Visible;
+                    ComputerName2.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    PlayerName1.Visibility = Visibility.Visible;
+                    ComputerName1.Visibility = Visibility.Hidden;
+                }
+
+                SetHardLevelVisibility(Visibility.Hidden);
+            }
+        }
+
+        private void SetHardLevelVisibility(Visibility visibility)
+        {
+            GameLevelLabel.Visibility = visibility;
+            GameLevelSlider.Visibility = visibility;
+            EasyLevelLabel.Visibility = visibility;
+            HardLevelLabel.Visibility = visibility;
+        }
+
+        private void ResetOppositeComboBoxIfIsItComputerPlayer(ComboBox comboBox, string comboBoxId)
+        {
+            var comboBoxSelectedItem = comboBox.SelectedItem as ComboBoxItem;
+            if (comboBoxSelectedItem is not null)
+            {
+                if (!comboBoxSelectedItem.Name.Contains("Player"))
+                {
+                    comboBox.SelectedItem = comboBox.Items.GetItemAt(0);
+                }
+            }
+        }
+
+        private void StartNewGameButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
+
+            mainWindow.ResetBoard();
+            mainWindow.StartGame();
+        }
+    }
+}
