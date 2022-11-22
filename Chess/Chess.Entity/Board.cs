@@ -851,9 +851,12 @@ namespace Chess.Entity
             return result;
         }
 
+
         /// <summary>
         /// Доступна ли рокировка. Внимание: проверяет доступна ли рокировка, т.к. она не входит в метод GetAvailiableSteps.
         /// </summary>
+        /// <param name="start">Позиция короля</param>
+        /// <returns>Возвращает, доступна ли рокировка для короля с заданной позицией.</returns>
         public bool IsCastlingAvailable(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
@@ -1115,7 +1118,7 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="start">Позиция фигуры</param>
         /// <returns>Позиции ходов съедания</returns>
-        public List<CellPoint> GetCapturePositions(CellPoint start)
+        public List<CellPoint> GetCapturingPositions(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
             Side side = figure.Side;
