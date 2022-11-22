@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Chess.Interface
+namespace Chess
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -234,9 +234,9 @@ namespace Chess.Interface
 
         private void DrawBoardFigures(double scale)
         {
-            for (int i = 0; i < Board.BoardCellSize; i++)
+            for (int i = 0; i < Board.CellBoardSize; i++)
             {
-                for (int j = 0; j < Board.BoardCellSize; j++)
+                for (int j = 0; j < Board.CellBoardSize; j++)
                 {
                     var figure = board.Positions[i, j];
                     if (figure.Man is not Figures.Empty)
