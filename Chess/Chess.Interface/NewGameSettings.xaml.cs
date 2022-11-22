@@ -32,7 +32,7 @@ namespace Chess
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if(!IsMainWindowClosing)
+            if (!IsMainWindowClosing)
             {
                 // Cancel the closure
                 e.Cancel = true;
@@ -52,15 +52,15 @@ namespace Chess
         {
             if (e is not null)
             {
-                if (e.AddedItems is not null && e.AddedItems.Count > 0)
+                if (e.AddedItems != null && e.AddedItems.Count == 1)
                 {
-                    string text = (e.AddedItems[0] as ComboBoxItem).Name as string;
-                    PrePareForm(text);
+                    string text = e.AddedItems[0] is ComboBoxItem ? (e.AddedItems[0] as ComboBoxItem).Name : "";
+                    PrepareForm(text);
                 }
             }
         }
 
-        private void PrePareForm(string text)
+        private void PrepareForm(string text)
         {
             var selectedSideId = int.Parse(text.Last().ToString());
 
@@ -122,8 +122,21 @@ namespace Chess
 
         private void StartNewGameButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            
+            mainWindow.GameSettings.Player1White = PlayerName1.Visibility == Visibility.Visible ? Settings.PlayerType.Player : Settings.PlayerType.Computer;
+            mainWindow.GameSettings.Player2Black = PlayerName2.Visibility == Visibility.Visible ? Settings.PlayerType.Player : Settings.PlayerType.Computer;
 
+            if (mainWindow.GameSettings.Player1White == Settings.PlayerType.Computer || mainWindow.GameSettings.Player2Black == Settings.PlayerType.Computer)
+            {
+                MessageBox.Show("ComputerPlayerIsNotAvailiableNow");
+                return;
+            }
+
+            mainWindow.GameSettings.Player1WhiteName = PlayerName1.Text;
+            mainWindow.GameSettings.Player2BlackName = PlayerName2.Text;
+
+            this.Visibility = Visibility.Hidden;
+            mainWindow.EndGame();
             mainWindow.ResetBoard();
             mainWindow.StartGame();
         }

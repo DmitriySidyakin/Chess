@@ -5,12 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess.Interface"
         mc:Ignorable="d"
-        Title="Chess Mini DS colibri" Height="450" Width="800" MinHeight="450" MinWidth="600"  SizeChanged="Window_SizeChanged" Icon="/icon.ico" Closing="Window_Closing">
-    <Grid>
+        Title="Chess Mini DS colibri" Height="450" Width="800" MinHeight="450" MinWidth="600" SizeChanged="Window_SizeChanged" Icon="/icon.ico" Closing="Window_Closing">
+    <Grid x:Name="MainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="59*" x:Name="Column1"/>
+            <ColumnDefinition Width="21*" x:Name="Column2"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="100*"/>
         </Grid.RowDefinitions>
-        <Menu Height="24" VerticalAlignment="Top">
+        <Menu Height="24" VerticalAlignment="Top" Grid.ColumnSpan="2">
             <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="NewGame" Name="NewGame" Click="NewGame_Click">
                 <RibbonButton.Effect>
                     <DropShadowEffect/>
@@ -36,13 +40,18 @@
                     <DropShadowEffect/>
                 </RibbonButton.Effect>
             </RibbonButton>
-            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="Language" x:Name="Language">
+            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="Language" x:Name="InterfaceLanguage">
                 <RibbonButton.Effect>
                     <DropShadowEffect/>
                 </RibbonButton.Effect>
             </RibbonButton>
         </Menu>
-        <Canvas Margin="0,29,0,10" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Center" Width="396"/>
+        <Canvas Margin="100,29,0,9" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Left" Width="396" MouseMove="ChessBoard_MouseMove" Mouse.MouseDown="ChessBoard_MouseDown" Grid.Column="0"/>
+        <TextBox x:Name="InfoDesk" Grid.Column="1" Margin="20,39,20,20" IsEnabled="False" >
+        </TextBox>
+        <Label x:Name="BlackPlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,29,10,0" VerticalAlignment="Top" FontSize="18"/>
+        <Label x:Name="WhitePlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,0,10,9" VerticalAlignment="Bottom" FontSize="18"/>
+
 
 
     </Grid>

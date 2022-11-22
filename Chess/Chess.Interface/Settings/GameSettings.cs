@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chess.Settings
 {
-    internal class GameSettings
+    public class GameSettings
     {
         public PlayerType Player1White { get; set; }
 

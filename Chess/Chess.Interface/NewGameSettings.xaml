@@ -19,8 +19,8 @@
         </ComboBox>
         <Label x:Name="WhitePlayerNameLabel" Content="WhitePlayerName" HorizontalAlignment="Left" Margin="10,88,0,0" VerticalAlignment="Top" FontSize="18"/>
         <Label x:Name="BlackPlayerNameLabel" Content="BlackPlayerName" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" FontSize="18"/>
-        <TextBox x:Name="PlayerName1" HorizontalAlignment="Left" Margin="198,92,0,0" TextWrapping="Wrap" Text="Player1Name" VerticalAlignment="Top" Width="167" FontSize="18"/>
-        <TextBox x:Name="PlayerName2" HorizontalAlignment="Left" Margin="198,131,0,0" TextWrapping="Wrap" Text="Player2Name" VerticalAlignment="Top" Width="167" FontSize="18"/>
+        <TextBox x:Name="PlayerName1" HorizontalAlignment="Left" Margin="198,92,0,0" TextWrapping="NoWrap" Text="Player1Name" VerticalAlignment="Top" Width="167" FontSize="18" MaxLength="100"/>
+        <TextBox x:Name="PlayerName2" HorizontalAlignment="Left" Margin="198,131,0,0" TextWrapping="NoWrap" Text="Player2Name" VerticalAlignment="Top" Width="167" FontSize="18" MaxLength="100"/>
         <ComboBox x:Name="ComputerName1" HorizontalAlignment="Left" Margin="198,92,0,0" VerticalAlignment="Top" Width="167" FontSize="18" IsEditable="False" Visibility="Hidden">
             <ComboBoxItem Name="ShortestPath1" Content="ShortestPath" IsSelected="True"/>
         </ComboBox>

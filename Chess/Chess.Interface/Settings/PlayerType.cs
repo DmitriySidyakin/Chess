@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chess.Settings
 {
-    internal enum PlayerType : byte
+    public enum PlayerType : byte
     {
         Player = 0,
         Computer = 1,

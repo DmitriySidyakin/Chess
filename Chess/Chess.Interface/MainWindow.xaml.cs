@@ -29,15 +29,120 @@ namespace Chess.Interface
 
         private Side currentStepSide = Side.White;
 
+        public Settings.GameSettings GameSettings = new Settings.GameSettings();
+
+        private Side CurrentStepSide
+        {
+            get
+            {
+                return currentStepSide;
+            }
+
+            set
+            {
+                currentStepSide = value;
+            }
+        }
+
         #endregion
 
         #region Forms and Windows
-        
+
         NewGameSettings newGameSettings;
-        
+
         #endregion
 
-        int ActiveFigurePathId = -1;
+        private UIElement? activeFigureUIE = null;
+
+        private object activateHover = new object();
+        private CellPoint activeCellPoint = CellPoint.Unexisted;
+
+        public CellPoint ActiveCellPoint
+        {
+            get { return activeCellPoint; }
+            set
+            {
+                lock (activateHover)
+                {
+                    if (value.X != activeCellPoint.X || value.Y != activeCellPoint.Y)
+                    {
+                        activeCellPoint = value;
+                        ActiveBoxChanged(activeCellPoint);
+                    }
+                }
+            }
+        }
+
+        private void ActiveBoxChanged(CellPoint activeCellPointChanged)
+        {
+            if (activeFigureUIE is not null/* && activeCellPointChanged != CellPoint.Unexisted*/)
+            {
+                ChessBoard.Children.Remove(activeFigureUIE);
+                activeFigureUIE = null;
+            }
+
+            if (activeCellPointChanged != CellPoint.Unexisted)
+            {
+                if ((started && board.Positions[activeCellPointChanged.X, activeCellPointChanged.Y].Side == currentStepSide) || !started)
+                    DrawFigureBorder(activeCellPointChanged.X, activeCellPointChanged.Y, "Blue", ref activeFigureUIE);
+            }
+        }
+
+        private UIElement? selectedFigureUIE = null;
+
+        private object clickHover = new object();
+        private CellPoint clickCellPoint = CellPoint.Unexisted;
+
+        public CellPoint ClickCellPoint
+        {
+            get { return clickCellPoint; }
+            set
+            {
+                lock (clickHover)
+                {
+                    if (started)
+                    {
+                        if (value.X != clickCellPoint.X || value.Y != clickCellPoint.Y)
+                        {
+                            clickCellPoint = value;
+                            ClickBoxChanged(clickCellPoint);
+                        }
+                        else
+                        {
+                            UnselectCurrent();
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void UnselectCurrent()
+        {
+            if (started && (selectedFigureUIE is not null))
+            {
+                ChessBoard.Children.Remove(selectedFigureUIE);
+                selectedFigureUIE = null;
+                clickCellPoint = CellPoint.Unexisted;
+            }
+        }
+
+        private void ClickBoxChanged(CellPoint clickCellPointCurrent)
+        {
+            if (started && selectedFigureUIE is not null/* && clickCellPointCurrent != CellPoint.Unexisted*/)
+            {
+                ChessBoard.Children.Remove(selectedFigureUIE);
+                selectedFigureUIE = null;
+            }
+
+            if (clickCellPointCurrent != CellPoint.Unexisted)
+            {
+                if (started && board.Positions[clickCellPointCurrent.X, clickCellPointCurrent.Y].Side == currentStepSide)
+                {
+                    DrawFigureBorder(clickCellPointCurrent.X, clickCellPointCurrent.Y, "Green", ref selectedFigureUIE);
+                }
+            }
+        }
 
         double size;
 
@@ -53,7 +158,7 @@ namespace Chess.Interface
             this.MinHeight = 450;
 
             DrawDesk(this.Height);
-        }        
+        }
 
         public void ResetBoard()
         {
@@ -61,19 +166,44 @@ namespace Chess.Interface
             currentStepSide = Side.White;
         }
 
-        public void StartGame() => started = true;
+        public void StartGame()
+        {
+            BlackPlayerNameLabel.Content = GameSettings.Player2BlackName;
+            WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
+            started = true;
+        }
 
-        public void EndGame() => started = false;
+        public void EndGame()
+        {
+            UnselectCurrent();
+            ActiveBoxChanged(CellPoint.Unexisted);
+            ClickBoxChanged(CellPoint.Unexisted);
+            started = false;
+        }
 
 
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             DrawDesk(GetSize());
+
+            DrawSelectedAndHoveredFigures();
+        }
+
+        private void DrawSelectedAndHoveredFigures()
+        {
+            if (started)
+            {
+                activeFigureUIE = null;
+                selectedFigureUIE = null;
+                ActiveBoxChanged(activeCellPoint);
+                ClickBoxChanged(clickCellPoint);
+            }
         }
 
         private void DrawDesk(double size)
         {
+            this.size = size;
             ChessBoard.Width = size;
             ChessBoard.Height = ChessBoard.Width;
 
@@ -84,7 +214,9 @@ namespace Chess.Interface
 
         private double GetSize()
         {
-            (var width, var height) = (this.ActualWidth - 50, this.ActualHeight - 100);
+
+            //MainGrid.ColumnDefinitions[0]
+            (var width, var height) = (MainGrid.ColumnDefinitions[0].ActualWidth - 150, this.ActualHeight - 100);
 
             double size;
 
@@ -109,37 +241,22 @@ namespace Chess.Interface
                     var figure = board.Positions[i, j];
                     if (figure.Man is not Figures.Empty)
                     {
-                        var figurePathId = DrawFigure(scale, figure.Man, figure.Side, i, j);
-                        ChessBoard.Children[figurePathId].MouseEnter += ChessBoadFigure_MouseEnter;
+                        DrawFigure(scale, figure.Man, figure.Side, i, j);
                     }
                 }
             }
         }
 
-        private int DrawFigure(double scale, Chess.Entity.Figures figure, Entity.Side side, int col, int row, string strokeColor = null)
+        private UIElement DrawFigure(double scale, Chess.Entity.Figures figure, Entity.Side side, int col, int row, string? strokeColor = null)
         {
             Path figureCurrent = DrawFigure(scale, new(side, figure), strokeColor is null ? "#AAAAAA" : strokeColor);
             figureCurrent.Name = $"Figure_{col}_{row}";
-            int figurePathId = ChessBoard.Children.Add(figureCurrent);
-            Canvas.SetLeft(ChessBoard.Children[figurePathId], (10) * scale + 47 * scale * col);
-            Canvas.SetTop(ChessBoard.Children[figurePathId], (10) * scale + 47 * scale * row);
-            return figurePathId;
+            ChessBoard.Children.Add(figureCurrent);
+            Canvas.SetLeft(figureCurrent, (10) * scale + 47 * scale * col);
+            Canvas.SetTop(figureCurrent, (10) * scale + 47 * scale * row);
+            return figureCurrent;
         }
 
-        private void ChessBoadFigure_MouseLeave(object sender, MouseEventArgs e)
-        {
-            ChessBoadCellBox_MouseLeave(sender, e);
-        }
-
-        private void ChessBoadFigure_MouseEnter(object sender, MouseEventArgs e)
-        {
-            ChessBoadFigure_MouseLeave(sender, e);
-            int col, row;
-            GetColAndRowOfFigure(e, out col, out row);
-            DrawFigureBorder(col, row, "Blue");
-
-            ChessBoard.Children[ActiveFigurePathId].MouseLeave += ChessBoadFigure_MouseLeave;
-        }
         private static void GetColAndRowOfFigure(MouseEventArgs e, out int col, out int row)
         {
             (col, row) = (-1, -1);
@@ -212,8 +329,6 @@ namespace Chess.Interface
                     int newBox = ChessBoard.Children.Add(new Rectangle() { Width = 47 * (size / 396), Height = 47 * (size / 396), Fill = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, StrokeThickness = 0, Name = $"Cell_{col}_{row}"});
                     Canvas.SetLeft(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * col);
                     Canvas.SetTop(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * row);
-                    ChessBoard.Children[newBox].MouseEnter += ChessBoadCellBox_MouseEnter;
-                    ChessBoard.Children[newBox].MouseLeave += ChessBoadCellBox_MouseLeave;
 
                     row++;
                 }
@@ -221,29 +336,12 @@ namespace Chess.Interface
             }
         }
 
-        private void ChessBoadCellBox_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if(ActiveFigurePathId > -1)
-            {
-                ChessBoard.Children.RemoveAt(ActiveFigurePathId);
-                ActiveFigurePathId = -1;
-            } 
-        }
-
-        private void ChessBoadCellBox_MouseEnter(object sender, MouseEventArgs e)
-        {
-            ChessBoadCellBox_MouseLeave(sender, e);
-            int col, row;
-            GetColAndRowOfRectangle(e, out col, out row);
-            DrawFigureBorder(col, row, "Blue");
-        }
-
-        private void DrawFigureBorder(int col, int row, string color)
+        private void DrawFigureBorder(int col, int row, string color, ref UIElement? activeId)
         {
             if (col >= 0 && row >= 0)
             {
                 if (!(board.Positions[col, row].Man is Figures.Empty))
-                    ActiveFigurePathId = DrawFigure(GetScale(), board.Positions[col, row].Man, board.Positions[col, row].Side, col, row, color);
+                    activeId = DrawFigure(GetScale(), board.Positions[col, row].Man, board.Positions[col, row].Side, col, row, color);
             }
         }
 
@@ -460,6 +558,7 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
     </PathGeometry>
   </Path.Data>
 </Path>"),
+            //_ => throw new ArgumentOutOfRangeException(nameof(figure.Man)),
         };
 
         private string GetHtmlColorOfFigureSide(Chess.Entity.Side side) => side switch {
@@ -475,11 +574,6 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        private void ChessBoard_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-        }
-
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             newGameSettings.Visibility = Visibility.Visible;
@@ -492,5 +586,44 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
             newGameSettings.IsMainWindowClosing = true;
             newGameSettings.Close();
         }
+
+        private void ChessBoard_MouseMove(object sender, MouseEventArgs e)
+        {
+            MouseEventsSimple(sender, e, (c) => ActiveCellPoint = c, (c) => ActiveCellPoint = c);
+        }
+
+        private void ChessBoard_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MouseEventsSimple(sender, e, (c) => ClickCellPoint = c, (c) => ClickCellPoint = c);
+        }
+
+        public delegate void MouseEventSimpleHandler(CellPoint cellPoint);
+
+        public void MouseEventsSimple(object sender, MouseEventArgs e, MouseEventSimpleHandler selectHandler, MouseEventSimpleHandler unexistedHandler) 
+        {
+            var mousePosition = e.GetPosition(ChessBoard);
+            var boxSize = 47 * GetScale();
+            var offset = 10 * GetScale();
+            mousePosition.Offset(-offset, -offset);
+
+            if (mousePosition.X >= 0 && mousePosition.X <= (boxSize * 8) && mousePosition.Y >= 0 && mousePosition.Y <= (boxSize * 8))
+            {
+                int cellColumn = (int)Math.Truncate(mousePosition.X / boxSize);
+                int cellRow = (int)Math.Truncate(mousePosition.Y / boxSize);
+                
+                CellPoint cellPoint = new CellPoint() { X = (sbyte)cellColumn, Y = (sbyte)cellRow };
+
+                selectHandler(cellPoint);
+
+                // Log
+                InfoDesk.Text = $"Mouse Cell:{Environment.NewLine}Column = {cellPoint.X}{Environment.NewLine}Row = {cellPoint.Y}{Environment.NewLine}Name = {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
+            }
+            else
+            {
+                unexistedHandler(CellPoint.Unexisted);
+            }
+        }
+
+        
     }
 }
