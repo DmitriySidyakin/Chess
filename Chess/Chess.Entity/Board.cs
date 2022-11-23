@@ -1160,7 +1160,7 @@ namespace Chess.Entity
         {
             if(IsCheck(side))
             {
-                if (GetAvailableStepsPre(side).Count == 0)
+                if (GetAvailableSteps(side).Count == 0)
                     return true;
             }
 
