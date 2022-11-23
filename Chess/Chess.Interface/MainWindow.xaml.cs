@@ -92,6 +92,8 @@ namespace Chess
             }
         }
 
+        private List<UIElement> selectedFigureUIEStepsBoxes = new List<UIElement>();
+
         private UIElement? selectedFigureUIE = null;
 
         private object clickHover = new object();
@@ -106,7 +108,7 @@ namespace Chess
                 {
                     if (started)
                     {
-                        if (value.X != clickCellPoint.X || value.Y != clickCellPoint.Y)
+                        if ((value.X != clickCellPoint.X || value.Y != clickCellPoint.Y ))
                         {
                             clickCellPoint = value;
                             ClickBoxChanged(clickCellPoint);
@@ -120,7 +122,6 @@ namespace Chess
             }
         }
 
-
         private void UnselectCurrent()
         {
             if (started && (selectedFigureUIE is not null))
@@ -128,6 +129,7 @@ namespace Chess
                 ChessBoard.Children.Remove(selectedFigureUIE);
                 selectedFigureUIE = null;
                 clickCellPoint = CellPoint.Unexisted;
+                DeleteHighlightBoxes();
             }
         }
 
@@ -137,6 +139,7 @@ namespace Chess
             {
                 ChessBoard.Children.Remove(selectedFigureUIE);
                 selectedFigureUIE = null;
+                DeleteHighlightBoxes();
             }
 
             if (clickCellPointCurrent != CellPoint.Unexisted)
@@ -144,8 +147,30 @@ namespace Chess
                 if (started && board.Positions[clickCellPointCurrent.X, clickCellPointCurrent.Y].Side == currentStepSide)
                 {
                     DrawFigureBorder(clickCellPointCurrent.X, clickCellPointCurrent.Y, "Green", ref selectedFigureUIE);
+                    DrawHiglightBoxes(clickCellPointCurrent);
                 }
             }
+        }
+
+        private void DeleteHighlightBoxes()
+        {
+            foreach(var box in selectedFigureUIEStepsBoxes)
+                ChessBoard.Children.Remove(box);
+
+            selectedFigureUIEStepsBoxes.Clear();
+        }
+
+        private void DrawHiglightBoxes(CellPoint clickCellPointCurrent)
+        {
+            if(availableSteps.Keys.Where(k => k.X == clickCellPointCurrent.X && k.Y == clickCellPointCurrent.Y).Count() > 0)
+            {
+                CellPoint startCellPoint = availableSteps.Keys.Where(k => k.X == clickCellPointCurrent.X && k.Y == clickCellPointCurrent.Y).First();
+                foreach(var endStep in availableSteps[startCellPoint])
+                {
+                    DrawSquaresHighlighter(GetSize(), endStep.X, endStep.Y);
+                }
+            }
+            
         }
 
         double size;
@@ -339,6 +364,16 @@ namespace Chess
                 }
                 col++;
             }
+        }
+
+        // Метод для подстветки возможных ходов
+        private void DrawSquaresHighlighter(double size, int col, int row)
+        {
+            UIElement cellHighlight = new Rectangle() { Width = 47 * (size / 396), Height = 47 * (size / 396), Fill = Brushes.Green, StrokeThickness = 1, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = 30,  };
+            int newBox = ChessBoard.Children.Add(cellHighlight);
+            selectedFigureUIEStepsBoxes.Add(cellHighlight);
+            Canvas.SetLeft(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * col);
+            Canvas.SetTop(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * row);
         }
 
         private void DrawFigureBorder(int col, int row, string color, ref UIElement? activeId)

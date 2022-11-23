@@ -264,7 +264,7 @@ namespace Chess.Entity
                         add = false;
 
                     // Ход вызывает шах
-                    if(add && !IsStepInFutureWithoutCheck(stepStart, stepEnd))
+                    if(add && IsStepInFutureCheck(stepStart, stepEnd))
                         add = false;
 
                     if(add)
@@ -290,7 +290,7 @@ namespace Chess.Entity
                 bool add = true;
 
                 // Ход вызывает шах
-                if (add && !IsStepInFutureWithoutCheck(kingPosition, rook))
+                if (add && !IsStepInFutureCheck(kingPosition, rook))
                     add = false;
 
                 if (add)
@@ -384,7 +384,7 @@ namespace Chess.Entity
                     // Получение возможного хода
 
                     int maxDeltaY;
-                    if((start.X == 6 && side == Side.White) || (start.X == 1 && side == Side.Black))
+                    if((start.Y == 6 && side == Side.White) || (start.Y == 1 && side == Side.Black))
                     {
                         maxDeltaY = 2;
                     }
@@ -1337,7 +1337,7 @@ namespace Chess.Entity
         /// <param name="start">Начальная фигура для хода. Ход можно делать только текущей стороной хода</param>
         /// <param name="end">Конечная ячейка для хода</param>
         /// <returns>true - если в будующем этот ход не вызовет шах.</returns>
-        protected bool IsStepInFutureWithoutCheck(CellPoint start, CellPoint end)
+        protected bool IsStepInFutureCheck(CellPoint start, CellPoint end)
         {
             // Переменные хода
             var figure = Positions[start.X, start.Y];
