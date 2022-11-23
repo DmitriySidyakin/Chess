@@ -25,6 +25,8 @@ namespace Chess
 
         private Board board = new Board();
 
+        private UIElement?[,] figurePathPositions = new UIElement?[Board.CellBoardSize, Board.CellBoardSize];
+
         private bool started = false;
 
         private Side currentStepSide = Side.White;
@@ -241,7 +243,7 @@ namespace Chess
                     var figure = board.Positions[i, j];
                     if (figure.Man is not Figures.Empty)
                     {
-                        DrawFigure(scale, figure.Man, figure.Side, i, j);
+                        figurePathPositions[i, j] = DrawFigure(scale, figure.Man, figure.Side, i, j);
                     }
                 }
             }
