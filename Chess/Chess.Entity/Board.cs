@@ -237,26 +237,72 @@ namespace Chess.Entity
             return result;
         }
 
-        /// <summary>
-        /// Получить все доступные ходы.
-        /// </summary>
-        /// <param name="side">Сторона, которах ходит</param>
-        /// <returns>Все доступные ходы для стороны</returns>
-        public Dictionary<CellPoint, List<CellPoint>> GetAvailiableSteps(Side side)
+        public Dictionary<CellPoint, List<CellPoint>> GetAvailableSteps(Side side)
+        {
+            var resultPositions = GetStepsWithoutCastlingPre(side);
+
+            FilterBaseUnavailableSteps(ref resultPositions, side);
+
+            AddFilteredCastlingsInResult(ref resultPositions, side);
+
+            return resultPositions;
+        }
+
+        private void FilterBaseUnavailableSteps(ref Dictionary<CellPoint, List<CellPoint>> resultPositions, Side side)
         {
             Dictionary<CellPoint, List<CellPoint>> result = new Dictionary<CellPoint, List<CellPoint>>();
-
-            for (int row = 0; row < CellBoardSize; row++)
-                for (int column = 0; column < CellBoardSize; column++)
+            foreach(var stepStart in resultPositions.Keys)
+            {
+                foreach(var stepEnd in resultPositions[stepStart])
                 {
-                    if (Positions[column, row].Man != Figures.Empty && Positions[column, row].Side == side)
+                    bool add = true;
+
+                    // На этой клетке уже стоит фигура моей стороны
+
+                    if (Positions[stepEnd.X, stepEnd.Y].Man != Figures.Empty
+                        && Positions[stepEnd.X, stepEnd.Y].Side == side)
+                        add = false;
+
+                    // Ход вызывает шах
+                    if(add && !IsStepInFutureWithoutCheck(stepStart, stepEnd))
+                        add = false;
+
+                    if(add)
                     {
-                        var current = new CellPoint() { X = (sbyte)column, Y = (sbyte)row };
-                        result.Add(current, GetAvailiableStepsFor(current));
+                        // Добавляем к ответу
+                        if (!result.ContainsKey(stepStart))
+                            result.Add(stepStart, new List<CellPoint>());
+
+                        result[stepStart].Add(stepEnd);
                     }
                 }
+            }
+            resultPositions = result;
+        }
 
-            return result;
+        private void AddFilteredCastlingsInResult(ref Dictionary<CellPoint, List<CellPoint>> resultPositions, Side side)
+        {
+            var rookPositions = GetRookPositionsBeforeCastling(GetKingPosition(side));
+            var kingPosition = GetKingPosition(side);
+
+            foreach(var rook in rookPositions)
+            {
+                bool add = true;
+
+                // Ход вызывает шах
+                if (add && !IsStepInFutureWithoutCheck(kingPosition, rook))
+                    add = false;
+
+                if (add)
+                {
+                    // Добавляем к ответу
+                    if (!resultPositions.ContainsKey(kingPosition))
+                        resultPositions.Add(kingPosition, new List<CellPoint>());
+
+                    resultPositions[kingPosition].Add(rook);
+                }
+            }
+
         }
 
         /// <summary>
@@ -264,7 +310,7 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="side">Сторона, которах ходит</param>
         /// <returns>Все доступные ходы для стороны. Не учитывая то, что король не может ходить под шах.</returns>
-        private Dictionary<CellPoint, List<CellPoint>> GetAvailiableStepsPre(Side side)
+        private Dictionary<CellPoint, List<CellPoint>> GetStepsWithoutCastlingPre(Side side)
         {
             Dictionary<CellPoint, List<CellPoint>> result = new Dictionary<CellPoint, List<CellPoint>>();
 
@@ -274,7 +320,7 @@ namespace Chess.Entity
                     if (Positions[column, row].Man != Figures.Empty && Positions[column, row].Side == side)
                     {
                         var current = new CellPoint() { X = (sbyte)column, Y = (sbyte)row };
-                        result.Add(current, GetAvailiableStepsForPre(current));
+                        result.Add(current, GetAvailiableStepsWithoutCastlingForPre(current));
                     }
                 }
 
@@ -286,48 +332,9 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="side">Текущая сторона</param>
         /// <returns>Противоположная сторона</returns>
-        private static Side GetOppositeSide(Side side)
+        public static Side GetOppositeSide(Side side)
         {
             return side == Side.White ? Side.Black : Side.White;
-        }
-
-        /// <summary>
-        /// Получаем доступные шахматные ходы, без рокировки.
-        /// </summary>
-        /// <param name="start">Начальная позиция фигуры для хода</param>
-        /// <returns>Список доступных ходов</returns>
-        public List<CellPoint> GetAvailiableStepsFor(CellPoint start)
-        {
-            var figure = Positions[start.X, start.Y];
-            var result = GetAvailiableStepsForPre(start);
-
-            if(figure.Man == Figures.King)
-            {
-                Side side = figure.Side;
-                Side oppositeSide = GetOppositeSide(side);
-                var kingResults = new List<CellPoint>();
-
-                // Отфильтровать результаты, где король ходит под удар.
-                Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetAvailiableStepsPre(oppositeSide);
-
-                foreach (var step in allOppositeSteps)
-                {
-                    List<CellPoint> currentOppositeSteps = step.Value;
-
-                    foreach (var possibleKingStep in kingResults)
-                    {
-                        if (currentOppositeSteps.Where(c => c.X == possibleKingStep.X && c.Y == possibleKingStep.Y).Count() == 0)
-                        {
-                            kingResults.Add(possibleKingStep);
-                        }
-                    }
-                }
-
-                return kingResults;
-            }
-
-            return result;
-            
         }
 
         /// <summary>
@@ -335,7 +342,7 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="start">Начальная позиция фигуры для хода</param>
         /// <returns>Список доступных ходов, с возможностью короля ходить под урар!</returns>
-        private List<CellPoint> GetAvailiableStepsForPre(CellPoint start)
+        private List<CellPoint> GetAvailiableStepsWithoutCastlingForPre(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
 
@@ -367,7 +374,8 @@ namespace Chess.Entity
 
                     foreach (var step in pawnEatResults)
                     {
-                        if (Positions[step.X, step.Y].Man != Figures.Empty && Positions[step.X, step.Y].Side == oppositeSide)
+                        if (step.X >= 0 && step.Y >= 0 && 
+                            step.X < Board.CellBoardSize && step.Y < Board.CellBoardSize && Positions[step.X, step.Y].Man != Figures.Empty && Positions[step.X, step.Y].Side == oppositeSide)
                         {
                             pawnResults.Add(new CellPoint() { X = step.X, Y = step.Y });
                         }
@@ -851,13 +859,12 @@ namespace Chess.Entity
             return result;
         }
 
-
         /// <summary>
         /// Доступна ли рокировка. Внимание: проверяет доступна ли рокировка, т.к. она не входит в метод GetAvailiableSteps.
         /// </summary>
         /// <param name="start">Позиция короля</param>
         /// <returns>Возвращает, доступна ли рокировка для короля с заданной позицией.</returns>
-        public bool IsCastlingAvailable(CellPoint start)
+        private bool IsCastlingAvailable(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
             Side side = figure.Side;
@@ -907,7 +914,7 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="start">Позиция короля, по ней определяется сторона (белые, чёрные) для рокировки</param>
         /// <returns>Доски, после применения возможных рокировок. Возможны 0, 1на, 2е рокировки</returns>
-        public List<Board> GetBoardsAfterCastling(CellPoint start)
+        private List<Board> GetBoardsAfterCastling(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
 
@@ -920,9 +927,9 @@ namespace Chess.Entity
             // Короткая рокировка
             if (side == Side.White)
             {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
+                if ((start.X, start.Y) == (4, 0) &&
                    Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.White &&
                    Positions[5, 0].Man == Figures.Empty &&
                    Positions[6, 0].Man == Figures.Empty)
                 {
@@ -938,9 +945,9 @@ namespace Chess.Entity
             }
             else
             {
-                if (Positions[start.X, start.Y] == Positions[4, 7] &&
+                if ((start.X, start.Y) == (4, 7) &&
                    Positions[4, 7].Man == Figures.King &&
-                   Positions[7, 7].Man == Figures.Rook &&
+                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.Black &&
                    Positions[5, 7].Man == Figures.Empty &&
                    Positions[6, 7].Man == Figures.Empty)
                 {
@@ -958,9 +965,9 @@ namespace Chess.Entity
             // Длинная рокировка
             if (side == Side.White)
             {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
+                if ((start.X, start.Y) == (4, 0) &&
                    Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.White &&
                    Positions[3, 0].Man == Figures.Empty &&
                    Positions[2, 0].Man == Figures.Empty &&
                    Positions[1, 0].Man == Figures.Empty)
@@ -978,9 +985,9 @@ namespace Chess.Entity
             }
             else
             {
-                if (Positions[start.X, start.Y] == Positions[4, 7] &&
+                if ((start.X, start.Y) == (4, 7) &&
                    Positions[4, 7].Man == Figures.King &&
-                   Positions[0, 7].Man == Figures.Rook &&
+                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.Black &&
                    Positions[3, 7].Man == Figures.Empty &&
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty)
@@ -1005,7 +1012,7 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="start">Позиция короля, по ней определяется сторона (белые, чёрные) для рокировки</param>
         /// <returns>Положения туры (Rook) до рокировки. Возможны 0, 1на, 2е рокировки</returns>
-        public List<CellPoint> GetRookPositionsAfterCastling(CellPoint start)
+        private List<CellPoint> GetRookPositionsBeforeCastling(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
 
@@ -1015,9 +1022,9 @@ namespace Chess.Entity
             // Короткая рокировка
             if (side == Side.White)
             {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
+                if ((start.X, start.Y) == (4, 0) &&
                    Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.White &&
                    Positions[5, 0].Man == Figures.Empty &&
                    Positions[6, 0].Man == Figures.Empty)
                 {
@@ -1026,9 +1033,9 @@ namespace Chess.Entity
             }
             else
             {
-                if (Positions[start.X, start.Y] == Positions[4, 7] &&
+                if ((start.X, start.Y) == (4, 7) &&
                    Positions[4, 7].Man == Figures.King &&
-                   Positions[7, 7].Man == Figures.Rook &&
+                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.Black &&
                    Positions[5, 7].Man == Figures.Empty &&
                    Positions[6, 7].Man == Figures.Empty)
                 {
@@ -1039,9 +1046,9 @@ namespace Chess.Entity
             // Длинная рокировка
             if (side == Side.White)
             {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
+                if ((start.X, start.Y) == (4, 0) &&
                    Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.White &&
                    Positions[3, 0].Man == Figures.Empty &&
                    Positions[2, 0].Man == Figures.Empty &&
                    Positions[1, 0].Man == Figures.Empty)
@@ -1051,9 +1058,9 @@ namespace Chess.Entity
             }
             else
             {
-                if (Positions[start.X, start.Y] == Positions[4, 7] &&
+                if ((start.X, start.Y) == (4, 7) &&
                    Positions[4, 7].Man == Figures.King &&
-                   Positions[0, 7].Man == Figures.Rook &&
+                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.Black &&
                    Positions[3, 7].Man == Figures.Empty &&
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty)
@@ -1065,10 +1072,131 @@ namespace Chess.Entity
             return results;
         }
 
+        private CellPoint GetRookPositionAfterCastling(CellPoint rookPosition)
+        {
+            var figure = Positions[rookPosition.X, rookPosition.Y];
+
+            List<CellPoint> results = new List<CellPoint>();
+            Side side = figure.Side;
+
+            // Короткая рокировка
+            if (side == Side.White)
+            {
+                if ((rookPosition.X, rookPosition.Y) == (7, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
+                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 5, Y = 0 };
+                }
+            }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (7, 7) &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[7, 7].Man == Figures.Rook &&
+                   Positions[5, 7].Man == Figures.Empty &&
+                   Positions[6, 7].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 5, Y = 7 };
+                }
+            }
+
+            // Длинная рокировка
+            if (side == Side.White)
+            {
+                if ((rookPosition.X, rookPosition.Y) == (0, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
+                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 3, Y = 0 };
+                }
+            }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (0, 7) &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[0, 7].Man == Figures.Rook &&
+                   Positions[3, 7].Man == Figures.Empty &&
+                   Positions[2, 7].Man == Figures.Empty &&
+                   Positions[1, 7].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 3, Y = 7 };
+                }
+            }
+
+            return CellPoint.Unexisted;
+        }
+
+        private CellPoint GetKingPositionAfterCastling(CellPoint rookPosition)
+        {
+
+            var figure = Positions[rookPosition.X, rookPosition.Y];
+
+            List<CellPoint> results = new List<CellPoint>();
+            Side side = figure.Side;
+
+            // Короткая рокировка
+            if (side == Side.White)
+            {
+                if ((rookPosition.X, rookPosition.Y) == (7, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
+                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 6, Y = 0 };
+                }
+            }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (7, 7) &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[7, 7].Man == Figures.Rook &&
+                   Positions[5, 7].Man == Figures.Empty &&
+                   Positions[6, 7].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 6, Y = 7 };
+                }
+            }
+
+            // Длинная рокировка
+            if (side == Side.White)
+            {
+                if ((rookPosition.X, rookPosition.Y) == (0, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
+                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 2, Y = 0 };
+                }
+            }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (0, 7) &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[0, 7].Man == Figures.Rook &&
+                   Positions[3, 7].Man == Figures.Empty &&
+                   Positions[2, 7].Man == Figures.Empty &&
+                   Positions[1, 7].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 2, Y = 7 };
+                }
+            }
+
+            return CellPoint.Unexisted;
+        }
+
         /// <summary>
         /// Замена пешек, дошедших до стороны противника, на королеву.
         /// </summary>
-        public void MakePawnFiguresTransformationIfIsItAvailable()
+        private void MakePawnFiguresTransformationIfIsItAvailable()
         {
             ReplaceWhitePawns();
             ReplaceBlackPawns();
@@ -1113,27 +1241,13 @@ namespace Chess.Entity
             return CellPoint.Unexisted;
         }
 
-        /// <summary>
         /// Получить все позиции съедания для фигуры.
         /// </summary>
         /// <param name="start">Позиция фигуры</param>
         /// <returns>Позиции ходов съедания</returns>
-        public List<CellPoint> GetCapturingPositions(CellPoint start)
+        private List<CellPoint> GetCapturingPositions(CellPoint start)
         {
-            var figure = Positions[start.X, start.Y];
-            Side side = figure.Side;
-            Side oppositeSide = GetOppositeSide(side);
-
-            var allPosibleSteps = GetAvailiableStepsFor(start);
-
-            List<CellPoint> result = new List<CellPoint>();
-            foreach(var step in allPosibleSteps)
-            {
-                if (Positions[step.X, step.Y].Side == oppositeSide)
-                    result.Add(step);
-            }
-
-            return result;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -1147,7 +1261,7 @@ namespace Chess.Entity
             var kingPosition = GetKingPosition(side);
 
             // Где король од ударом у противоположной стороны?
-            Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetAvailiableStepsPre(oppositeSide);
+            Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetStepsWithoutCastlingPre(oppositeSide);
 
             foreach (var step in allOppositeSteps)
             {
@@ -1171,13 +1285,68 @@ namespace Chess.Entity
         {
             if(IsCheck(side))
             {
-                var kingPosition = GetKingPosition(side);
-
-                if (GetAvailiableStepsFor(kingPosition).Count == 0)
+                if (GetAvailableSteps(side).Count == 0)
                     return true;
             }
 
             return false;
+        }
+        
+        /// <summary>
+        /// Метод делает ход без его проверки под шах.
+        /// </summary>
+        /// <param name="start">Начальная ячейка хода</param>
+        /// <param name="end">Конечная ячейка хода, чтобы сделать рокировку надо ходить на ладью</param>
+        /// <returns>true - если ход сделан, иначе false</returns>
+        public void MakeStepWithoutChecking(CellPoint start, CellPoint end)
+        {
+            // Переменные хода
+            var figure = Positions[start.X, start.Y];
+            Side side = figure.Side;
+            Side oppositeSide = GetOppositeSide(side);
+
+            var isCastling = GetKingPositionAfterCastling(end) != CellPoint.Unexisted;
+
+            if (isCastling)
+            {
+                var newKingPosition = GetKingPositionAfterCastling(end);
+                var newRookPosition = GetRookPositionAfterCastling(end);
+
+                // Ставим (копируем) короля и ладью на новые позиции
+                Positions[newKingPosition.X, newKingPosition.Y] = Positions[start.X, start.Y];
+                Positions[newRookPosition.X, newRookPosition.Y] = Positions[end.X, end.Y];
+
+                // Стираем старую позицию короля и ладьи
+                Positions[start.X, start.Y] = new EmptyCell();
+                Positions[end.X, end.Y] = new EmptyCell();
+
+                CurrentStepSide = oppositeSide;
+                return;
+            }
+
+            // Спокойно, после всех проверок, делаем ход
+            Positions[end.X, end.Y] = Positions[start.X, start.Y];
+            Positions[start.X, start.Y] = new EmptyCell();
+
+            CurrentStepSide = oppositeSide;
+        }
+
+        /// <summary>
+        /// Данный ход делается не под шах?
+        /// </summary>
+        /// <param name="start">Начальная фигура для хода. Ход можно делать только текущей стороной хода</param>
+        /// <param name="end">Конечная ячейка для хода</param>
+        /// <returns>true - если в будующем этот ход не вызовет шах.</returns>
+        protected bool IsStepInFutureWithoutCheck(CellPoint start, CellPoint end)
+        {
+            // Переменные хода
+            var figure = Positions[start.X, start.Y];
+            Side side = figure.Side;
+
+            Board testBoard = new Board(boardBytes: this.ToByteArray());
+
+            testBoard.MakeStepWithoutChecking(start, end);
+            return  testBoard.IsCheck(side);
         }
     }
 }

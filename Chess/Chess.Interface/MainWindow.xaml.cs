@@ -25,6 +25,8 @@ namespace Chess
 
         private Board board = new Board();
 
+        private Dictionary<CellPoint, List<CellPoint>> availableSteps;
+
         private UIElement?[,] figurePathPositions = new UIElement?[Board.CellBoardSize, Board.CellBoardSize];
 
         private bool started = false;
@@ -158,13 +160,14 @@ namespace Chess
             this.Height = 450;
             this.MinWidth = 600;
             this.MinHeight = 450;
-
+            availableSteps = new Dictionary<CellPoint, List<CellPoint>>();
             DrawDesk(this.Height);
         }
 
         public void ResetBoard()
         {
             this.board = new Board();
+            availableSteps = board.GetAvailableSteps(currentStepSide);
             currentStepSide = Side.White;
         }
 
