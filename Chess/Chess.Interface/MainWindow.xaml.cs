@@ -132,7 +132,9 @@ namespace Chess
         {
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
             currentStepSide = board.CurrentStepSide;
-            MoveFigurePath(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+            //MoveFigurePath(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+            UnselectCurrent();
+            Redraw();
         }
 
         private void MoveFigurePath(CellPoint start, CellPoint end)
@@ -223,7 +225,7 @@ namespace Chess
         public void ResetBoard()
         {
             this.board = new Board();
-            availableSteps = board.GetAvailableSteps(currentStepSide);
+            availableSteps = board.GetAvailableStepsPre(currentStepSide);
             currentStepSide = Side.White;
         }
 
@@ -246,8 +248,12 @@ namespace Chess
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            DrawDesk(GetSize());
+            Redraw();
+        }
 
+        private void Redraw()
+        {
+            DrawDesk(GetSize());
             DrawSelectedAndHoveredFigures();
         }
 

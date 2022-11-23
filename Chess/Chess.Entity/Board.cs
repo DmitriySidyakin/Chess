@@ -90,6 +90,24 @@ namespace Chess.Entity
         }
 
         /// <summary>
+        /// Конструктор для создания доски из массива байт.
+        /// </summary>
+        /// <param name="boardBytes">Байты сериализованной доски</param>
+        /// <exception cref="ArgumentException">Исключение возникает, если передано не правильное количество байт</exception>
+        public Board(Board board)
+        {
+            for(int col = 0; col < CellBoardSize; col++)
+            {
+                for(int row = 0; row < CellBoardSize; row++)
+                {
+                    Positions[col, row] = board.Positions[col, row];
+                }
+            }
+
+            CurrentStepSide = board.CurrentStepSide;
+        }
+
+        /// <summary>
         /// Получает строковое имя ячейки шахматной доски.
         /// </summary>
         /// <param name="column">Числовой идентификатор колонки</param>
@@ -239,68 +257,60 @@ namespace Chess.Entity
 
         public Dictionary<CellPoint, List<CellPoint>> GetAvailableSteps(Side side)
         {
+            var availableSteps = GetAvailableStepsPre(side);
+
+            
+            Dictionary<CellPoint, List<CellPoint>> filteredSteps = new Dictionary<CellPoint, List<CellPoint>>();
+
+            foreach (var stepStart in availableSteps.Keys)
+            {
+                foreach (var stepEnd in availableSteps[stepStart])
+                {
+                    if (!IsStepInFutureCheck(stepStart, stepEnd)/*true*/)
+                    {
+                        if (!filteredSteps.ContainsKey(stepStart))
+                        {
+                            filteredSteps.Add(stepStart, new List<CellPoint>());
+                        }
+
+                        filteredSteps[stepStart].Add(stepEnd);
+                    }
+                }
+            }
+
+            return filteredSteps;
+            
+        }
+
+        public Dictionary<CellPoint, List<CellPoint>> GetAvailableStepsPre(Side side)
+        {
             var resultPositions = GetStepsWithoutCastlingPre(side);
 
-            FilterBaseUnavailableSteps(ref resultPositions, side);
-
-            AddFilteredCastlingsInResult(ref resultPositions, side);
+            AddCastlingsInResult(ref resultPositions, side);
 
             return resultPositions;
         }
 
-        private void FilterBaseUnavailableSteps(ref Dictionary<CellPoint, List<CellPoint>> resultPositions, Side side)
-        {
-            Dictionary<CellPoint, List<CellPoint>> result = new Dictionary<CellPoint, List<CellPoint>>();
-            foreach(var stepStart in resultPositions.Keys)
-            {
-                foreach(var stepEnd in resultPositions[stepStart])
-                {
-                    bool add = true;
-
-                    // На этой клетке уже стоит фигура моей стороны
-
-                    if (Positions[stepEnd.X, stepEnd.Y].Man != Figures.Empty
-                        && Positions[stepEnd.X, stepEnd.Y].Side == side)
-                        add = false;
-
-                    // Ход вызывает шах
-                    if(add && IsStepInFutureCheck(stepStart, stepEnd))
-                        add = false;
-
-                    if(add)
-                    {
-                        // Добавляем к ответу
-                        if (!result.ContainsKey(stepStart))
-                            result.Add(stepStart, new List<CellPoint>());
-
-                        result[stepStart].Add(stepEnd);
-                    }
-                }
-            }
-            resultPositions = result;
-        }
-
-        private void AddFilteredCastlingsInResult(ref Dictionary<CellPoint, List<CellPoint>> resultPositions, Side side)
+        private void AddCastlingsInResult(ref Dictionary<CellPoint, List<CellPoint>> resultPositions, Side side)
         {
             var rookPositions = GetRookPositionsBeforeCastling(GetKingPosition(side));
             var kingPosition = GetKingPosition(side);
 
             foreach(var rook in rookPositions)
             {
-                bool add = true;
+                CellPoint kingKey;
 
-                // Ход вызывает шах
-                if (add && !IsStepInFutureCheck(kingPosition, rook))
-                    add = false;
-
-                if (add)
+                if (resultPositions.Keys.Count(k => k.X == kingPosition.X && k.Y == kingPosition.Y) > 0)
                 {
-                    // Добавляем к ответу
-                    if (!resultPositions.ContainsKey(kingPosition))
-                        resultPositions.Add(kingPosition, new List<CellPoint>());
-
-                    resultPositions[kingPosition].Add(rook);
+                    kingKey = resultPositions.Keys.Where(k => k.X == kingPosition.X && k.Y == kingPosition.Y).First();
                 }
+                else
+                {
+                    kingKey = kingPosition;
+                    resultPositions.Add(kingKey, new List<CellPoint>());
+                }
+
+                resultPositions[kingKey].Add(rook);
             }
 
         }
@@ -872,31 +882,22 @@ namespace Chess.Entity
             // Короткая рокировка
             if(side == Side.White)
             {
-                if(Positions[start.X, start.Y] == Positions[4, 0] &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty) return true;
-            } else
-            {
-                if (Positions[start.X, start.Y] == Positions[4, 7] &&
+                if(Positions[start.X, start.Y] == Positions[4, 7] &&
                    Positions[4, 7].Man == Figures.King &&
                    Positions[7, 7].Man == Figures.Rook &&
                    Positions[5, 7].Man == Figures.Empty &&
                    Positions[6, 7].Man == Figures.Empty) return true;
+            } else
+            {
+                if (Positions[start.X, start.Y] == Positions[4, 0] &&
+                   Positions[4, 0].Man == Figures.King &&
+                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty) return true;
             }
 
             // Длинная рокировка
             if (side == Side.White)
-            {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty) return true;
-            }
-            else
             {
                 if (Positions[start.X, start.Y] == Positions[4, 7] &&
                    Positions[4, 7].Man == Figures.King &&
@@ -904,6 +905,15 @@ namespace Chess.Entity
                    Positions[3, 7].Man == Figures.Empty &&
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty) return true;
+            }
+            else
+            {
+                if (Positions[start.X, start.Y] == Positions[4, 0] &&
+                   Positions[4, 0].Man == Figures.King &&
+                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty) return true;
             }
 
             return false;
@@ -927,27 +937,9 @@ namespace Chess.Entity
             // Короткая рокировка
             if (side == Side.White)
             {
-                if ((start.X, start.Y) == (4, 0) &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.White &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty)
-                {
-                    Board newBoard = new Board(boardBytes: this.ToByteArray());
-
-                    newBoard.Positions[4, 0] = new EmptyCell();
-                    newBoard.Positions[7, 0] = new EmptyCell();
-                    newBoard.Positions[5, 0] = new RookFigure(side: Side.White);
-                    newBoard.Positions[6, 0] = new KingFigure(side: Side.White);
-
-                    resultBoards.Add(newBoard);
-                }
-            }
-            else
-            {
                 if ((start.X, start.Y) == (4, 7) &&
                    Positions[4, 7].Man == Figures.King &&
-                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.Black &&
+                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.White &&
                    Positions[5, 7].Man == Figures.Empty &&
                    Positions[6, 7].Man == Figures.Empty)
                 {
@@ -955,8 +947,26 @@ namespace Chess.Entity
 
                     newBoard.Positions[4, 7] = new EmptyCell();
                     newBoard.Positions[7, 7] = new EmptyCell();
-                    newBoard.Positions[5, 7] = new RookFigure(side: Side.Black);
-                    newBoard.Positions[6, 7] = new KingFigure(side: Side.Black);
+                    newBoard.Positions[5, 7] = new RookFigure(side: Side.White);
+                    newBoard.Positions[6, 7] = new KingFigure(side: Side.White);
+
+                    resultBoards.Add(newBoard);
+                }
+            }
+            else
+            {
+                if ((start.X, start.Y) == (4, 0) &&
+                   Positions[4, 0].Man == Figures.King &&
+                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.Black &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty)
+                {
+                    Board newBoard = new Board(boardBytes: this.ToByteArray());
+
+                    newBoard.Positions[4, 0] = new EmptyCell();
+                    newBoard.Positions[7, 0] = new EmptyCell();
+                    newBoard.Positions[5, 0] = new RookFigure(side: Side.Black);
+                    newBoard.Positions[6, 0] = new KingFigure(side: Side.Black);
 
                     resultBoards.Add(newBoard);
                 }
@@ -965,29 +975,9 @@ namespace Chess.Entity
             // Длинная рокировка
             if (side == Side.White)
             {
-                if ((start.X, start.Y) == (4, 0) &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.White &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty)
-                {
-                    Board newBoard = new Board(boardBytes: this.ToByteArray());
-
-                    newBoard.Positions[1, 0] = new EmptyCell();
-                    newBoard.Positions[4, 0] = new EmptyCell();
-                    newBoard.Positions[0, 0] = new EmptyCell();
-                    newBoard.Positions[3, 0] = new RookFigure(side: Side.White);
-                    newBoard.Positions[2, 0] = new KingFigure(side: Side.White);
-
-                    resultBoards.Add(newBoard);
-                }
-            }
-            else
-            {
-                if ((start.X, start.Y) == (4, 7) &&
+                if ((start.X, start.Y) == (4, 70) &&
                    Positions[4, 7].Man == Figures.King &&
-                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.Black &&
+                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.White &&
                    Positions[3, 7].Man == Figures.Empty &&
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty)
@@ -997,8 +987,28 @@ namespace Chess.Entity
                     newBoard.Positions[1, 7] = new EmptyCell();
                     newBoard.Positions[4, 7] = new EmptyCell();
                     newBoard.Positions[0, 7] = new EmptyCell();
-                    newBoard.Positions[3, 7] = new RookFigure(side: Side.Black);
-                    newBoard.Positions[2, 7] = new KingFigure(side: Side.Black);
+                    newBoard.Positions[3, 7] = new RookFigure(side: Side.White);
+                    newBoard.Positions[2, 7] = new KingFigure(side: Side.White);
+
+                    resultBoards.Add(newBoard);
+                }
+            }
+            else
+            {
+                if ((start.X, start.Y) == (4, 0) &&
+                   Positions[4, 0].Man == Figures.King &&
+                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.Black &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty)
+                {
+                    Board newBoard = new Board(boardBytes: this.ToByteArray());
+
+                    newBoard.Positions[1, 0] = new EmptyCell();
+                    newBoard.Positions[4, 0] = new EmptyCell();
+                    newBoard.Positions[0, 0] = new EmptyCell();
+                    newBoard.Positions[3, 0] = new RookFigure(side: Side.Black);
+                    newBoard.Positions[2, 0] = new KingFigure(side: Side.Black);
 
                     resultBoards.Add(newBoard);
                 }
@@ -1022,50 +1032,50 @@ namespace Chess.Entity
             // Короткая рокировка
             if (side == Side.White)
             {
-                if ((start.X, start.Y) == (4, 0) &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.White &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty)
+                if ((start.X, start.Y) == (4, 7) &&
+                   Positions[4, 7].Man == Figures.King &&
+                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.White &&
+                   Positions[5, 7].Man == Figures.Empty &&
+                   Positions[6, 7].Man == Figures.Empty)
                 {
-                    results.Add(new CellPoint() { X = 7, Y = 0});
+                    results.Add(new CellPoint() { X = 7, Y = 7});
                 }
             }
             else
             {
-                if ((start.X, start.Y) == (4, 7) &&
-                   Positions[4, 7].Man == Figures.King &&
-                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.Black &&
-                   Positions[5, 7].Man == Figures.Empty &&
-                   Positions[6, 7].Man == Figures.Empty)
+                if ((start.X, start.Y) == (4, 0) &&
+                   Positions[4, 0].Man == Figures.King &&
+                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.Black &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty)
                 {
-                    results.Add(new CellPoint() { X = 7, Y = 7 });
+                    results.Add(new CellPoint() { X = 0, Y = 7 });
                 }
             }
 
             // Длинная рокировка
             if (side == Side.White)
             {
-                if ((start.X, start.Y) == (4, 0) &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.White &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty)
+                if ((start.X, start.Y) == (4, 7) &&
+                   Positions[4, 7].Man == Figures.King &&
+                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.White &&
+                   Positions[3, 7].Man == Figures.Empty &&
+                   Positions[2, 7].Man == Figures.Empty &&
+                   Positions[1, 7].Man == Figures.Empty)
                 {
-                    results.Add(new CellPoint() { X = 0, Y = 0 });
+                    results.Add(new CellPoint() { X = 7, Y = 0 });
                 }
             }
             else
             {
                 if ((start.X, start.Y) == (4, 7) &&
-                   Positions[4, 7].Man == Figures.King &&
-                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.Black &&
-                   Positions[3, 7].Man == Figures.Empty &&
-                   Positions[2, 7].Man == Figures.Empty &&
-                   Positions[1, 7].Man == Figures.Empty)
+                   Positions[4, 0].Man == Figures.King &&
+                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.Black &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty)
                 {
-                    results.Add(new CellPoint() { X = 0, Y = 7 });
+                    results.Add(new CellPoint() { X = 0, Y = 0 });
                 }
             }
 
@@ -1082,19 +1092,8 @@ namespace Chess.Entity
             // Короткая рокировка
             if (side == Side.White)
             {
-                if ((rookPosition.X, rookPosition.Y) == (7, 0) &&
-                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
-                   Positions[7, 0].Man == Figures.Rook &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty)
-                {
-                    return new CellPoint() { X = 5, Y = 0 };
-                }
-            }
-            else
-            {
                 if ((rookPosition.X, rookPosition.Y) == (7, 7) &&
-                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.White &&
                    Positions[7, 7].Man == Figures.Rook &&
                    Positions[5, 7].Man == Figures.Empty &&
                    Positions[6, 7].Man == Figures.Empty)
@@ -1102,30 +1101,41 @@ namespace Chess.Entity
                     return new CellPoint() { X = 5, Y = 7 };
                 }
             }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (7, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.Black &&
+                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 5, Y = 0 };
+                }
+            }
 
             // Длинная рокировка
             if (side == Side.White)
             {
-                if ((rookPosition.X, rookPosition.Y) == (0, 0) &&
-                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
-                   Positions[0, 0].Man == Figures.Rook &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty)
-                {
-                    return new CellPoint() { X = 3, Y = 0 };
-                }
-            }
-            else
-            {
                 if ((rookPosition.X, rookPosition.Y) == (0, 7) &&
-                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.White &&
                    Positions[0, 7].Man == Figures.Rook &&
                    Positions[3, 7].Man == Figures.Empty &&
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty)
                 {
                     return new CellPoint() { X = 3, Y = 7 };
+                }
+            }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (0, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.Black &&
+                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 3, Y = 0 };
                 }
             }
 
@@ -1143,19 +1153,8 @@ namespace Chess.Entity
             // Короткая рокировка
             if (side == Side.White)
             {
-                if ((rookPosition.X, rookPosition.Y) == (7, 0) &&
-                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
-                   Positions[7, 0].Man == Figures.Rook &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty)
-                {
-                    return new CellPoint() { X = 6, Y = 0 };
-                }
-            }
-            else
-            {
                 if ((rookPosition.X, rookPosition.Y) == (7, 7) &&
-                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.White &&
                    Positions[7, 7].Man == Figures.Rook &&
                    Positions[5, 7].Man == Figures.Empty &&
                    Positions[6, 7].Man == Figures.Empty)
@@ -1163,30 +1162,41 @@ namespace Chess.Entity
                     return new CellPoint() { X = 6, Y = 7 };
                 }
             }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (7, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.Black &&
+                   Positions[7, 0].Man == Figures.Rook &&
+                   Positions[5, 0].Man == Figures.Empty &&
+                   Positions[6, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 6, Y = 0 };
+                }
+            }
 
             // Длинная рокировка
             if (side == Side.White)
             {
-                if ((rookPosition.X, rookPosition.Y) == (0, 0) &&
-                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.White &&
-                   Positions[0, 0].Man == Figures.Rook &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty)
-                {
-                    return new CellPoint() { X = 2, Y = 0 };
-                }
-            }
-            else
-            {
                 if ((rookPosition.X, rookPosition.Y) == (0, 7) &&
-                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.Black &&
+                   Positions[4, 7].Man == Figures.King && Positions[4, 7].Side == Side.White &&
                    Positions[0, 7].Man == Figures.Rook &&
                    Positions[3, 7].Man == Figures.Empty &&
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty)
                 {
                     return new CellPoint() { X = 2, Y = 7 };
+                }
+            }
+            else
+            {
+                if ((rookPosition.X, rookPosition.Y) == (0, 0) &&
+                   Positions[4, 0].Man == Figures.King && Positions[4, 0].Side == Side.Black &&
+                   Positions[0, 0].Man == Figures.Rook &&
+                   Positions[3, 0].Man == Figures.Empty &&
+                   Positions[2, 0].Man == Figures.Empty &&
+                   Positions[1, 0].Man == Figures.Empty)
+                {
+                    return new CellPoint() { X = 2, Y = 0 };
                 }
             }
 
@@ -1261,7 +1271,7 @@ namespace Chess.Entity
             var kingPosition = GetKingPosition(side);
 
             // Где король од ударом у противоположной стороны?
-            Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetAvailableSteps(oppositeSide);
+            Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetAvailableStepsPre(oppositeSide);
 
             foreach (var step in allOppositeSteps)
             {
@@ -1285,7 +1295,7 @@ namespace Chess.Entity
         {
             if(IsCheck(side))
             {
-                if (GetAvailableSteps(side).Count == 0)
+                if (GetAvailableStepsPre(side).Count == 0)
                     return true;
             }
 
@@ -1329,6 +1339,8 @@ namespace Chess.Entity
             Positions[start.X, start.Y] = new EmptyCell();
 
             CurrentStepSide = oppositeSide;
+
+            MakePawnFiguresTransformationIfIsItAvailable();
         }
 
         /// <summary>
@@ -1342,11 +1354,16 @@ namespace Chess.Entity
             // Переменные хода
             var figure = Positions[start.X, start.Y];
             Side side = figure.Side;
+            Side oppositeSide = GetOppositeSide(side);
 
-            Board testBoard = new Board(boardBytes: this.ToByteArray());
+            Board testBoard = new Board(this);
+
+            testBoard.CurrentStepSide = side;
 
             testBoard.MakeStepWithoutChecking(start, end);
-            return  testBoard.IsCheck(side);
+
+            //testBoard.CurrentStepSide = side;
+            return testBoard.IsCheck(side);
         }
     }
 }
