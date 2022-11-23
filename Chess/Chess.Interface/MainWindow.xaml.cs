@@ -110,6 +110,12 @@ namespace Chess
                     {
                         if ((value.X != clickCellPoint.X || value.Y != clickCellPoint.Y ))
                         {
+                            if (IsAvailableStep(value.X, value.Y))
+                            {
+                                MakeStep(value.X, value.Y);
+                                availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+                            }
+
                             clickCellPoint = value;
                             ClickBoxChanged(clickCellPoint);
                         }
@@ -120,6 +126,31 @@ namespace Chess
                     }
                 }
             }
+        }
+
+        private void MakeStep(sbyte x, sbyte y)
+        {
+            board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+            currentStepSide = board.CurrentStepSide;
+            MoveFigurePath(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+        }
+
+        private void MoveFigurePath(CellPoint start, CellPoint end)
+        {
+            Canvas.SetLeft(ChessBoard.Children[ChessBoard.Children.IndexOf(figurePathPositions[start.X, start.Y])],
+                (10) * GetScale() + 47 * GetScale() * end.X);
+            Canvas.SetTop(ChessBoard.Children[ChessBoard.Children.IndexOf(figurePathPositions[start.X, start.Y])],
+                (10) * GetScale() + 47 * GetScale() * end.Y);
+
+            ChessBoard.Children.Remove(figurePathPositions[end.X, end.Y]);
+
+            figurePathPositions[end.X, end.Y] = figurePathPositions[start.X, start.Y];
+            figurePathPositions[start.X, start.Y] = null;
+        }
+
+        private bool IsAvailableStep(sbyte x, sbyte y)
+        {
+            return availableSteps.Count(s => s.Key.X == clickCellPoint.X && s.Key.Y == clickCellPoint.Y && s.Value.Count(v => v.X == x && v.Y == y) > 0) > 0;
         }
 
         private void UnselectCurrent()

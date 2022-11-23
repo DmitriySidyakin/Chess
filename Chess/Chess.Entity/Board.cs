@@ -1261,7 +1261,7 @@ namespace Chess.Entity
             var kingPosition = GetKingPosition(side);
 
             // Где король од ударом у противоположной стороны?
-            Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetStepsWithoutCastlingPre(oppositeSide);
+            Dictionary<CellPoint, List<CellPoint>> allOppositeSteps = GetAvailableSteps(oppositeSide);
 
             foreach (var step in allOppositeSteps)
             {
