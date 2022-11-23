@@ -227,6 +227,7 @@ namespace Chess
             this.board = new Board();
             availableSteps = board.GetAvailableStepsPre(currentStepSide);
             currentStepSide = Side.White;
+            Redraw();
         }
 
         public void StartGame()

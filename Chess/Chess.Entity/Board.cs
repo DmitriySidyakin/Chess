@@ -24,6 +24,16 @@ namespace Chess.Entity
         public Side CurrentStepSide { get; set; }
 
         /// <summary>
+        /// Чёрные уже использовали рокировку.
+        /// </summary>
+        private bool blackCastlingWasMade = false;
+
+        /// <summary>
+        /// Белые уже использовали рокировку.
+        /// </summary>
+        private bool whiteCastlingWasMade = false;
+
+        /// <summary>
         /// Конструктор по умолчанию, создающий доску с начальным положением фигур.
         /// </summary>
         public Board()
@@ -68,7 +78,7 @@ namespace Chess.Entity
         public Board(byte[] boardBytes)
         {
             if (boardBytes.Length != 33)
-                throw new ArgumentException("The bytes count does not equal 33!");
+                throw new ArgumentException("The byte count does not equal 33!");
 
             int step = 0;
             for (int row = 1; row <= 8; row++)
@@ -191,7 +201,9 @@ namespace Chess.Entity
             for (int row = 0; row < 8 && result; row++)
                 for (int column = 0; column < 8 && result; column++)
                 {
-                    result = Positions[column, row].SideMan == board.Positions[column, row].SideMan;
+                    result = Positions[column, row].SideMan == board.Positions[column, row].SideMan
+                        && Positions[column, row].Side == board.Positions[column, row].Side
+                        && Positions[column, row].Man == board.Positions[column, row].Man;
                 }
 
             result = result && (CurrentStepSide == board.CurrentStepSide);
@@ -259,7 +271,6 @@ namespace Chess.Entity
         {
             var availableSteps = GetAvailableStepsPre(side);
 
-            
             Dictionary<CellPoint, List<CellPoint>> filteredSteps = new Dictionary<CellPoint, List<CellPoint>>();
 
             foreach (var stepStart in availableSteps.Keys)
@@ -293,26 +304,28 @@ namespace Chess.Entity
 
         private void AddCastlingsInResult(ref Dictionary<CellPoint, List<CellPoint>> resultPositions, Side side)
         {
-            var rookPositions = GetRookPositionsBeforeCastling(GetKingPosition(side));
-            var kingPosition = GetKingPosition(side);
-
-            foreach(var rook in rookPositions)
+            if((side == Side.Black && !blackCastlingWasMade) || (side == Side.White && !whiteCastlingWasMade))
             {
-                CellPoint kingKey;
+                var rookPositions = GetRookPositionsBeforeCastling(GetKingPosition(side));
+                var kingPosition = GetKingPosition(side);
 
-                if (resultPositions.Keys.Count(k => k.X == kingPosition.X && k.Y == kingPosition.Y) > 0)
+                foreach (var rook in rookPositions)
                 {
-                    kingKey = resultPositions.Keys.Where(k => k.X == kingPosition.X && k.Y == kingPosition.Y).First();
-                }
-                else
-                {
-                    kingKey = kingPosition;
-                    resultPositions.Add(kingKey, new List<CellPoint>());
-                }
+                    CellPoint kingKey;
 
-                resultPositions[kingKey].Add(rook);
+                    if (resultPositions.Keys.Count(k => k.X == kingPosition.X && k.Y == kingPosition.Y) > 0)
+                    {
+                        kingKey = resultPositions.Keys.Where(k => k.X == kingPosition.X && k.Y == kingPosition.Y).First();
+                    }
+                    else
+                    {
+                        kingKey = kingPosition;
+                        resultPositions.Add(kingKey, new List<CellPoint>());
+                    }
+
+                    resultPositions[kingKey].Add(rook);
+                }
             }
-
         }
 
         /// <summary>
@@ -870,154 +883,6 @@ namespace Chess.Entity
         }
 
         /// <summary>
-        /// Доступна ли рокировка. Внимание: проверяет доступна ли рокировка, т.к. она не входит в метод GetAvailiableSteps.
-        /// </summary>
-        /// <param name="start">Позиция короля</param>
-        /// <returns>Возвращает, доступна ли рокировка для короля с заданной позицией.</returns>
-        private bool IsCastlingAvailable(CellPoint start)
-        {
-            var figure = Positions[start.X, start.Y];
-            Side side = figure.Side;
-
-            // Короткая рокировка
-            if(side == Side.White)
-            {
-                if(Positions[start.X, start.Y] == Positions[4, 7] &&
-                   Positions[4, 7].Man == Figures.King &&
-                   Positions[7, 7].Man == Figures.Rook &&
-                   Positions[5, 7].Man == Figures.Empty &&
-                   Positions[6, 7].Man == Figures.Empty) return true;
-            } else
-            {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty) return true;
-            }
-
-            // Длинная рокировка
-            if (side == Side.White)
-            {
-                if (Positions[start.X, start.Y] == Positions[4, 7] &&
-                   Positions[4, 7].Man == Figures.King &&
-                   Positions[0, 7].Man == Figures.Rook &&
-                   Positions[3, 7].Man == Figures.Empty &&
-                   Positions[2, 7].Man == Figures.Empty &&
-                   Positions[1, 7].Man == Figures.Empty) return true;
-            }
-            else
-            {
-                if (Positions[start.X, start.Y] == Positions[4, 0] &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty) return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Возвращает доски после рокировки.
-        /// </summary>
-        /// <param name="start">Позиция короля, по ней определяется сторона (белые, чёрные) для рокировки</param>
-        /// <returns>Доски, после применения возможных рокировок. Возможны 0, 1на, 2е рокировки</returns>
-        private List<Board> GetBoardsAfterCastling(CellPoint start)
-        {
-            var figure = Positions[start.X, start.Y];
-
-            if (figure.Man != Figures.King)
-                return new List<Board>();
-
-            List<Board> resultBoards = new List<Board>();
-            Side side = figure.Side;
-
-            // Короткая рокировка
-            if (side == Side.White)
-            {
-                if ((start.X, start.Y) == (4, 7) &&
-                   Positions[4, 7].Man == Figures.King &&
-                   Positions[7, 7].Man == Figures.Rook && Positions[7, 7].Side == Side.White &&
-                   Positions[5, 7].Man == Figures.Empty &&
-                   Positions[6, 7].Man == Figures.Empty)
-                {
-                    Board newBoard = new Board(boardBytes: this.ToByteArray());
-
-                    newBoard.Positions[4, 7] = new EmptyCell();
-                    newBoard.Positions[7, 7] = new EmptyCell();
-                    newBoard.Positions[5, 7] = new RookFigure(side: Side.White);
-                    newBoard.Positions[6, 7] = new KingFigure(side: Side.White);
-
-                    resultBoards.Add(newBoard);
-                }
-            }
-            else
-            {
-                if ((start.X, start.Y) == (4, 0) &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[7, 0].Man == Figures.Rook && Positions[7, 0].Side == Side.Black &&
-                   Positions[5, 0].Man == Figures.Empty &&
-                   Positions[6, 0].Man == Figures.Empty)
-                {
-                    Board newBoard = new Board(boardBytes: this.ToByteArray());
-
-                    newBoard.Positions[4, 0] = new EmptyCell();
-                    newBoard.Positions[7, 0] = new EmptyCell();
-                    newBoard.Positions[5, 0] = new RookFigure(side: Side.Black);
-                    newBoard.Positions[6, 0] = new KingFigure(side: Side.Black);
-
-                    resultBoards.Add(newBoard);
-                }
-            }
-
-            // Длинная рокировка
-            if (side == Side.White)
-            {
-                if ((start.X, start.Y) == (4, 70) &&
-                   Positions[4, 7].Man == Figures.King &&
-                   Positions[0, 7].Man == Figures.Rook && Positions[0, 7].Side == Side.White &&
-                   Positions[3, 7].Man == Figures.Empty &&
-                   Positions[2, 7].Man == Figures.Empty &&
-                   Positions[1, 7].Man == Figures.Empty)
-                {
-                    Board newBoard = new Board(boardBytes: this.ToByteArray());
-
-                    newBoard.Positions[1, 7] = new EmptyCell();
-                    newBoard.Positions[4, 7] = new EmptyCell();
-                    newBoard.Positions[0, 7] = new EmptyCell();
-                    newBoard.Positions[3, 7] = new RookFigure(side: Side.White);
-                    newBoard.Positions[2, 7] = new KingFigure(side: Side.White);
-
-                    resultBoards.Add(newBoard);
-                }
-            }
-            else
-            {
-                if ((start.X, start.Y) == (4, 0) &&
-                   Positions[4, 0].Man == Figures.King &&
-                   Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.Black &&
-                   Positions[3, 0].Man == Figures.Empty &&
-                   Positions[2, 0].Man == Figures.Empty &&
-                   Positions[1, 0].Man == Figures.Empty)
-                {
-                    Board newBoard = new Board(boardBytes: this.ToByteArray());
-
-                    newBoard.Positions[1, 0] = new EmptyCell();
-                    newBoard.Positions[4, 0] = new EmptyCell();
-                    newBoard.Positions[0, 0] = new EmptyCell();
-                    newBoard.Positions[3, 0] = new RookFigure(side: Side.Black);
-                    newBoard.Positions[2, 0] = new KingFigure(side: Side.Black);
-
-                    resultBoards.Add(newBoard);
-                }
-            }
-
-            return resultBoards;
-        }
-
-        /// <summary>
         /// Возвращает положения туры (Rook) до рокировки.
         /// </summary>
         /// <param name="start">Позиция короля, по ней определяется сторона (белые, чёрные) для рокировки</param>
@@ -1049,7 +914,7 @@ namespace Chess.Entity
                    Positions[5, 0].Man == Figures.Empty &&
                    Positions[6, 0].Man == Figures.Empty)
                 {
-                    results.Add(new CellPoint() { X = 0, Y = 7 });
+                    results.Add(new CellPoint() { X = 7, Y = 0 });
                 }
             }
 
@@ -1063,12 +928,12 @@ namespace Chess.Entity
                    Positions[2, 7].Man == Figures.Empty &&
                    Positions[1, 7].Man == Figures.Empty)
                 {
-                    results.Add(new CellPoint() { X = 7, Y = 0 });
+                    results.Add(new CellPoint() { X = 0, Y = 7 });
                 }
             }
             else
             {
-                if ((start.X, start.Y) == (4, 7) &&
+                if ((start.X, start.Y) == (4, 0) &&
                    Positions[4, 0].Man == Figures.King &&
                    Positions[0, 0].Man == Figures.Rook && Positions[0, 0].Side == Side.Black &&
                    Positions[3, 0].Man == Figures.Empty &&
@@ -1317,7 +1182,7 @@ namespace Chess.Entity
 
             var isCastling = GetKingPositionAfterCastling(end) != CellPoint.Unexisted;
 
-            if (isCastling)
+            if (isCastling && ((side == Side.Black && !blackCastlingWasMade) || (side == Side.White && !whiteCastlingWasMade)))
             {
                 var newKingPosition = GetKingPositionAfterCastling(end);
                 var newRookPosition = GetRookPositionAfterCastling(end);
@@ -1329,6 +1194,10 @@ namespace Chess.Entity
                 // Стираем старую позицию короля и ладьи
                 Positions[start.X, start.Y] = new EmptyCell();
                 Positions[end.X, end.Y] = new EmptyCell();
+
+                // Рокировку можно делать один раз за партию
+                if (side == Side.White) whiteCastlingWasMade = true;
+                else blackCastlingWasMade = true;
 
                 CurrentStepSide = oppositeSide;
                 return;
