@@ -68,9 +68,9 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
                         stepFile.Close();
                     }
-                }/*
+                }
                 else
-                {
+                {/*
                     var stepsForWrite = stackBoard.GetAvailableSteps(stackBoard.CurrentStepSide);
 
                     foreach (var stepStartQ in stepsForWrite.Keys)
@@ -87,8 +87,9 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
                                 
                             
                         }
-                    }
-                }*/
+                    }*/
+                    Console.WriteLine("[Analysed Existing Board]");
+                }
 
                 
             }
