@@ -94,8 +94,9 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
             }
         }
 
-        Console.WriteLine($"!!!ENDED!!!");
     }
+
+    Console.WriteLine($"!!!ENDED!!!");
 
     static void WriteCurrentSteps(FileStream stepFile, ResearchBoard board, Dictionary<CellPoint, List<CellPoint>> currentSteps, int i = 0)
     {
