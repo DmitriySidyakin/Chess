@@ -4,8 +4,14 @@ using System.Linq;
 
 MakeEmptyStepFile();
 
+
+
+
 void MakeEmptyStepFile(string fileName = "steps.dcd")
 {
+    long savedRecordsCount = 0;
+
+
     string directory = string.Format("{0}/data/", AppDomain.CurrentDomain.BaseDirectory);
     string fullFileName = string.Format("{0}{1}", directory, fileName);
 
@@ -14,10 +20,9 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
     ResearchBoard board = new ResearchBoard();
 
-    MakeFirstIteration(fullFileName, board);
+    MakeFirstIteration(fullFileName, board, ref savedRecordsCount);
 
     (var isBoardBytesExists, _) = IsBoardBytesExist(board, fullFileName);
-    bool hasSteps = true;
 
     Queue<ResearchBoard> boardQueue = new Queue<ResearchBoard>();
 
@@ -48,7 +53,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
                         var stepsForWrite = stackBoard.GetAvailableSteps(stackBoard.CurrentStepSide);
 
-                        WriteCurrentSteps(stepFile, stackBoard, stepsForWrite);
+                        WriteCurrentSteps(stepFile, stackBoard, stepsForWrite, ref savedRecordsCount);
 
                         foreach (var stepStartQ in stepsForWrite.Keys)
                         {
@@ -64,7 +69,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
                         
 
-                        Console.WriteLine($"NEW Iteration = {i++} | Queue Size = {boardQueue.Count}");
+                        Console.WriteLine($"NEW Iteration = {i++} | Queue Size = {boardQueue.Count} | Have written = {savedRecordsCount}");
 
                         stepFile.Close();
                     }
@@ -88,7 +93,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
                             
                         }
                     }*/
-                    Console.WriteLine("[Analysed Existing Board]");
+                    Console.WriteLine($"[Existing board analyzed] | Have written = {savedRecordsCount}");
                 }
 
                 
@@ -99,7 +104,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
     Console.WriteLine($"!!!ENDED!!!");
 
-    static void WriteCurrentSteps(FileStream stepFile, ResearchBoard board, Dictionary<CellPoint, List<CellPoint>> currentSteps, int i = 0)
+    static void WriteCurrentSteps(FileStream stepFile, ResearchBoard board, Dictionary<CellPoint, List<CellPoint>> currentSteps, ref long savedRecordsCount)
     {
         foreach (var (start, newBoard, end) in from start in currentSteps.Keys
                                                let newBoard = new ResearchBoard(board)
@@ -107,11 +112,11 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
                                                select (start, newBoard, end))
         {
             newBoard.MakeStepWithoutChecking(start, end);
-            WriteBoardWithEmptySteps(stepFile, newBoard);
+            WriteBoardWithEmptySteps(stepFile, newBoard); savedRecordsCount++;
         }
     }
 
-    static void MakeFirstIteration(string fullFileName, ResearchBoard board)
+    static void MakeFirstIteration(string fullFileName, ResearchBoard board, ref long savedRecordsCount)
     {
         if (!File.Exists(fullFileName))
         {
@@ -121,9 +126,9 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
             /* Записываем начальные комбинации досок с 2мя дополнительными пустыми байтами для хода белых и чёрных. */
             WriteBoardWithEmptySteps(stepFile, board);
-
+            savedRecordsCount++;
             var currentSteps = board.GetAvailableSteps(board.CurrentStepSide);
-            WriteCurrentSteps(stepFile, board, currentSteps);
+            WriteCurrentSteps(stepFile, board, currentSteps, ref savedRecordsCount);
 
             stepFile.Close();
         }
