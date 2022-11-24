@@ -11,6 +11,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 {
     long existedRecordCount = 0;
     long writtenRecordsCount = 0;
+    long containsCount = 0;
 
     string directory = string.Format("{0}/data/", AppDomain.CurrentDomain.BaseDirectory);
     string fullFileName = string.Format("{0}{1}", directory, fileName);
@@ -30,7 +31,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
     long i = 0;
     while (boardQueue.Count > 0)
-    { 
+    {
         var newBoard = boardQueue.Dequeue();
         var steps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
 
@@ -51,33 +52,36 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
 
                         stepFile.Position = stepFile.Length;
                     */
-                        var stepsForWrite = stackBoard.GetAvailableSteps(stackBoard.CurrentStepSide);
+                    var stepsForWrite = stackBoard.GetAvailableSteps(stackBoard.CurrentStepSide);
 
-                        WriteCurrentSteps(stackBoard, stepsForWrite, ref existedRecordCount, ref writtenRecordsCount, fullFileName);
+                    WriteCurrentSteps(stackBoard, stepsForWrite, ref existedRecordCount, ref writtenRecordsCount, fullFileName);
 
-                        foreach (var stepStartQ in stepsForWrite.Keys)
+                    foreach (var stepStartQ in stepsForWrite.Keys)
+                    {
+                        foreach (var stepEndQ in stepsForWrite[stepStartQ])
                         {
-                            foreach (var stepEndQ in stepsForWrite[stepStartQ])
-                            {
-                                var nsb = new ResearchBoard(stackBoard);
+                            var nsb = new ResearchBoard(stackBoard);
 
-                                nsb.MakeStepWithoutChecking(stepStartQ, stepEndQ);
-                                
+                            nsb.MakeStepWithoutChecking(stepStartQ, stepEndQ);
+
+                            if (!boardQueue.Contains(nsb))
                                 boardQueue.Enqueue(nsb);
-                            }
+                            else
+                                containsCount++;
                         }
+                    }
 
-                        Console.WriteLine($"NEW Iteration = {i++} | Queue Size = {boardQueue.Count} | Existed = {existedRecordCount} | Written = {writtenRecordsCount}");
+                    Console.WriteLine($"NEW Iteration = {i++} | Queue Size = {boardQueue.Count} | Existed = {existedRecordCount} | Written = {writtenRecordsCount} | Queue collisions = {containsCount}");
 
-                        /*stepFile.Close();
-                    }*/
+                    /*stepFile.Close();
+                }*/
                 }
                 else
                 {
                     Console.WriteLine($"[Existing board analyzed]  | Existed = {existedRecordCount} | Written = {writtenRecordsCount}");
                 }
 
-                
+
             }
         }
 
@@ -92,7 +96,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
                                                from end in currentSteps[start]
                                                select (start, newBoard, end))
         {
-            
+
             newBoard.MakeStepWithoutChecking(start, end);
             WriteBoardWithEmptySteps(newBoard, ref existedRecordCount, ref writtenRecordsCount, fullFileName);
         }
@@ -113,7 +117,7 @@ void MakeEmptyStepFile(string fileName = "steps.dcd")
             var currentSteps = board.GetAvailableSteps(board.CurrentStepSide);
             WriteCurrentSteps(board, currentSteps, ref existedRecordCount, ref writtenRecordsCount, fullFileName);
 
-            
+
         }
     }
 }
@@ -168,8 +172,8 @@ static void WriteBoardWithEmptySteps(ResearchBoard board, ref long existedRecord
 
             stepFile.Close();
         }
-    } 
-    else { existedRecordCount++;  }
+    }
+    else { existedRecordCount++; }
 }
 
 static byte[] MakeBoardBytes(byte[] boardBytes)
