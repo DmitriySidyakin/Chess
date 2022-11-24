@@ -11,4 +11,8 @@
     <Folder Include="data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Chess.Entity\Chess.Entity.csproj" />
+  </ItemGroup>
+
 </Project>

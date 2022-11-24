@@ -184,6 +184,37 @@ namespace Chess.Entity
         }
 
         /// <summary>
+        /// Сериализация доски в массив байт.
+        /// </summary>
+        /// <returns>Массив байт сериализованной доски.</returns>
+        public byte[] ToShortByteArray()
+        {
+            byte[] bytes = new byte[32];
+
+            int position = 0;
+            int step = 0;
+            for (int i = 0; i < 8; i++)
+                for (int j = 0; j < 8; j++)
+                {
+                    if (step == 0)
+                    {
+                        bytes[position] = 0;
+                        bytes[position] ^= (byte)Positions[j, i].SideMan;
+                        step++;
+                    }
+                    else
+                    {
+                        bytes[position] <<= 4;
+                        bytes[position] ^= (byte)Positions[j, i].SideMan;
+                        step = 0;
+                        position++;
+                    }
+                }
+
+            return bytes;
+        }
+
+        /// <summary>
         /// Оператор стравнения шахматных досок, с учётом текущей стороны, которая делает ход.
         /// </summary>
         /// <param name="obj">Доска для сравнения.</param>
