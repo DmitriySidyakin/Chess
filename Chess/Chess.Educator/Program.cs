@@ -2,7 +2,7 @@
 
 void MakeEmptyStepFile(string fileName = "steps.dat")
 {
-    string directory = string.Format("{0}/data/", AppDomain.CurrentDomain.BaseDirectory);
+    string directory = string.Format("{0}/data/", /*AppDomain.CurrentDomain.BaseDirectory*/ "F:");
     string path = string.Format("{0}{1}", directory, fileName);
 
     if(!Directory.Exists(directory))
