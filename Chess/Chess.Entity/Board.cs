@@ -1189,12 +1189,20 @@ namespace Chess.Entity
         /// <returns>true, если указанной стороне поставлен шах и мат.</returns>
         public bool IsCheckmate(Side side)
         {
-            if(IsCheck(side))
-            {
-                if (GetAvailableSteps(side).Count == 0)
+            if(IsCheck(side) && IsMate(side))
                     return true;
-            }
+            return false;
+        }
 
+        /// <summary>
+        /// Возвращает true, если указанной стороне поставлен мат.
+        /// </summary>
+        /// <param name="side">Сторона, которой принадлежит атакуемый король.</param>
+        /// <returns>true, если указанной стороне поставлен мат.</returns>
+        public bool IsMate(Side side)
+        {
+            if (GetAvailableSteps(side).Count == 0)
+                return true;
             return false;
         }
         

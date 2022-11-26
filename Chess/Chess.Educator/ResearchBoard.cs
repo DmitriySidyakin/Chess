@@ -12,6 +12,8 @@ namespace Chess.Educator
         public ResearchBoard() : base() { }
         public ResearchBoard(ResearchBoard board) : base(board) { }
 
+        public ResearchBoard(Board board) : base(board) { }
+
         public override bool Equals(Object? obj)
         {
             //Check for null and compare run-time types.
