@@ -8,6 +8,8 @@ namespace Chess.ComputerPlayer
 
         public Board CurrentBoard { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
+        public Side Side => throw new NotImplementedException();
+
         public Step MakeStep()
         {
             throw new NotImplementedException();
