@@ -5,33 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess"
         mc:Ignorable="d"
-        Title="NewGameSettings" Height="295" Width="395" Closing="Window_Closing" ResizeMode="NoResize">
+        Title="NewGameSettings" Height="295" Width="505" Closing="Window_Closing" ResizeMode="NoResize">
     <Grid>
-        <Label x:Name="WhitePlayerLabel" Content="WhitePlayer" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="18"/>
-        <Label x:Name="BlackPlayerLabel" Content="BlackPlayer" HorizontalAlignment="Left" Margin="10,49,0,0" VerticalAlignment="Top" FontSize="18"/>
-        <ComboBox Name="ComboBoxPlayer1" HorizontalAlignment="Left" Margin="150,12,0,0" VerticalAlignment="Top" Width="215" IsReadOnly="True" SelectionChanged="ComboBox_SelectionChanged" FontSize="18">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="38*"/>
+            <ColumnDefinition Width="63*"/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="WhitePlayerLabel" Content="WhitePlayer" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="18" Height="34" Width="105" Grid.Column="0"/>
+        <Label x:Name="BlackPlayerLabel" Content="BlackPlayer" HorizontalAlignment="Left" Margin="10,49,0,0" VerticalAlignment="Top" FontSize="18" Height="34" Width="99" Grid.Column="0"/>
+        <ComboBox Name="ComboBoxPlayer1" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="215" IsReadOnly="True" SelectionChanged="ComboBox_SelectionChanged" FontSize="18" Grid.Column="1" Height="30">
             <ComboBoxItem x:Name="Player1" Content="Player" IsSelected="True"/>
             <ComboBoxItem x:Name="Computer1" Content="Computer"/>
         </ComboBox>
-        <ComboBox x:Name="ComboBoxPlayer2" HorizontalAlignment="Left" Margin="150,51,0,0" VerticalAlignment="Top" Width="215" IsReadOnly="True" SelectionChanged="ComboBox_SelectionChanged" FontSize="18">
+        <ComboBox x:Name="ComboBoxPlayer2" HorizontalAlignment="Center" Margin="0,53,0,0" VerticalAlignment="Top" Width="215" IsReadOnly="True" SelectionChanged="ComboBox_SelectionChanged" FontSize="18" Grid.Column="1" Height="30">
             <ComboBoxItem x:Name="Player2" Content="Player" IsSelected="True"/>
             <ComboBoxItem x:Name="Computer2" Content="Computer"/>
         </ComboBox>
-        <Label x:Name="WhitePlayerNameLabel" Content="WhitePlayerName" HorizontalAlignment="Left" Margin="10,88,0,0" VerticalAlignment="Top" FontSize="18"/>
-        <Label x:Name="BlackPlayerNameLabel" Content="BlackPlayerName" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" FontSize="18"/>
-        <TextBox x:Name="PlayerName1" HorizontalAlignment="Left" Margin="198,92,0,0" TextWrapping="NoWrap" Text="Player1Name" VerticalAlignment="Top" Width="167" FontSize="18" MaxLength="100"/>
-        <TextBox x:Name="PlayerName2" HorizontalAlignment="Left" Margin="198,131,0,0" TextWrapping="NoWrap" Text="Player2Name" VerticalAlignment="Top" Width="167" FontSize="18" MaxLength="100"/>
-        <ComboBox x:Name="ComputerName1" HorizontalAlignment="Left" Margin="198,92,0,0" VerticalAlignment="Top" Width="167" FontSize="18" IsEditable="False" Visibility="Hidden">
+        <Label x:Name="WhitePlayerNameLabel" Content="WhitePlayerName" HorizontalAlignment="Left" Margin="10,88,0,0" VerticalAlignment="Top" FontSize="18" Height="34" Width="152" Grid.Column="0"/>
+        <Label x:Name="BlackPlayerNameLabel" Content="BlackPlayerName" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" FontSize="18" Height="34" Width="146" Grid.Column="0"/>
+        <TextBox x:Name="PlayerName1" HorizontalAlignment="Center" Margin="0,92,0,0" TextWrapping="NoWrap" Text="Player1Name" VerticalAlignment="Top" Width="168" FontSize="18" MaxLength="100" Grid.Column="1" Height="26"/>
+        <TextBox x:Name="PlayerName2" HorizontalAlignment="Center" Margin="0,131,0,0" TextWrapping="NoWrap" Text="Player2Name" VerticalAlignment="Top" Width="168" FontSize="18" MaxLength="100" Grid.Column="1" Height="26"/>
+        <ComboBox x:Name="ComputerName1" HorizontalAlignment="Center" Margin="0,92,0,0" VerticalAlignment="Top" Width="168" FontSize="18" IsEditable="False" Visibility="Hidden" Height="30"  Grid.Column="1">
             <ComboBoxItem Name="ShortestPath1" Content="ShortestPath" IsSelected="True"/>
         </ComboBox>
-        <ComboBox x:Name="ComputerName2" HorizontalAlignment="Left" Margin="198,129,0,0" VerticalAlignment="Top" Width="167" FontSize="18" IsEditable="False" Visibility="Hidden">
+        <ComboBox x:Name="ComputerName2" HorizontalAlignment="Center" Margin="0,129,0,0" VerticalAlignment="Top" Width="168" FontSize="18" IsEditable="False" Visibility="Hidden" Grid.Column="1" Height="30">
             <ComboBoxItem x:Name="ShortestPath2" Content="ShortestPath" IsSelected="True"/>
         </ComboBox>
-        <Button x:Name="StartNewGameButton" Content="StartNewGame" HorizontalAlignment="Left" Margin="122,216,0,0" VerticalAlignment="Top" FontSize="18" Click="StartNewGameButton_Click"/>
-        <Label x:Name="GameLevelLabel" Content="GameLevel" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" FontSize="18" Visibility="Hidden" />
-        <Slider x:Name="GameLevelSlider" HorizontalAlignment="Left" Margin="150,174,0,0" VerticalAlignment="Top" Width="215" SmallChange="1" Maximum="4" Minimum="1" Value="4" TickPlacement="BottomRight" IsSnapToTickEnabled="True" AutoToolTipPlacement="BottomRight" Visibility="Hidden" />
-        <Label x:Name="EasyLevelLabel" Content="Easy" HorizontalAlignment="Left" Margin="150,186,0,0" VerticalAlignment="Top" Visibility="Hidden" />
-        <Label x:Name="HardLevelLabel" Content="Hard" HorizontalAlignment="Left" Margin="329,186,0,0" VerticalAlignment="Top" Visibility="Hidden" />
+        <Button x:Name="StartNewGameButton" Content="StartNewGame" HorizontalAlignment="Center" Margin="0,216,0,0" VerticalAlignment="Top" FontSize="18" Click="StartNewGameButton_Click" Grid.ColumnSpan="2" Height="28" Width="123"/>
+        <Label x:Name="GameLevelLabel" Content="GameLevel" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" FontSize="18" Visibility="Hidden" Height="34" Width="97"  Grid.Column="0"/>
+        <Slider x:Name="GameLevelSlider" HorizontalAlignment="Center" Margin="0,172,0,0" VerticalAlignment="Top" Width="275" SmallChange="1" Maximum="4" Minimum="1" Value="4" TickPlacement="BottomRight" IsSnapToTickEnabled="True" AutoToolTipPlacement="BottomRight" Visibility="Hidden"  Grid.Column="1" Height="24" />
+        <Label x:Name="EasyLevelLabel" Content="Easy" HorizontalAlignment="Left" Margin="10,190,0,0" VerticalAlignment="Top" Visibility="Hidden" Height="26" Width="34" Grid.Column="1" />
+        <Label x:Name="HardLevelLabel" Content="Hard" HorizontalAlignment="Left" Margin="269,190,0,0" VerticalAlignment="Top" Visibility="Hidden" Grid.Column="1" Height="26" Width="36" />
 
     </Grid>
 </Window>

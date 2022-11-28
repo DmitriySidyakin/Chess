@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.CrazyEducator", "Ches
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.ComputerPlayer", "Chess.ComputerPlayer\Chess.ComputerPlayer.csproj", "{07129923-436E-4B96-964E-667F75BD0260}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.InterfaceTranslation", "Chess.InterfaceTranslation\Chess.InterfaceTranslation.csproj", "{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{07129923-436E-4B96-964E-667F75BD0260}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07129923-436E-4B96-964E-667F75BD0260}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07129923-436E-4B96-964E-667F75BD0260}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
