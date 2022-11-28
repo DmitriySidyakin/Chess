@@ -32,6 +32,7 @@ namespace Chess
         private UIElement?[,] figurePathPositions = new UIElement?[Board.CellBoardSize, Board.CellBoardSize];
 
         private bool started = false;
+        public bool blocked = false;
 
         private Side currentStepSide = Side.White;
 
@@ -108,7 +109,7 @@ namespace Chess
             {
                 lock (clickHover)
                 {
-                    if (started)
+                    if (started && !blocked)
                     {
                         if ((value.X != clickCellPoint.X || value.Y != clickCellPoint.Y ))
                         {
@@ -236,6 +237,8 @@ namespace Chess
         {
             BlackPlayerNameLabel.Content = GameSettings.Player2BlackName;
             WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
+            started = true;
+            blocked = false;
             ShowText("The game is started");
             
         }
@@ -246,14 +249,13 @@ namespace Chess
             ActiveBoxChanged(CellPoint.Unexisted);
             ClickBoxChanged(CellPoint.Unexisted);
             started = false;
+            blocked = true;
         }
         
-        bool textIsShown = false;
         Label gameInfoLabel = new Label() { Name = "LabelInfo", Content = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 48, FontWeight = FontWeights.Bold, Opacity = 0, Foreground = Brushes.Blue};
         public void ShowText(string text)
         {
-            started = false;
-            textIsShown = true;
+            blocked = true;
             //<Label x:Name="LabelInfo" Content="" HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Column="0" FontSize="48" FontWeight="Bold" Opacity="0" Foreground="#FF435DAF"/>
 
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
@@ -271,14 +273,14 @@ namespace Chess
                 textAnimation.From = 100;
                 textAnimation.To = 0;
                 textAnimation.Duration = TimeSpan.FromMilliseconds(1000);
-                textAnimation.Completed += Window_GameStarted;
+                textAnimation.Completed += Window_CompliteShowText;
                 gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation); 
             }
         }
 
-        private void Window_GameStarted(object? sender, EventArgs e)
+        private void Window_CompliteShowText(object? sender, EventArgs e)
         {
-            started = true;
+            blocked = false;
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
             grid?.Children.Remove(gameInfoLabel);
         }
