@@ -133,11 +133,62 @@ namespace Chess
 
         private void MakeStep(sbyte x, sbyte y)
         {
+            blocked = true;
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
             currentStepSide = board.CurrentStepSide;
-            //MoveFigurePath(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+            
+            if(!CkeckState())
+                blocked = false;
+
             UnselectCurrent();
             Redraw();
+        }
+
+        private bool CkeckState()
+        {
+            if (board.IsCheckmate(currentStepSide))
+            {
+                if (currentStepSide == Side.White)
+                {
+                    ShowText("WhiteIsOnCheckmate");
+                    return true;
+                }
+                else
+                {
+                    ShowText("BlackIsOnCheckmate");
+                    return true;
+                }
+            }
+
+            if (board.IsCheck(currentStepSide))
+            {
+                if (currentStepSide == Side.White)
+                {
+                    ShowText("WhiteIsOnCheck");
+                    return true;
+                }
+                else
+                {
+                    ShowText("BlackIsOnCheck");
+                    return true;
+                }
+            }
+
+            if (board.IsMate(currentStepSide))
+            {
+                if (currentStepSide == Side.White)
+                {
+                    ShowText("WhiteIsOnMate");
+                    return true;
+                }
+                else
+                {
+                    ShowText("BlackIsOnMate");
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void MoveFigurePath(CellPoint start, CellPoint end)
@@ -238,9 +289,8 @@ namespace Chess
             BlackPlayerNameLabel.Content = GameSettings.Player2BlackName;
             WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
             started = true;
-            blocked = false;
-            ShowText("The game is started");
-            
+            blocked = true;
+            ShowText("TheGameIsStarted");
         }
 
         public void EndGame()
@@ -272,7 +322,7 @@ namespace Chess
                 DoubleAnimation textAnimation = new DoubleAnimation();
                 textAnimation.From = 100;
                 textAnimation.To = 0;
-                textAnimation.Duration = TimeSpan.FromMilliseconds(1000);
+                textAnimation.Duration = TimeSpan.FromMilliseconds(3000);
                 textAnimation.Completed += Window_CompliteShowText;
                 gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation); 
             }
@@ -280,9 +330,9 @@ namespace Chess
 
         private void Window_CompliteShowText(object? sender, EventArgs e)
         {
-            blocked = false;
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
             grid?.Children.Remove(gameInfoLabel);
+            blocked = false;
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
