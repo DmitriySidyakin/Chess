@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -234,7 +236,8 @@ namespace Chess
         {
             BlackPlayerNameLabel.Content = GameSettings.Player2BlackName;
             WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
-            started = true;
+            ShowText("The game is started");
+            
         }
 
         public void EndGame()
@@ -244,12 +247,46 @@ namespace Chess
             ClickBoxChanged(CellPoint.Unexisted);
             started = false;
         }
+        
+        bool textIsShown = false;
+        Label gameInfoLabel = new Label() { Name = "LabelInfo", Content = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 48, FontWeight = FontWeights.Bold, Opacity = 0, Foreground = Brushes.Blue};
+        public void ShowText(string text)
+        {
+            started = false;
+            textIsShown = true;
+            //<Label x:Name="LabelInfo" Content="" HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Column="0" FontSize="48" FontWeight="Bold" Opacity="0" Foreground="#FF435DAF"/>
 
+            Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
 
+            _ = grid?.Children.Add(gameInfoLabel);
+
+            Grid.SetColumn(gameInfoLabel, 0);
+
+            if (text != null)
+            {
+                gameInfoLabel.Content = text;
+                gameInfoLabel.Opacity = 100;
+                gameInfoLabel.FontSize = 48 * GetScale();
+                DoubleAnimation textAnimation = new DoubleAnimation();
+                textAnimation.From = 100;
+                textAnimation.To = 0;
+                textAnimation.Duration = TimeSpan.FromMilliseconds(1000);
+                textAnimation.Completed += Window_GameStarted;
+                gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation); 
+            }
+        }
+
+        private void Window_GameStarted(object? sender, EventArgs e)
+        {
+            started = true;
+            Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
+            grid?.Children.Remove(gameInfoLabel);
+        }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Redraw();
+            gameInfoLabel.FontSize = 48 * GetScale();
         }
 
         private void Redraw()
