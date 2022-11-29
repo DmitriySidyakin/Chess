@@ -1,4 +1,5 @@
-﻿using Chess.Logging;
+﻿using Chess.Entity;
+using Chess.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Chess.InterfaceTranslation
                 return new Dictionary<string, string>()
                 {
                     ["NewGame"] = "",
-                    ["GameSettings"] = "",
+                    ["MainWindowGameSettings"] = "",
                     ["GameLog"] = "",
                     ["OpenGame"] = "",
                     ["SaveGame"] = "",
@@ -36,6 +37,15 @@ namespace Chess.InterfaceTranslation
                     [""] = "",
                 };
             }
+        }
+
+        public Dictionary<string, string> NewGameWindowStrings => throw new NotImplementedException();
+
+        public Dictionary<string, string> MessagesStrings => throw new NotImplementedException();
+
+        public string MakeMousePositionMessage(CellPoint cellPoint)
+        {
+            return $"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
         }
 
         public string MakeShortLogString(LogEntity le)

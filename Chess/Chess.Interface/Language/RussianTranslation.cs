@@ -14,7 +14,7 @@ namespace Chess.InterfaceTranslation
                 return new Dictionary<string, string>()
                 {
                     ["NewGame"] = "Новая игра",
-                    ["GameSettings"] = "Настройки игры",
+                    ["MainWindowGameSettings"] = "Настройки игры",
                     ["GameLog"] = "Лог игры",
                     ["OpenGame"] = "Открыть игру",
                     ["SaveGame"] = "Сохранить игру",
@@ -34,6 +34,15 @@ namespace Chess.InterfaceTranslation
                     [""] = "",
                 };
             }
+        }
+
+        public Dictionary<string, string> NewGameWindowStrings => throw new NotImplementedException();
+
+        public Dictionary<string, string> MessagesStrings => throw new NotImplementedException();
+
+        public string MakeMousePositionMessage(CellPoint cellPoint)
+        {
+            return $"Мышка на {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
         }
 
         public string MakeShortLogString(LogEntity le)

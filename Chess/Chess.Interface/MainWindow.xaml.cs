@@ -309,13 +309,25 @@ namespace Chess
             DrawDesk(this.Height);
         }
 
-        // TODO
         private void ChangeLanguage(ILanguage lng)
         {
             language = lng;
             language.MakeInterfaceTranslation(this, newGameSettings);
+
+            foreach (MenuItem l in this.Language.Items)
+                l.IsChecked = false;
+
+            if (language is EnglishLanguage)
+            {
+                ((MenuItem)Language.FindName("English")).IsChecked = true;
+            }
+
+            if (language is RussianTranslation)
+            {
+                ((MenuItem)Language.FindName("Russian")).IsChecked = true;
+            }
+
             PrintLog();
-            // TODO: Добавить сообщение о положении мыши
         }
 
         public void ResetBoard()
@@ -521,7 +533,6 @@ namespace Chess
         {
             int col, row;
             col = 0;
-            row = 0;
             foreach (var letter in topPositions)
             {
                 row = 0;
@@ -828,7 +839,8 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
 
                 // Log
                 PrintLog();
-                InfoDesk.Text += $"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
+                //"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}"
+                InfoDesk.Text += language.MakeMousePositionMessage(cellPoint);
             }
             else
             {
@@ -845,6 +857,16 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
         private void ChessBoard_MouseLeave(object sender, MouseEventArgs e)
         {
             PrintLog();
+        }
+
+        private void English_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeLanguage(new EnglishLanguage());
+        }
+
+        private void Russian_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeLanguage(new RussianTranslation());
         }
     }
 }

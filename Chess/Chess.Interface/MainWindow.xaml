@@ -63,8 +63,8 @@
             <MenuItem x:Name="OpenGame" Header="OpenGame" />
             <MenuItem x:Name="SaveGame" Header="SaveGame" />
             <MenuItem x:Name="Language" Header="Language" AllowDrop="True">
-                <MenuItem x:Name="English" Header="English" IsChecked="True" />
-                <MenuItem x:Name="Russian" Header="Русский / Russian" />
+                <MenuItem x:Name="English" Header="English" IsChecked="True" Click="English_Click"/>
+                <MenuItem x:Name="Russian" Header="Русский / Russian" Click="Russian_Click"/>
             </MenuItem>
         </Menu>
         <Canvas Margin="100,29,0,9" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Left" Width="396" MouseMove="ChessBoard_MouseMove" Mouse.MouseDown="ChessBoard_MouseDown" Grid.Column="0" MouseLeave="ChessBoard_MouseLeave"/>

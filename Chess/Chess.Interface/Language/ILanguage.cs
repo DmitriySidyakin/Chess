@@ -1,4 +1,5 @@
-﻿using Chess.Logging;
+﻿using Chess.Entity;
+using Chess.Logging;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -8,8 +9,15 @@ namespace Chess.InterfaceTranslation
     public interface ILanguage
     {
         Dictionary<string, string> MainWindowStrings { get; }
+        Dictionary<string, string> NewGameWindowStrings { get; }
+        Dictionary<string, string> MessagesStrings { get; }
 
         void MakeInterfaceTranslation(MainWindow mainWindow, NewGameSettings newGameSettings)
+        {
+            TranslateMainWindowsMenu(mainWindow);
+        }
+
+        void TranslateMainWindowsMenu(MainWindow mainWindow)
         {
             foreach (var el in MainWindowStrings)
             {
@@ -25,5 +33,11 @@ namespace Chess.InterfaceTranslation
         }
 
         string MakeShortLogString(LogEntity le);
+        string MakeMousePositionMessage(CellPoint cellPoint);
+
+        string MakeStringMessage(string message)
+        {
+            return MessagesStrings[message];
+        }
     }
 }
