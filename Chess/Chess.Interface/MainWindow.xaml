@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess.Interface"
         mc:Ignorable="d"
-        Title="Chess Mini DS colibri" Height="450" Width="800" MinHeight="450" MinWidth="600" SizeChanged="Window_SizeChanged" Icon="/icon.ico" Closing="Window_Closing">
+        Title="Chess Mini DS colibri" Height="450" Width="800" MinHeight="450" MinWidth="800" SizeChanged="Window_SizeChanged" Icon="/icon.ico" Closing="Window_Closing">
     <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="59*" x:Name="Column1"/>
@@ -67,8 +67,9 @@
                 <MenuItem x:Name="Russian" Header="Русский / Russian" />
             </MenuItem>
         </Menu>
-        <Canvas Margin="100,29,0,9" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Left" Width="396" MouseMove="ChessBoard_MouseMove" Mouse.MouseDown="ChessBoard_MouseDown" Grid.Column="0"/>
-        <TextBox x:Name="InfoDesk" Grid.Column="1" Margin="20,39,20,20" IsEnabled="False" >
+        <Canvas Margin="100,29,0,9" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Left" Width="396" MouseMove="ChessBoard_MouseMove" Mouse.MouseDown="ChessBoard_MouseDown" Grid.Column="0" MouseLeave="ChessBoard_MouseLeave"/>
+        <TextBox x:Name="InfoDesk" Grid.Column="1" Margin="20,39,20,20" IsEnabled="true" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" TextChanged="InfoDesk_TextChanged"
+         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
         </TextBox>
         <Label x:Name="BlackPlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,29,10,0" VerticalAlignment="Top" FontSize="18"/>
         <Label x:Name="WhitePlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,0,10,9" VerticalAlignment="Bottom" FontSize="18"/>

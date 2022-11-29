@@ -35,7 +35,7 @@ namespace Chess.InterfaceTranslation
                     [""] = "",
                 };
             }
-        };
+        }
 
         public void MakeInterfaceTranslation(MainWindow mainWindow, NewGameSettings newGameSettings)
         {

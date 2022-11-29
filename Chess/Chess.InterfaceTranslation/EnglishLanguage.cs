@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 
 namespace Chess.InterfaceTranslation
@@ -51,7 +52,7 @@ namespace Chess.InterfaceTranslation
                     if(wndElRibbonButton is not null)
                         wndElRibbonButton.Label = el.Value;
 
-                    var wndElMenuItem = (wndEl as MenuIte);
+                    var wndElMenuItem = (wndEl as MenuItem);
                 }
             }
         }

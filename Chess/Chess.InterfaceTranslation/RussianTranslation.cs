@@ -2,7 +2,7 @@
 
 namespace Chess.InterfaceTranslation
 {
-    public class RussianTranlsation : ILanguage
+    public class RussianTranslation : ILanguage
     {
         public Dictionary<string, string> Strings
         {

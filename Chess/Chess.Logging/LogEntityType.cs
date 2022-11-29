@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chess.Settings
+namespace Chess.Logging
 {
-    internal enum ComputerType : byte
+    public enum LogEntityType : byte
     {
-        ShortestPath = 0,
+        StepRecord = 0, // Запись о проделанном шаге
     }
 }

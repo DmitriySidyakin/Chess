@@ -1,4 +1,6 @@
 ﻿using Chess.Entity;
+using Chess.Logging;
+using Chess.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,10 @@ namespace Chess
 
         private Board board = new Board();
 
+        public Logger Logger;
+
+        private int logId = 0;
+
         private Dictionary<CellPoint, List<CellPoint>> availableSteps;
 
         private UIElement?[,] figurePathPositions = new UIElement?[Board.CellBoardSize, Board.CellBoardSize];
@@ -36,7 +42,7 @@ namespace Chess
 
         private Side currentStepSide = Side.White;
 
-        public Settings.GameSettings GameSettings = new Settings.GameSettings();
+        public GameSettings GameSettings = new GameSettings();
 
         private Side CurrentStepSide
         {
@@ -134,14 +140,37 @@ namespace Chess
         private void MakeStep(sbyte x, sbyte y)
         {
             blocked = true;
+            bool eat = board.Positions[x, y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+            Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             currentStepSide = board.CurrentStepSide;
-            
+            PrintLog();
             if(!CkeckState())
                 blocked = false;
 
             UnselectCurrent();
             Redraw();
+        }
+
+        private void PrintLog()
+        {
+            InfoDesk.Clear();
+            foreach (var e in Logger.log)
+            {
+                if(e is StepEntity)
+                {
+                    PrintStepLogEntity(e as StepEntity);
+                }
+            }
+        }
+
+        private void PrintStepLogEntity(StepEntity e)
+        {
+            var entityString = String.Empty;
+            var stepPlayerName = e.StartSide == Side.White ? (GameSettings?.Player1WhiteName == null ? "" : GameSettings?.Player1WhiteName) : (GameSettings?.Player1WhiteName == null ? "" : GameSettings?.Player1WhiteName);
+            //entityString += $"Step {e.Id} ({e.DateTimeStamp}): {stepPlayerName} steps from {Board.GetStringCellName((byte)e.Step.Start.X, (byte)e.Step.Start.Y)} in {Board.GetStringCellName((byte)e.Step.End.X, (byte)e.Step.End.Y)}";
+            entityString += $"Step {e.Id}: {Board.GetStringCellName((byte)e.Step.Start.X, (byte)e.Step.Start.Y)} in {Board.GetStringCellName((byte)e.Step.End.X, (byte)e.Step.End.Y)}";
+            InfoDesk.Text += entityString + Environment.NewLine;
         }
 
         private bool CkeckState()
@@ -272,6 +301,7 @@ namespace Chess
             this.Height = 450;
             this.MinWidth = 600;
             this.MinHeight = 450;
+            Logger = new(GameSettings);
             availableSteps = new Dictionary<CellPoint, List<CellPoint>>();
             DrawDesk(this.Height);
         }
@@ -290,6 +320,8 @@ namespace Chess
             WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
             started = true;
             blocked = true;
+            Logger = new(GameSettings);
+            logId = 0;
             ShowText("TheGameIsStarted");
         }
 
@@ -783,14 +815,24 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
                 selectHandler(cellPoint);
 
                 // Log
-                InfoDesk.Text = $"Mouse Cell:{Environment.NewLine}Column = {cellPoint.X}{Environment.NewLine}Row = {cellPoint.Y}{Environment.NewLine}Name = {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
+                PrintLog();
+                InfoDesk.Text += $"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
             }
             else
             {
+                PrintLog();
                 unexistedHandler(CellPoint.Unexisted);
             }
         }
 
-        
+        private void InfoDesk_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            InfoDesk.ScrollToEnd();
+        }
+
+        private void ChessBoard_MouseLeave(object sender, MouseEventArgs e)
+        {
+            PrintLog();
+        }
     }
 }

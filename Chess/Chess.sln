@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.CrazyEducator", "Ches
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.ComputerPlayer", "Chess.ComputerPlayer\Chess.ComputerPlayer.csproj", "{07129923-436E-4B96-964E-667F75BD0260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.InterfaceTranslation", "Chess.InterfaceTranslation\Chess.InterfaceTranslation.csproj", "{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.InterfaceTranslation", "Chess.InterfaceTranslation\Chess.InterfaceTranslation.csproj", "{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.Settings", "Chess.Settings\Chess.Settings.csproj", "{CDE854E4-8B6A-4A15-A3AE-702334A12F3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess.Logging", "Chess.Logging\Chess.Logging.csproj", "{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F85BE3DD-2354-4B7D-8AA0-A66BE82EC98A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDE854E4-8B6A-4A15-A3AE-702334A12F3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDE854E4-8B6A-4A15-A3AE-702334A12F3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDE854E4-8B6A-4A15-A3AE-702334A12F3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDE854E4-8B6A-4A15-A3AE-702334A12F3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

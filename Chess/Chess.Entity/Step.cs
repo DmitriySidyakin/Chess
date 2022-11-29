@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chess.Entity
 {
-    public class Step
+    public class Step : ICloneable
     {
         public CellPoint Start { get; }
         public CellPoint End { get; }
@@ -15,6 +15,11 @@ namespace Chess.Entity
         {
             Start = start;
             End = end;
+        }
+
+        public object Clone()
+        {
+            return new Step((CellPoint)Start.Clone(), (CellPoint)End.Clone());
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Logging\" />
+    <ProjectReference Include="..\Chess.Entity\Chess.Entity.csproj" />
+    <ProjectReference Include="..\Chess.Settings\Chess.Settings.csproj" />
   </ItemGroup>
 
 </Project>

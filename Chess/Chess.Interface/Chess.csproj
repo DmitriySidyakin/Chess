@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chess.Entity\Chess.Entity.csproj" />
+    <ProjectReference Include="..\Chess.Logging\Chess.Logging.csproj" />
+    <ProjectReference Include="..\Chess.Settings\Chess.Settings.csproj" />
   </ItemGroup>
 
 </Project>

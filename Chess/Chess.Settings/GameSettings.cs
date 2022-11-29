@@ -12,6 +12,8 @@ namespace Chess.Settings
 
         public PlayerType Player2Black { get; set; }
 
+        public ComputerType ComputerType { get; set; } = ComputerType.ShortestPath;
+
         public string Player1WhiteName { get; set; } = string.Empty;
 
         public string Player2BlackName { get; set; } = string.Empty;

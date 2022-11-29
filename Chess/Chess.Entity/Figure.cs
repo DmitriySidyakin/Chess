@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Chess.Entity
 {
-    public class Figure
+    public class Figure : ICloneable
     {
         public Side Side { get; init; }
 
@@ -45,6 +45,11 @@ namespace Chess.Entity
            string? name = Enum.GetName<SideFigures>(SideMan);
 
            return name ?? "[Error]";
+        }
+
+        public object Clone()
+        {
+            return new Figure(Side, Man);
         }
     }
 }
