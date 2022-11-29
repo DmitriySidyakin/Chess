@@ -47,6 +47,8 @@ namespace Chess
 
         public GameSettings GameSettings = new GameSettings();
 
+        public string logText = "";
+
         private Side CurrentStepSide
         {
             get
@@ -155,9 +157,20 @@ namespace Chess
             Redraw();
         }
 
+        private string GetCurrentLogString()
+        {
+            return logText;
+        }
+
+        private void AddLogString(LogEntity e)
+        {
+            logText += language.MakeShortLogString(e);
+        }
+
         private void PrintLog()
         {
             InfoDesk.Clear();
+            logText = "";
             foreach (var e in Logger.log)
             {
                 if(e is StepEntity)
@@ -172,6 +185,7 @@ namespace Chess
             var entityString = String.Empty;
             var stepPlayerName = e.StartSide == Side.White ? (GameSettings?.Player1WhiteName == null ? "" : GameSettings?.Player1WhiteName) : (GameSettings?.Player1WhiteName == null ? "" : GameSettings?.Player1WhiteName);
             entityString += language.MakeShortLogString(e);
+            logText += entityString + Environment.NewLine;
             InfoDesk.Text += entityString + Environment.NewLine;
         }
 
@@ -335,6 +349,7 @@ namespace Chess
             this.board = new Board();
             availableSteps = board.GetAvailableStepsPre(currentStepSide);
             currentStepSide = Side.White;
+            logText = String.Empty;
             Redraw();
         }
 
@@ -837,14 +852,12 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
 
                 selectHandler(cellPoint);
 
-                // Log
-                PrintLog();
                 //"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}"
-                InfoDesk.Text += language.MakeMousePositionMessage(cellPoint);
+                InfoDesk.Text = logText + language.MakeMousePositionMessage(cellPoint);
             }
             else
             {
-                PrintLog();
+                InfoDesk.Text = logText;
                 unexistedHandler(CellPoint.Unexisted);
             }
         }
@@ -856,7 +869,7 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
 
         private void ChessBoard_MouseLeave(object sender, MouseEventArgs e)
         {
-            PrintLog();
+            InfoDesk.Text = logText;
         }
 
         private void English_Click(object sender, RoutedEventArgs e)
