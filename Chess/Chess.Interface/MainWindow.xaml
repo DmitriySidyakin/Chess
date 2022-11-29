@@ -58,7 +58,7 @@
                 </RibbonButton>
             </RibbonMenuButton>-->
             <MenuItem x:Name="NewGame" Header="NewGame" Click="NewGame_Click"/>
-            <MenuItem x:Name="GameLevel" Header="GameLevel" />
+            <MenuItem x:Name="MainWindowGameSettings" Header="GameSettings" />
             <MenuItem x:Name="GameLog" Header="GameLog" />
             <MenuItem x:Name="OpenGame" Header="OpenGame" />
             <MenuItem x:Name="SaveGame" Header="SaveGame" />

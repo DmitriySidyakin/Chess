@@ -1,4 +1,5 @@
 ﻿using Chess.Entity;
+using Chess.InterfaceTranslation;
 using Chess.Logging;
 using Chess.Settings;
 using System;
@@ -36,6 +37,8 @@ namespace Chess
         private Dictionary<CellPoint, List<CellPoint>> availableSteps;
 
         private UIElement?[,] figurePathPositions = new UIElement?[Board.CellBoardSize, Board.CellBoardSize];
+
+        public ILanguage language; 
 
         private bool started = false;
         public bool blocked = false;
@@ -168,8 +171,7 @@ namespace Chess
         {
             var entityString = String.Empty;
             var stepPlayerName = e.StartSide == Side.White ? (GameSettings?.Player1WhiteName == null ? "" : GameSettings?.Player1WhiteName) : (GameSettings?.Player1WhiteName == null ? "" : GameSettings?.Player1WhiteName);
-            //entityString += $"Step {e.Id} ({e.DateTimeStamp}): {stepPlayerName} steps from {Board.GetStringCellName((byte)e.Step.Start.X, (byte)e.Step.Start.Y)} in {Board.GetStringCellName((byte)e.Step.End.X, (byte)e.Step.End.Y)}";
-            entityString += $"Step {e.Id}: {Board.GetStringCellName((byte)e.Step.Start.X, (byte)e.Step.Start.Y)} in {Board.GetStringCellName((byte)e.Step.End.X, (byte)e.Step.End.Y)}";
+            entityString += language.MakeShortLogString(e);
             InfoDesk.Text += entityString + Environment.NewLine;
         }
 
@@ -303,7 +305,17 @@ namespace Chess
             this.MinHeight = 450;
             Logger = new(GameSettings);
             availableSteps = new Dictionary<CellPoint, List<CellPoint>>();
+            ChangeLanguage(new EnglishLanguage());
             DrawDesk(this.Height);
+        }
+
+        // TODO
+        private void ChangeLanguage(ILanguage lng)
+        {
+            language = lng;
+            language.MakeInterfaceTranslation(this, newGameSettings);
+            PrintLog();
+            // TODO: Добавить сообщение о положении мыши
         }
 
         public void ResetBoard()

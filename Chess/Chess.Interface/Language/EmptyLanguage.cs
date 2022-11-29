@@ -1,21 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using Chess.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Chess.InterfaceTranslation
 {
-    public class RussianTranslation : ILanguage
+    public class EmptyLanguage : ILanguage
     {
-        public Dictionary<string, string> Strings
+        public Dictionary<string, string> MainWindowStrings
         {
             get
             {
                 return new Dictionary<string, string>()
                 {
-                    ["NewGame"] = "Новая игра",
-                    ["GameLevel"] = "Сложность игры",
-                    ["GameLog"] = "Лог игры",
-                    ["OpenGame"] = "Открыть игру",
-                    ["SaveGame"] = "Сохранить игру",
-                    ["Language"] = "Язык",
+                    ["NewGame"] = "",
+                    ["GameSettings"] = "",
+                    ["GameLog"] = "",
+                    ["OpenGame"] = "",
+                    ["SaveGame"] = "",
+                    ["Language"] = "",
                     [""] = "",
                     [""] = "",
                     [""] = "",
@@ -33,9 +38,9 @@ namespace Chess.InterfaceTranslation
             }
         }
 
-        public void MakeInterfaceTranslation(MainWindow mainWindow, NewGameSettings newGameSettings)
+        public string MakeShortLogString(LogEntity le)
         {
-
+            throw new NotImplementedException();
         }
     }
 }

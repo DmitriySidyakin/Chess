@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Chess.Entity;
+using Chess.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,14 +13,14 @@ namespace Chess.InterfaceTranslation
 {
     public class EnglishLanguage : ILanguage
     {
-        public Dictionary<string, string> Strings
+        public Dictionary<string, string> MainWindowStrings
         {
             get
             {
                 return new Dictionary<string, string>()
                 {
                     ["NewGame"] = "New Game",
-                    ["GameLevel"] = "Game Level",
+                    ["GameSettings"] = "Game Settings",
                     ["GameLog"] = "Game Log",
                     ["OpenGame"] = "Open Game",
                     ["SaveGame"] = "Save Game",
@@ -41,20 +43,13 @@ namespace Chess.InterfaceTranslation
             }
         }
 
-        public void MakeInterfaceTranslation(MainWindow mainWindow, NewGameSettings newGameSettings)
+        public string MakeShortLogString(LogEntity le)
         {
-            foreach(var el in Strings)
+            if(le is StepEntity step)
             {
-                var wndEl = mainWindow.FindName(el.Key);
-                if(wndEl is UIElement)
-                {
-                    var wndElRibbonButton = (wndEl as RibbonButton);
-                    if(wndElRibbonButton is not null)
-                        wndElRibbonButton.Label = el.Value;
-
-                    var wndElMenuItem = (wndEl as MenuItem);
-                }
+                return $"Step {step.Id}: {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} in {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
             }
+            return String.Empty;
         }
     }
 }
