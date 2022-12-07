@@ -93,7 +93,7 @@ namespace Chess
 
         private void ActiveBoxChanged(CellPoint activeCellPointChanged)
         {
-            if (activeFigureUIE is not null/* && activeCellPointChanged != CellPoint.Unexisted*/)
+            if (activeFigureUIE is not null)
             {
                 ChessBoard.Children.Remove(activeFigureUIE);
                 activeFigureUIE = null;
@@ -103,6 +103,12 @@ namespace Chess
             {
                 if ((started && board.Positions[activeCellPointChanged.X, activeCellPointChanged.Y].Side == currentStepSide) || !started)
                     DrawFigureBorder(activeCellPointChanged.X, activeCellPointChanged.Y, "Blue", ref activeFigureUIE);
+            }
+
+            if (activeCellPointChanged == CellPoint.Unexisted)
+            {
+                ChessBoard.Children.Remove(activeFigureUIE);
+                activeFigureUIE = null;
             }
         }
 
