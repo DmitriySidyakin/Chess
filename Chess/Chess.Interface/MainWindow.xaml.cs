@@ -426,7 +426,7 @@ namespace Chess
 
         private void DrawSelectedAndHoveredFigures()
         {
-            if (started)
+            if (started && !blocked)
             {
                 activeFigureUIE = null;
                 selectedFigureUIE = null;
