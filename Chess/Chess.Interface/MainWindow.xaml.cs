@@ -559,9 +559,9 @@ namespace Chess
                 row = 0;
                 foreach (var rowNum in leftPositions)
                 {
-                    int newBox = ChessBoard.Children.Add(new Rectangle() { Width = 47 * (size / 396), Height = 47 * (size / 396), Fill = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, StrokeThickness = 0, Name = $"Cell_{col}_{row}"});
-                    Canvas.SetLeft(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * col);
-                    Canvas.SetTop(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * row);
+                    int newBox = ChessBoard.Children.Add(new Rectangle() { Width = Math.Round(47 * (size / 396), 0), Height = Math.Round(47 * (size / 396), 0), Fill = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, StrokeThickness = 1, Stroke = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, Name = $"Cell_{col}_{row}" });
+                    Canvas.SetLeft(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * col, 0));
+                    Canvas.SetTop(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * row, 0));
 
                     row++;
                 }
@@ -572,11 +572,12 @@ namespace Chess
         // Метод для подстветки возможных ходов
         private void DrawSquaresHighlighter(double size, int col, int row)
         {
-            UIElement cellHighlight = new Rectangle() { Width = 47 * (size / 396), Height = 47 * (size / 396), Fill = Brushes.Green, StrokeThickness = 1, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = 30,  };
+            UIElement cellHighlight = new Rectangle() { Width = Math.Round(47 * (size / 396), 0) + 2, Height = Math.Round(47 * (size / 396), 0) + 2, Fill = Brushes.Green, StrokeThickness = 4, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = 30  };
             int newBox = ChessBoard.Children.Add(cellHighlight);
             selectedFigureUIEStepsBoxes.Add(cellHighlight);
-            Canvas.SetLeft(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * col);
-            Canvas.SetTop(ChessBoard.Children[newBox], 10 * (size / 396) + 47 * (size / 396) * row);
+            Canvas.SetLeft(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * col, 0) - 1);
+            Canvas.SetTop(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * row, 0) - 1);
+                
         }
 
         private void DrawFigureBorder(int col, int row, string color, ref UIElement? activeId)
