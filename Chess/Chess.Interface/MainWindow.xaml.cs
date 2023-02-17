@@ -201,12 +201,12 @@ namespace Chess
             {
                 if (currentStepSide == Side.White)
                 {
-                    ShowText("WhiteIsOnCheckmate");
+                    ShowText("BlackIsOnCheckmate");
                     return true;
                 }
                 else
                 {
-                    ShowText("BlackIsOnCheckmate");
+                    ShowText("WhiteIsOnCheckmate");
                     return true;
                 }
             }
@@ -215,12 +215,12 @@ namespace Chess
             {
                 if (currentStepSide == Side.White)
                 {
-                    ShowText("WhiteIsOnCheck");
+                    ShowText("BlackIsOnCheck");
                     return true;
                 }
                 else
                 {
-                    ShowText("BlackIsOnCheck");
+                    ShowText("WhiteIsOnCheck");
                     return true;
                 }
             }
@@ -229,12 +229,12 @@ namespace Chess
             {
                 if (currentStepSide == Side.White)
                 {
-                    ShowText("WhiteIsOnMate");
+                    ShowText("BlackIsOnMate");
                     return true;
                 }
                 else
                 {
-                    ShowText("BlackIsOnMate");
+                    ShowText("WhiteIsOnMate");
                     return true;
                 }
             }
@@ -383,7 +383,6 @@ namespace Chess
         public void ShowText(string text)
         {
             blocked = true;
-            //<Label x:Name="LabelInfo" Content="" HorizontalAlignment="Center"  VerticalAlignment="Center" Grid.Column="0" FontSize="48" FontWeight="Bold" Opacity="0" Foreground="#FF435DAF"/>
 
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
 
@@ -859,7 +858,6 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
 
                 selectHandler(cellPoint);
 
-                //"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}"
                 InfoDesk.Text = logText + language.MakeMousePositionMessage(cellPoint);
             }
             else
