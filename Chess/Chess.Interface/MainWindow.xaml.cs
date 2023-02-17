@@ -571,7 +571,7 @@ namespace Chess
         // Метод для подстветки возможных ходов
         private void DrawSquaresHighlighter(double size, int col, int row)
         {
-            UIElement cellHighlight = new Rectangle() { Width = Math.Round(47 * (size / 396), 0) + 2, Height = Math.Round(47 * (size / 396), 0) + 2, Fill = Brushes.Green, StrokeThickness = 4, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = 30  };
+            UIElement cellHighlight = new Rectangle() { Width = Math.Round(47 * (size / 396), 0) + 2, Height = Math.Round(47 * (size / 396), 0) + 2, Fill = Brushes.Green, StrokeThickness = 4, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = .3  };
             int newBox = ChessBoard.Children.Add(cellHighlight);
             selectedFigureUIEStepsBoxes.Add(cellHighlight);
             Canvas.SetLeft(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * col, 0) - 1);
