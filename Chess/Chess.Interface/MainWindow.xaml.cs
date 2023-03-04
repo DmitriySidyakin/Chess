@@ -84,10 +84,13 @@ namespace Chess
             {
                 lock (activateHover)
                 {
-                    if (value.X != activeCellPoint.X || value.Y != activeCellPoint.Y)
+                    if (started && !blocked)
                     {
-                        activeCellPoint = value;
-                        ActiveBoxChanged(activeCellPoint);
+                        if (value.X != activeCellPoint.X || value.Y != activeCellPoint.Y)
+                        {
+                            activeCellPoint = value;
+                            ActiveBoxChanged(activeCellPoint);
+                        }
                     }
                 }
             }
@@ -386,8 +389,6 @@ namespace Chess
         Label gameInfoLabel = new Label() { Name = "LabelInfo", Content = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 48, FontWeight = FontWeights.Bold, Opacity = 0, Foreground = Brushes.Blue};
         public void ShowText(string text)
         {
-            blocked = true;
-
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
 
             _ = grid?.Children.Add(gameInfoLabel);
@@ -404,7 +405,7 @@ namespace Chess
                 textAnimation.To = 0;
                 textAnimation.Duration = TimeSpan.FromMilliseconds(3000);
                 textAnimation.Completed += Window_CompliteShowText;
-                gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation); 
+                gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation);
             }
         }
 
