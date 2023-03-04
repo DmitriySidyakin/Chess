@@ -9,12 +9,13 @@ namespace Chess.InterfaceTranslation
     public interface ILanguage
     {
         Dictionary<string, string> MainWindowStrings { get; }
-        Dictionary<string, string> NewGameWindowStrings { get; }
+
         Dictionary<string, string> MessagesStrings { get; }
 
         void MakeInterfaceTranslation(MainWindow mainWindow, NewGameSettings newGameSettings)
         {
             TranslateMainWindowsMenu(mainWindow);
+            NewGameWindowStrings(newGameSettings);
         }
 
         void TranslateMainWindowsMenu(MainWindow mainWindow)
@@ -39,5 +40,7 @@ namespace Chess.InterfaceTranslation
         {
             return MessagesStrings[message];
         }
+
+        void NewGameWindowStrings(NewGameSettings newGameSettings);
     }
 }

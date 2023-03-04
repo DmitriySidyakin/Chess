@@ -74,6 +74,8 @@ namespace Chess
 
         private object activateHover = new object();
         private CellPoint activeCellPoint = CellPoint.Unexisted;
+        
+        public ILanguage CurrentLanguage { get; set; }
 
         public CellPoint ActiveCellPoint
         {
@@ -201,12 +203,12 @@ namespace Chess
             {
                 if (currentStepSide == Side.White)
                 {
-                    ShowText("BlackIsOnCheckmate");
+                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheckmate"]);
                     return true;
                 }
                 else
                 {
-                    ShowText("WhiteIsOnCheckmate");
+                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheckmate"]);
                     return true;
                 }
             }
@@ -215,12 +217,12 @@ namespace Chess
             {
                 if (currentStepSide == Side.White)
                 {
-                    ShowText("BlackIsOnCheck");
+                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheck"]);
                     return true;
                 }
                 else
                 {
-                    ShowText("WhiteIsOnCheck");
+                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheck"]);
                     return true;
                 }
             }
@@ -229,12 +231,12 @@ namespace Chess
             {
                 if (currentStepSide == Side.White)
                 {
-                    ShowText("BlackIsOnMate");
+                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnMate"]);
                     return true;
                 }
                 else
                 {
-                    ShowText("WhiteIsOnMate");
+                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnMate"]);
                     return true;
                 }
             }
@@ -337,6 +339,8 @@ namespace Chess
             foreach (MenuItem l in this.Language.Items)
                 l.IsChecked = false;
 
+            CurrentLanguage = language;
+
             if (language is EnglishLanguage)
             {
                 ((MenuItem)Language.FindName("English")).IsChecked = true;
@@ -367,7 +371,7 @@ namespace Chess
             blocked = true;
             Logger = new(GameSettings);
             logId = 0;
-            ShowText("TheGameIsStarted");
+            ShowText(CurrentLanguage.MessagesStrings["TheGameIsStarted"]);
         }
 
         public void EndGame()
@@ -394,7 +398,7 @@ namespace Chess
             {
                 gameInfoLabel.Content = text;
                 gameInfoLabel.Opacity = 100;
-                gameInfoLabel.FontSize = 48 * GetScale();
+                gameInfoLabel.FontSize = 28 * GetScale();
                 DoubleAnimation textAnimation = new DoubleAnimation();
                 textAnimation.From = 100;
                 textAnimation.To = 0;

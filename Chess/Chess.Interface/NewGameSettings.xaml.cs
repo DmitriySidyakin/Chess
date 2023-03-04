@@ -54,7 +54,7 @@ namespace Chess
             {
                 if (e.AddedItems != null && e.AddedItems.Count == 1)
                 {
-                    string text = e.AddedItems[0] is ComboBoxItem ? (e.AddedItems[0] as ComboBoxItem).Name : "";
+                    string text = e?.AddedItems[0] is ComboBoxItem ? (e.AddedItems[0] as ComboBoxItem).Name : "";
                     PrepareForm(text);
                 }
             }

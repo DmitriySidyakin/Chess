@@ -39,8 +39,11 @@ namespace Chess.InterfaceTranslation
             }
         }
 
-        public Dictionary<string, string> NewGameWindowStrings => throw new NotImplementedException();
+        public void NewGameWindowStrings(NewGameSettings newGameSettings)
+        { 
+            //TODO : Add code in future
 
+        }
         public Dictionary<string, string> MessagesStrings => throw new NotImplementedException();
 
         public string MakeMousePositionMessage(CellPoint cellPoint)

@@ -43,9 +43,52 @@ namespace Chess.InterfaceTranslation
             }
         }
 
-        public Dictionary<string, string> NewGameWindowStrings => throw new NotImplementedException();
+        public void NewGameWindowStrings(NewGameSettings newGameSettings)
+        {
+            newGameSettings.PlayerName1.Text = "White Player";
+            newGameSettings.PlayerName2.Text = "Black Player";
+            newGameSettings.Computer1.Content = "Computer Player";
+            newGameSettings.Computer2.Content = "Computer Player";
+            newGameSettings.Player1.Content = "Player";
+            newGameSettings.Player2.Content = "Player";
+            newGameSettings.ComputerName1.Items[0] = "5 Steps Strategy";
+            newGameSettings.ComputerName2.Items[0] = "5 Steps Strategy";
+            newGameSettings.ComputerName1.SelectedIndex = 0;
+            newGameSettings.ComputerName2.SelectedIndex = 0;
+            newGameSettings.StartNewGameButton.Content = "Start New Game";
 
-        public Dictionary<string, string> MessagesStrings => throw new NotImplementedException();
+            newGameSettings.EasyLevelLabel.Content = "Easy";
+            newGameSettings.HardLevelLabel.Content = "Hard";
+            newGameSettings.WhitePlayerLabel.Content = "White Player";
+            newGameSettings.BlackPlayerLabel.Content = "Black Player";
+            newGameSettings.WhitePlayerNameLabel.Content = "White Player Name";
+            newGameSettings.BlackPlayerNameLabel.Content = "Black Player Name";
+            newGameSettings.GameLevelLabel.Content = "Game Level";
+        }
+
+        public Dictionary<string, string> MessagesStrings
+        {
+            get
+            {
+                return new Dictionary<string, string>()
+                {
+                    ["TheGameIsStarted"] = "The Game Is Started",
+                    ["BlackIsOnCheckmate"] = "Black Is On Checkmate",
+                    ["WhiteIsOnCheckmate"] = "White Is On Checkmate",
+                    ["BlackIsOnCheck"] = "Black Is On Check",
+                    ["WhiteIsOnCheck"] = "White Is On Check",
+                    ["BlackIsOnMate"] = "Black Is On Mate",
+                    ["WhiteIsOnMate"] = "White Is On Mate",
+                    /*
+                    [""] = "",
+                    [""] = "",
+                    [""] = "",
+                    [""] = "",
+                    [""] = "",
+                    [""] = "",*/
+                };
+            }
+        }
 
         public string MakeMousePositionMessage(CellPoint cellPoint)
         {
