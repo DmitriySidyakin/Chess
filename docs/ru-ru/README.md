@@ -23,7 +23,7 @@
 
 Кликните на значёк:
 
-![https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/Снимок_01.PNG]("Значёк Visual Studion 2022 Community")
+![Значёк Visual Studion 2022 Community](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/Снимок_01.PNG)
 
 ## 3. Запуск игры
 
