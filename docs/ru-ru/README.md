@@ -36,6 +36,7 @@
 Шаги:
 
 2.3.1. Кликните правой кнопкой мыши на проект **Chess**
+
 2.3.2. Нажмите на кнопку опубликовать:
 
 ![Кнопка опубликовать](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_03.PNG)
