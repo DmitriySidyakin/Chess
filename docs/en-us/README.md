@@ -19,7 +19,7 @@ Documentation is from: 26/04/2023
 
 Steps:
 
-*Try to google... I have no access in the English/US documentation in my country.*
+*Try to google... I have no access in the English/US documentation in my country* and but thes, I can no.
 
 ## 3. Starting the game
 
