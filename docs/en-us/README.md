@@ -1,7 +1,7 @@
 # Chess
 Chess Game
 
-Documentation from: 26/04/2023
+Documentation is from: 26/04/2023
 
 ## Instruction For Visual Studio 2022 Community
 
