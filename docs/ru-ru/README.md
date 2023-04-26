@@ -23,7 +23,13 @@
 
 Кликните на значёк:
 
-![https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/Снимок_01.PNG]("Значёк Visual Studion 2022 Community")
+![Значёк Visual Studion 2022 Community](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_01.PNG)
+
+### 2.2. Откройте проект
+
+Нажмите на проект, загруженный из репозитория:
+
+![Проект, загруженный из репозитория](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_02.PNG)
 
 ## 3. Запуск игры
 
