@@ -37,9 +37,15 @@
 
 2.3.1. Кликните правой кнопкой мыши на проект **Chess**
 
+![Проект](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_04.PNG)
+
 2.3.2. Нажмите на кнопку опубликовать:
 
-![Кнопка опубликовать](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_03.PNG)
+![Кнопка опубликовать](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_04.PNG)
+
+2.3.3.  Настройте параметры публикации:
+
+![Параметры публикации](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_05.PNG)
 
 
 ## 3. Запуск игры
