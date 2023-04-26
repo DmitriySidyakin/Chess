@@ -49,6 +49,8 @@ namespace Chess
 
         public string logText = "";
 
+        private MediaPlayer mediaPlayer = new MediaPlayer();
+
         private Side CurrentStepSide
         {
             get
@@ -163,9 +165,16 @@ namespace Chess
             PrintLog();
             if(!CkeckState())
                 blocked = false;
-
+            PlayStepSound("");
             UnselectCurrent();
             Redraw();
+        }
+
+        private void PlayStepSound(string v)
+        {
+            Uri stepSoundPath = new Uri("sound\\step.mp3", UriKind.Relative);
+            mediaPlayer.Open(stepSoundPath);
+            mediaPlayer.Play();
         }
 
         private string GetCurrentLogString()
