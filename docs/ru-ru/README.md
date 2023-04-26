@@ -50,5 +50,7 @@
 
 ## 3. Запуск игры
 
-*Документация ещё не готова*
+Нажмите на значёк:
+
+![Значёк](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_06.PNG)
 
