@@ -28,6 +28,7 @@
 ### 2.2. Откройте проект
 
 Нажмите на проект, загруженный из репозитория:
+
 ![Проект, загруженный из репозитория](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_02.PNG)
 
 ## 3. Запуск игры
