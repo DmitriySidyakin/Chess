@@ -37,7 +37,7 @@
 
 2.3.1. Кликните правой кнопкой мыши на проект **Chess**
 
-![Проект](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_04.PNG)
+![Проект](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_03.PNG)
 
 2.3.2. Нажмите на кнопку опубликовать:
 
