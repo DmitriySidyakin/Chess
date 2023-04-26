@@ -9,7 +9,7 @@ Documentation from: 26/04/2023
 2. **Publish the Project from the root** ([https://github.com/DmitriySidyakin/Chess])[https://github.com/DmitriySidyakin/Chess]
 3. **Start the game**
 
-*See how does it is**:
+*See how does it is*:
 
 ## 1. Downloading Visual Studion 2022 Community
 
