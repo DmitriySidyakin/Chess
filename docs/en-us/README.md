@@ -13,13 +13,13 @@ Documentation is from: 26/04/2023
 
 ## 1. Downloading Visual Studion 2022 Community
 
-*Documentation is no ready yet*
+*See [https://visualstudio.microsoft.com/vs/community/](https://visualstudio.microsoft.com/vs/community/)*
 
 ## 2. Publishing the Project
 
 Steps:
 
-*Documentation is no ready yet*
+*Try to google... I have no access in the English/US documentation in my country.*
 
 ## 3. Starting the game
 
