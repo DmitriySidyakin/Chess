@@ -31,6 +31,13 @@
 
 ![Проект, загруженный из репозитория](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_02.PNG)
 
+### 2.3. Опубликуйте
+
+2.3.1. Нажмите на кнопку опубликовать:
+
+![Кнопка опубликовать](https://github.com/DmitriySidyakin/Chess/blob/main/docs/ru-ru/img/printscreen_03.PNG)
+
+
 ## 3. Запуск игры
 
 *Документация ещё не готова*
