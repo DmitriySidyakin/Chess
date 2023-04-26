@@ -13,14 +13,14 @@ Documentation is from: 26/04/2023
 
 ## 1. Downloading Visual Studion 2022 Community
 
-*It's no ready*
+*Documentation is no ready*
 
 ## 2. Publishing the Project
 
 Steps:
 
-*It's no ready*
+*Documentation is no ready*
 
 ## 3. Starting the game
 
-*It's no ready*
+*Documentation is no ready*
