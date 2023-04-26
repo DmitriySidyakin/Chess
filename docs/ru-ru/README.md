@@ -13,7 +13,7 @@
 
 ## 1. Загрузка Visual Studion 2022 Community
 
-*Документация ещё не готова*
+Загрузите **Visual Studion 2022 Community** [тут](https://visualstudio.microsoft.com/vs/community/).
 
 ## 2. Публикация Проекта
 
