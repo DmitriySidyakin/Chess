@@ -1,5 +1,5 @@
 # Chess
-Chess Game
+It's a chess game.
 
 Documentation is from: 26/04/2023
 
