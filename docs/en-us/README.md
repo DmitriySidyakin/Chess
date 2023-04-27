@@ -1,5 +1,5 @@
 # Chess
-It's a chess game.
+It's a free chess game.
 
 Documentation is from: 26/04/2023
 
