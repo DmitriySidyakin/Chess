@@ -33,7 +33,7 @@ namespace Chess.InterfaceTranslation
             }
         }
 
-        string MakeShortLogString(LogEntity le);
+        string MakeShortLogString(StepEntity le);
         string MakeMousePositionMessage(CellPoint cellPoint);
 
         string MakeStringMessage(string message)

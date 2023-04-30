@@ -4,7 +4,7 @@ namespace Chess.Logging
 {
     public class Logger
     {
-        public List<LogEntity> log = new List<LogEntity>();
+        public List<StepEntity> log = new List<StepEntity>();
 
         public GameSettings gameSettings;
 
@@ -13,7 +13,7 @@ namespace Chess.Logging
             this.gameSettings = gameSettings;
         }
 
-        public Logger Add(LogEntity logEntity)
+        public Logger Add(StepEntity logEntity)
         {
             log.Add(logEntity);
             return this;

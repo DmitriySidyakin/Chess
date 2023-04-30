@@ -89,13 +89,18 @@ namespace Chess.InterfaceTranslation
             return $"Мышка на {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
         }
 
-        public string MakeShortLogString(LogEntity le)
+        public string MakeShortLogString(StepEntity le)
         {
             if (le is StepEntity step)
             {
                 return $"Шаг {step.Id}: {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} на {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
             }
             return String.Empty;
+        }
+
+        public string MakeShortLogString(LogEntity le)
+        {
+            throw new NotImplementedException();
         }
     }
 }

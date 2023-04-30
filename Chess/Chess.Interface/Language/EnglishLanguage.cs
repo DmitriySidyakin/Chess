@@ -95,7 +95,7 @@ namespace Chess.InterfaceTranslation
             return $"Mouse is in {Board.GetStringCellName((byte)cellPoint.X, (byte)cellPoint.Y)}{Environment.NewLine}";
         }
 
-        public string MakeShortLogString(LogEntity le)
+        public string MakeShortLogString(StepEntity le)
         {
             if(le is StepEntity step)
             {
@@ -103,5 +103,6 @@ namespace Chess.InterfaceTranslation
             }
             return String.Empty;
         }
+
     }
 }

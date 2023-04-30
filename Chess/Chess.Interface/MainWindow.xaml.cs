@@ -182,7 +182,7 @@ namespace Chess
             return logText;
         }
 
-        private void AddLogString(LogEntity e)
+        private void AddLogString(StepEntity e)
         {
             logText += language.MakeShortLogString(e);
         }
@@ -195,7 +195,7 @@ namespace Chess
             {
                 if(e is StepEntity)
                 {
-                    PrintStepLogEntity(e as StepEntity);
+                    PrintStepLogEntity(e);
                 }
             }
         }
@@ -348,19 +348,19 @@ namespace Chess
             language = lng;
             language.MakeInterfaceTranslation(this, newGameSettings);
 
-            foreach (MenuItem l in this.Language.Items)
+            foreach (MenuItem l in this.SelectLanguage.Items)
                 l.IsChecked = false;
 
             CurrentLanguage = language;
 
             if (language is EnglishLanguage)
             {
-                ((MenuItem)Language.FindName("English")).IsChecked = true;
+                ((MenuItem)SelectLanguage.FindName("English")).IsChecked = true;
             }
 
             if (language is RussianTranslation)
             {
-                ((MenuItem)Language.FindName("Russian")).IsChecked = true;
+                ((MenuItem)SelectLanguage.FindName("Russian")).IsChecked = true;
             }
 
             PrintLog();
