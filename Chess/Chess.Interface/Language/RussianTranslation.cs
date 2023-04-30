@@ -93,14 +93,28 @@ namespace Chess.InterfaceTranslation
         {
             if (le is StepEntity step)
             {
-                return $"Шаг {step.Id}: {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} на {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
-            }
-            return String.Empty;
-        }
+                var stepSide = le.StartSide == Side.White ? "Белые" : "Чёрные";
 
-        public string MakeShortLogString(LogEntity le)
-        {
-            throw new NotImplementedException();
+                int logEntityTypeId = 0;
+
+                if(le.IsCheck) { logEntityTypeId = 1; }
+                else if(le.IsMate) { logEntityTypeId = 2; }
+                else if(le.IsCheckmate) { logEntityTypeId = 3; }
+
+                string stepString = $"Шаг {step.Id}: {stepSide} c {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} на {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
+                string leText = logEntityTypeId switch
+                {
+                    0 => stepString,
+                    1 => $"{stepString}.{stepSide} поставили Шах!",
+                    2 => $"{stepString}.\n{stepSide} поставили Мат!",
+                    3 => $"{stepString}.\n{stepSide} поставили Шах и Мат!",
+                    _ => "Log Error"
+                };
+
+                return leText;
+            }
+
+            return String.Empty;
         }
     }
 }

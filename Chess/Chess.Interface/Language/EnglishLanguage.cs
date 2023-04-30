@@ -97,10 +97,29 @@ namespace Chess.InterfaceTranslation
 
         public string MakeShortLogString(StepEntity le)
         {
-            if(le is StepEntity step)
+            if (le is StepEntity step)
             {
-                return $"Step {step.Id}: {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} in {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
+                var stepSide = le.StartSide == Side.White ? "White" : "Black";
+
+                int logEntityTypeId = 0;
+
+                if (le.IsCheck) { logEntityTypeId = 1; }
+                else if (le.IsMate) { logEntityTypeId = 2; }
+                else if (le.IsCheckmate) { logEntityTypeId = 3; }
+
+                string stepString = $"Step {step.Id}: {stepSide} from {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} in {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
+                string leText = logEntityTypeId switch
+                {
+                    0 => stepString,
+                    1 => $"{stepString}. {stepSide} is on Check!",
+                    2 => $"{stepString}. {stepSide} is on Mate!",
+                    3 => $"{stepString}. {stepSide} is on Checkmate!",
+                    _ => "Log Error"
+                };
+
+                return leText;
             }
+
             return String.Empty;
         }
 
