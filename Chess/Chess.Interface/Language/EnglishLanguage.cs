@@ -107,7 +107,7 @@ namespace Chess.InterfaceTranslation
                 else if (le.IsMate) { logEntityTypeId = 2; }
                 else if (le.IsCheckmate) { logEntityTypeId = 3; }
 
-                string stepString = $"Step {step.Id}: {stepSide} from {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} in {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
+                string stepString = $"Step {step.Id}: {stepSide} is from {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} in {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
                 string leText = logEntityTypeId switch
                 {
                     0 => stepString,
