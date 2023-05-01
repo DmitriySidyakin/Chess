@@ -1,5 +1,6 @@
 ﻿using Chess.Entity;
 using GraphAlgorithms.Graph;
+using System.Globalization;
 
 namespace Chess.ComputerPlayer
 {
@@ -12,7 +13,8 @@ namespace Chess.ComputerPlayer
 
         public FiveStepPlayer(Board board) { this.board = new Board(board.ToByteArray()); currentStepSide = board.CurrentStepSide; }
 
-        public Board CurrentBoard { 
+        public Board CurrentBoard
+        {
             get
             {
                 return board;
@@ -47,7 +49,7 @@ namespace Chess.ComputerPlayer
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board.ToByteArray());
-            Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(currentStepSide);
+            Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
             WeightedGraph[] weightedGraphChessBoards = new WeightedGraph[availableSteps.Keys.Count];
 
             (Step, long)[] shortestPaths = new (Step, long)[availableSteps.Keys.Count];
@@ -68,17 +70,24 @@ namespace Chess.ComputerPlayer
                     {
                         var step = weightedGraphChessBoards[i].AddEmptyNode();
                         var edge = weightedGraphChessBoards[i].AddEdge(root, step, GetFigureWeight(stepCP));
-                        MakeStep3(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
+                        MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
                     }
-                    
+
                 }
 
-                shortestPaths[i] = FindStep(weightedGraphChessBoards[i]);
+                (var path, long w) = FindStep(weightedGraphChessBoards[i]);
+
+                weightedGraphChessBoards[i].GetNode(path?[1].Id ?? 1).
+                
+
+                CellPoint end = availableSteps.
+
+                Step stepCurrent = new Step(rootCP, end);
             }
 
             int maxI = 0;
             long maxV = shortestPaths[0].Item2;
-            for(int i = 1; i < shortestPaths.Length; i++)
+            for (int i = 1; i < shortestPaths.Length; i++)
             {
                 if (shortestPaths[i].Item2 > maxV)
                 {
@@ -94,13 +103,52 @@ namespace Chess.ComputerPlayer
         /// Метод возвращает путь в графе с наименьшим весом.
         /// </summary>
         /// <param name="weightedGraph">Взвешенный граф ходов от начальной позации.</param>
-        /// <returns>Шаг и его вес.</returns>
-        private (Step, long) FindStep(WeightedGraph weightedGraph)
+        /// <returns>id в графе и его вес.</returns>
+        private (List<NodeWithWeightedEdges>?, long) FindStep(WeightedGraph weightedGraph)
         {
-            throw new NotImplementedException();
+            // Которые являются to и не являются from
+            List<int> finalStepsAndWeight = new();
+            for (int i = 0; i < weightedGraph.NodeCount; i++)
+            {
+                try
+                {
+                    weightedGraph.GetEdge(i, 0);
+                }
+                catch
+                {
+                    finalStepsAndWeight.Add(i);
+                }
+            }
+
+            List<NodeWithWeightedEdges>? path = null;
+            long resultWeight = long.MaxValue;
+
+            for(int i = 0; i < finalStepsAndWeight.Count; i++)
+            {
+                (var p, var w) = weightedGraph.FindAcyclicShortestPath(0, finalStepsAndWeight[i]);
+                
+                if(w < resultWeight)
+                { 
+                    resultWeight = w;
+                    path = p;
+                }
+            }
+
+            return (path/*GetStep(path)*/, resultWeight);
+
         }
 
-        public void MakeStep3(WeightedGraph weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
+        private long GetStep(List<NodeWithWeightedEdges>? path)
+        {
+            if(path == null)
+                throw new NotImplementedException();
+            else
+            {
+                return path[1].Id;
+            }
+        }
+
+        public void MakeStep2(WeightedGraph weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
 
             if (layer == 6) return;
@@ -108,7 +156,7 @@ namespace Chess.ComputerPlayer
             var newBoard = new Board(board.ToByteArray());
             newBoard.MakeStepWithoutChecking(rootCP, stepCP);
 
-            Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(currentStepSide);
+            Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
 
             for (int i = 0; i < availableSteps.Keys.Count; i++)
             {
@@ -126,7 +174,7 @@ namespace Chess.ComputerPlayer
                         // Конец хода
                         var step = weightedGraphChessBoard.AddEmptyNode();
                         var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2));
-                        MakeStep3(weightedGraphChessBoard, board, rootCP2, stepCP2);
+                        MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2);
                     }
                 }
             }
@@ -142,17 +190,30 @@ namespace Chess.ComputerPlayer
         /// <exception cref="NotImplementedException">Выдаётся, когда передана точка с неизвестным состоянием.</exception>
         private long GetFigureWeight(CellPoint cellPoint)
         {
-            return board.Positions[cellPoint.X, cellPoint.Y].Man switch
-            {
-                Figures.Pawn => 50,
-                Figures.Queen => 5,
-                Figures.Knight => 25,
-                Figures.Rook => 25,
-                Figures.King => 0,
-                Figures.Empty => 100,
-                Figures.Bishop => 25,
-                _ => throw new NotImplementedException(),
-            };
+            if(currentStepSide != board.Positions[cellPoint.X, cellPoint.Y].Side)
+                return board.Positions[cellPoint.X, cellPoint.Y].Man switch
+                {
+                    Figures.Pawn => 50,
+                    Figures.Queen => 5,
+                    Figures.Knight => 25,
+                    Figures.Rook => 25,
+                    Figures.King => 0,
+                    Figures.Empty => 100,
+                    Figures.Bishop => 25,
+                    _ => throw new NotImplementedException(),
+                };
+            else
+                return board.Positions[cellPoint.X, cellPoint.Y].Man switch
+                {
+                    Figures.Pawn => 200,
+                    Figures.Queen => 2000,
+                    Figures.Knight => 1000,
+                    Figures.Rook => 1000,
+                    Figures.King => 5000,
+                    Figures.Empty => 0,
+                    Figures.Bishop => 1000,
+                    _ => throw new NotImplementedException(),
+                };
         }
     }
 }
