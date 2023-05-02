@@ -78,14 +78,14 @@ namespace Chess.ComputerPlayer
                     /*}*/
 
                 }
-                // TODO: There is the mistake. Возвращает ходы с чёрными, если играешь за белых, пересмотреть finalStepsAndWeight в следующем методе.
+
                 (CellPoint? cpStart, var path, long w) = FindStep(weightedGraphChessBoards[i], newBoard);
                 Step stepCurrent = new Step(cpStart, weightedGraphChessBoards[i].GetNode(1).Data);
 
                 shortestPaths[i] = (stepCurrent, w);
             }
 
-            int maxI = 0;
+            int maxI = new Random().Next(shortestPaths.Count() - 1);
             long maxV = shortestPaths[0].Item2;
             for (int i = 1; i < shortestPaths.Length; i++)
             {
@@ -95,7 +95,7 @@ namespace Chess.ComputerPlayer
                     maxV = shortestPaths[i].Item2;
                 }
             }
-            // TODO: Исправить ошибку: иногда возвращает ходы за чёрных, когда ходят белые. Также не возвращает все возможные ходы, при первом шаге возможен ход конём.
+
             return shortestPaths[maxI].Item1;
         }
 
@@ -139,7 +139,7 @@ namespace Chess.ComputerPlayer
 
         public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
-            int deep = 0;
+            int deep = 2; // Повышает сложность ИИ, но снижает производительность.
             if (layer == deep) return;
 
             var newBoard = new Board(board.ToByteArray());
@@ -168,7 +168,7 @@ namespace Chess.ComputerPlayer
                     layer++;
                     MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2, layer);
 
-                    if (layer == deep) { var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2)); }
+                    if (layer >= deep) { var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2)); }
                     /*}*/
                 }
             }
