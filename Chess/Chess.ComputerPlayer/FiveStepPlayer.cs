@@ -50,7 +50,7 @@ namespace Chess.ComputerPlayer
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board.ToByteArray());
             Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
-            WeightedGraph[] weightedGraphChessBoards = new WeightedGraph[availableSteps.Keys.Count];
+            WeightedGraph<CellPoint>[] weightedGraphChessBoards = new WeightedGraph<CellPoint>[availableSteps.Keys.Count];
 
             (Step, long)[] shortestPaths = new (Step, long)[availableSteps.Keys.Count];
 
@@ -77,12 +77,12 @@ namespace Chess.ComputerPlayer
 
                 (var path, long w) = FindStep(weightedGraphChessBoards[i]);
 
-                weightedGraphChessBoards[i].GetNode(path?[1].Id ?? 1).
+                //weightedGraphChessBoards[i].GetNode(path?[1].Id ?? 1).
                 
 
-                CellPoint end = availableSteps.
+                //CellPoint end = availableSteps.
 
-                Step stepCurrent = new Step(rootCP, end);
+                //Step stepCurrent = new Step(rootCP, end);
             }
 
             int maxI = 0;
@@ -104,7 +104,7 @@ namespace Chess.ComputerPlayer
         /// </summary>
         /// <param name="weightedGraph">Взвешенный граф ходов от начальной позации.</param>
         /// <returns>id в графе и его вес.</returns>
-        private (List<NodeWithWeightedEdges>?, long) FindStep(WeightedGraph weightedGraph)
+        private (List<NodeWithWeightedEdges<CellPoint>>?, long) FindStep(WeightedGraph<CellPoint> weightedGraph)
         {
             // Которые являются to и не являются from
             List<int> finalStepsAndWeight = new();
@@ -120,7 +120,7 @@ namespace Chess.ComputerPlayer
                 }
             }
 
-            List<NodeWithWeightedEdges>? path = null;
+            List<NodeWithWeightedEdges<CellPoint>>? path = null;
             long resultWeight = long.MaxValue;
 
             for(int i = 0; i < finalStepsAndWeight.Count; i++)
@@ -138,7 +138,7 @@ namespace Chess.ComputerPlayer
 
         }
 
-        private long GetStep(List<NodeWithWeightedEdges>? path)
+        private long GetStep(List<NodeWithWeightedEdges<CellPoint>>? path)
         {
             if(path == null)
                 throw new NotImplementedException();
@@ -148,7 +148,7 @@ namespace Chess.ComputerPlayer
             }
         }
 
-        public void MakeStep2(WeightedGraph weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
+        public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
 
             if (layer == 6) return;
