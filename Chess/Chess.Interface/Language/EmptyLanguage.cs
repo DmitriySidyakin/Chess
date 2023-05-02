@@ -41,7 +41,6 @@ namespace Chess.InterfaceTranslation
 
         public void NewGameWindowStrings(NewGameSettings newGameSettings)
         { 
-            //TODO : Add code in future
 
         }
         public Dictionary<string, string> MessagesStrings => throw new NotImplementedException();

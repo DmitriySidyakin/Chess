@@ -1,6 +1,7 @@
 ﻿using Chess.Entity;
 using GraphAlgorithms.Graph;
 using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Chess.ComputerPlayer
 {
@@ -70,16 +71,16 @@ namespace Chess.ComputerPlayer
 
                     /*if (IsAvailableStep(availableSteps, stepCP.X, stepCP.Y))
                     {*/
-                        var step = weightedGraphChessBoards[i].AddEmptyNode();
-                        step.Data = stepCP;
-                        var edge = weightedGraphChessBoards[i].AddEdge(root, step, GetFigureWeight(stepCP));
-                        MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
+                    var step = weightedGraphChessBoards[i].AddEmptyNode();
+                    step.Data = stepCP;
+                    var edge = weightedGraphChessBoards[i].AddEdge(root, step, GetFigureWeight(stepCP));
+                    MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
                     /*}*/
 
                 }
-
-                (CellPoint cpStart, var path, long w) = FindStep(weightedGraphChessBoards[i]);
-                Step stepCurrent = new Step(cpStart, weightedGraphChessBoards[i].GetNode(path?[0].Id ?? 1).Data);
+                // TODO: There is the mistake. Возвращает ходы с чёрными, если играешь за белых, пересмотреть finalStepsAndWeight в следующем методе.
+                (CellPoint? cpStart, var path, long w) = FindStep(weightedGraphChessBoards[i], newBoard);
+                Step stepCurrent = new Step(cpStart, weightedGraphChessBoards[i].GetNode(1).Data);
 
                 shortestPaths[i] = (stepCurrent, w);
             }
@@ -103,40 +104,20 @@ namespace Chess.ComputerPlayer
         /// </summary>
         /// <param name="weightedGraph">Взвешенный граф ходов от начальной позации.</param>
         /// <returns>id в графе и его вес.</returns>
-        private (CellPoint?, List<NodeWithWeightedEdges<CellPoint>>?, long) FindStep(WeightedGraph<CellPoint> weightedGraph)
+        private (CellPoint?, List<NodeWithWeightedEdges<CellPoint>>?, long) FindStep(WeightedGraph<CellPoint> weightedGraph, Board board)
         {
             // Которые являются to и не являются from
-            List<int> finalStepsAndWeight = new();
-
-            var newFinalStepsAndWeight = weightedGraph.ToEdgeArray<int>(0);
-
-            for (int i = 0; i < weightedGraph.NodeCount; i++)
-            {
-                /*
-                try
-                {
-                    weightedGraph.GetEdge(i, 0);
-                }
-                catch
-                {
-                    finalStepsAndWeight.Add(i);
-                }*/
-                
-                if (newFinalStepsAndWeight[i] is null)
-                    finalStepsAndWeight.Add(i);
-            }
-
-            //var newFinalStepsAndWeight = weightedGraph.ToEdgeArray<int>(0);
+            List<int> finalStepsAndWeight = weightedGraph.GetLeafsAndRoot().Where(lr => lr.Id != 0).Select(lr => (int)lr.Id).ToList();;
 
             List<NodeWithWeightedEdges<CellPoint>>? path = null;
             long resultWeight = long.MaxValue;
 
-            for(int i = 0; i < finalStepsAndWeight.Count; i++)
+            for (int i = 0; i < finalStepsAndWeight.Count; i++)
             {
                 (var p, var w) = weightedGraph.FindAcyclicShortestPath(0, finalStepsAndWeight[i]);
-                
-                if(w != -1 && w < resultWeight)
-                { 
+
+                if (w != -1 && w < resultWeight)
+                {
                     resultWeight = w;
                     path = p;
                 }
@@ -148,7 +129,7 @@ namespace Chess.ComputerPlayer
 
         private long GetStep(List<NodeWithWeightedEdges<CellPoint>>? path)
         {
-            if(path == null)
+            if (path == null)
                 throw new NotImplementedException();
             else
             {
@@ -158,8 +139,8 @@ namespace Chess.ComputerPlayer
 
         public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
-
-            if (layer == 6) return;
+            int deep = 0;
+            if (layer == deep) return;
 
             var newBoard = new Board(board.ToByteArray());
             newBoard.MakeStepWithoutChecking(rootCP, stepCP);
@@ -178,18 +159,20 @@ namespace Chess.ComputerPlayer
                     CellPoint stepCP2 = availableSteps[rootCP2]
                             .ToArray()[j];
 
-                    if (IsAvailableStep(availableSteps, stepCP2.X, stepCP2.Y))
-                    {
-                        // Конец хода
-                        var step = weightedGraphChessBoard.AddEmptyNode();
-                        step.Data = stepCP2;
-                        var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2));
-                        MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2);
-                    }
+                    /*if (IsAvailableStep(availableSteps, stepCP2.X, stepCP2.Y))
+                    {*/
+                    // Конец хода
+                    var step = weightedGraphChessBoard.AddEmptyNode();
+                    step.Data = stepCP2;
+                    
+                    layer++;
+                    MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2, layer);
+
+                    if (layer == deep) { var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2)); }
+                    /*}*/
                 }
             }
 
-            layer++;
         }
 
         /// <summary>
@@ -200,7 +183,7 @@ namespace Chess.ComputerPlayer
         /// <exception cref="NotImplementedException">Выдаётся, когда передана точка с неизвестным состоянием.</exception>
         private long GetFigureWeight(CellPoint cellPoint)
         {
-            if(currentStepSide != board.Positions[cellPoint.X, cellPoint.Y].Side)
+            if (currentStepSide != board.Positions[cellPoint.X, cellPoint.Y].Side)
                 return board.Positions[cellPoint.X, cellPoint.Y].Man switch
                 {
                     Figures.Pawn => 50,

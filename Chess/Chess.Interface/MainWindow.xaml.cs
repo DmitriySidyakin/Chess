@@ -140,6 +140,7 @@ namespace Chess
                             {
                                 MakeStep(value.X, value.Y);
                                 availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+                                // TODO: Неверно переключается сторона шахмат (цвет) в ИИ.
                                 if (this.GameSettings.Player1White == PlayerType.Computer || this.GameSettings.Player2Black == PlayerType.Computer) MakeComputerStep();
                             }
 
