@@ -1,4 +1,5 @@
-﻿using Chess.Entity;
+﻿using Chess.ComputerPlayer;
+using Chess.Entity;
 using Chess.InterfaceTranslation;
 using Chess.Logging;
 using Chess.Settings;
@@ -139,6 +140,7 @@ namespace Chess
                             {
                                 MakeStep(value.X, value.Y);
                                 availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+                                if (this.GameSettings.Player1White == PlayerType.Computer || this.GameSettings.Player2Black == PlayerType.Computer) MakeComputerStep();
                             }
 
                             clickCellPoint = value;
@@ -166,17 +168,29 @@ namespace Chess
 
             UnselectCurrent();
             Redraw();
-
+            Thread.Sleep(1000);
             if (blocked)
                 MakeComputerStep();
 
-            UnselectCurrent();
-            Redraw();
+            /*UnselectCurrent();
+            Redraw();*/
         }
 
         private void MakeComputerStep()
         {
-            throw new NotImplementedException();
+            blocked = true;
+            FiveStepPlayer computerPlayer = new(board);
+            var step = computerPlayer.MakeStep();
+            bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
+            board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
+            Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
+            currentStepSide = board.CurrentStepSide;
+            PrintLog();
+            if (!CkeckState())
+                blocked = false;
+            availableSteps = board.GetAvailableSteps(currentStepSide);
+            UnselectCurrent();
+            Redraw();
         }
 
         private string GetCurrentLogString()
@@ -382,7 +396,7 @@ namespace Chess
             BlackPlayerNameLabel.Content = GameSettings.Player2BlackName;
             WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
             started = true;
-            blocked = true;
+            blocked = this.GameSettings.Player1White == PlayerType.Computer;
             Logger = new(GameSettings);
             logId = 0;
             ShowText(CurrentLanguage.MessagesStrings["TheGameIsStarted"]);
@@ -424,7 +438,7 @@ namespace Chess
         {
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
             grid?.Children.Remove(gameInfoLabel);
-            blocked = this.GameSettings.Player1White == PlayerType.Computer ? true : false;
+            blocked = this.GameSettings.Player1White == PlayerType.Computer;
 
             if(blocked)
                 MakeComputerStep();
