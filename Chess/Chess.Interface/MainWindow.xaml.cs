@@ -413,7 +413,7 @@ namespace Chess
         {
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
             grid?.Children.Remove(gameInfoLabel);
-            blocked = false;
+            blocked = this.GameSettings.Player1White == PlayerType.Computer ? true : false;
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
