@@ -166,6 +166,17 @@ namespace Chess
 
             UnselectCurrent();
             Redraw();
+
+            if (blocked)
+                MakeComputerStep();
+
+            UnselectCurrent();
+            Redraw();
+        }
+
+        private void MakeComputerStep()
+        {
+            throw new NotImplementedException();
         }
 
         private string GetCurrentLogString()
@@ -414,6 +425,9 @@ namespace Chess
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
             grid?.Children.Remove(gameInfoLabel);
             blocked = this.GameSettings.Player1White == PlayerType.Computer ? true : false;
+
+            if(blocked)
+                MakeComputerStep();
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
