@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chess.Interface"
         mc:Ignorable="d"
-        Title="Chess Mini DS colibri" Height="450" Width="800" MinHeight="450" MinWidth="800" SizeChanged="Window_SizeChanged" Icon="/icon.ico" Closing="Window_Closing">
+        Title="Chess Mini DS colibri" Height="450" Width="800" MinHeight="450" MinWidth="800" SizeChanged="Window_SizeChanged" Icon="/icon.ico" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="59*" x:Name="Column1"/>
