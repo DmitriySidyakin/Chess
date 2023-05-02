@@ -147,7 +147,7 @@ namespace Chess.ComputerPlayer
 
         public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
-            int deep = 0; // Повышает сложность ИИ, но снижает производительность.
+            int deep = 1; // Повышает сложность ИИ, но снижает производительность.
             if (layer == deep) return;
 
             var newBoard = new Board(board.ToByteArray());
@@ -176,7 +176,7 @@ namespace Chess.ComputerPlayer
                     layer++;
                     MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2, layer);
 
-                    if (layer >= deep) { var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2)); }
+                    if (layer <= deep) { var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2)); }
                     /*}*/
                 }
             }
