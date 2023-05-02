@@ -6,6 +6,7 @@ using Chess.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -425,24 +426,28 @@ namespace Chess
         Label gameInfoLabel = new Label() { Name = "LabelInfo", Content = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 48, FontWeight = FontWeights.Bold, Opacity = 0, Foreground = Brushes.Blue };
         public void ShowText(string text)
         {
-            Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
-
-            _ = grid?.Children.Add(gameInfoLabel);
-
-            Grid.SetColumn(gameInfoLabel, 0);
-
-            if (text != null)
+            try
             {
-                gameInfoLabel.Content = text;
-                gameInfoLabel.Opacity = 100;
-                gameInfoLabel.FontSize = 28 * GetScale();
-                DoubleAnimation textAnimation = new DoubleAnimation();
-                textAnimation.From = 100;
-                textAnimation.To = 0;
-                textAnimation.Duration = TimeSpan.FromMilliseconds(3000);
-                textAnimation.Completed += Window_CompliteShowText;
-                gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation);
+                Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
+
+                _ = grid?.Children.Add(gameInfoLabel);
+
+                Grid.SetColumn(gameInfoLabel, 0);
+
+                if (text != null)
+                {
+                    gameInfoLabel.Content = text;
+                    gameInfoLabel.Opacity = 100;
+                    gameInfoLabel.FontSize = 28 * GetScale();
+                    DoubleAnimation textAnimation = new DoubleAnimation();
+                    textAnimation.From = 100;
+                    textAnimation.To = 0;
+                    textAnimation.Duration = TimeSpan.FromMilliseconds(3000);
+                    textAnimation.Completed += Window_CompliteShowText;
+                    gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation);
+                }
             }
+            catch { }
         }
 
         private void Window_CompliteShowText(object? sender, EventArgs e)
