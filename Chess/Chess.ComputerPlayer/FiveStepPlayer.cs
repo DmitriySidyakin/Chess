@@ -46,6 +46,8 @@ namespace Chess.ComputerPlayer
             return availableSteps.Count(s => s.Key.X == x && s.Key.Y == y && s.Value.Count(v => v.X == x && v.Y == y) > 0) > 0;
         }
 
+
+        // TODO: Fix a current step error
         public Step MakeStep()
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
@@ -85,16 +87,22 @@ namespace Chess.ComputerPlayer
                 shortestPaths[i] = (stepCurrent, w);
             }
 
-            int maxI = new Random().Next(shortestPaths.Count() - 1);
-            long maxV = shortestPaths[0].Item2;
-            for (int i = 1; i < shortestPaths.Length; i++)
+            int maxI = 0;
+            if (shortestPaths.Count() > 0)
             {
-                if (shortestPaths[i].Item2 > maxV)
+                maxI = new Random().Next(shortestPaths.Count() - 1);
+                long maxV = shortestPaths[0].Item2;
+                for (int i = 1; i < shortestPaths.Length; i++)
                 {
-                    maxI = i;
-                    maxV = shortestPaths[i].Item2;
+                    if (shortestPaths[i].Item2 > maxV)
+                    {
+                        maxI = i;
+                        maxV = shortestPaths[i].Item2;
+                    }
                 }
             }
+            else
+                throw new GameEndedException();
 
             return shortestPaths[maxI].Item1;
         }
