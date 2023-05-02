@@ -139,7 +139,7 @@ namespace Chess.ComputerPlayer
 
         public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
-            int deep = 2; // Повышает сложность ИИ, но снижает производительность.
+            int deep = 0; // Повышает сложность ИИ, но снижает производительность.
             if (layer == deep) return;
 
             var newBoard = new Board(board.ToByteArray());
@@ -183,7 +183,7 @@ namespace Chess.ComputerPlayer
         /// <exception cref="NotImplementedException">Выдаётся, когда передана точка с неизвестным состоянием.</exception>
         private long GetFigureWeight(CellPoint cellPoint)
         {
-            if (currentStepSide != board.Positions[cellPoint.X, cellPoint.Y].Side)
+            if (currentStepSide == board.Positions[cellPoint.X, cellPoint.Y].Side)
                 return board.Positions[cellPoint.X, cellPoint.Y].Man switch
                 {
                     Figures.Pawn => 50,
