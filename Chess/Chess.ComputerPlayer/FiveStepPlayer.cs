@@ -78,7 +78,7 @@ namespace Chess.ComputerPlayer
                     var edge = weightedGraphChessBoards[i].AddEdge(root, step, GetFigureWeight(stepCP));
                     MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
                     /*}*/
-
+                    GC.Collect();
                 }
 
                 (CellPoint? cpStart, var path, long w) = FindStep(weightedGraphChessBoards[i], newBoard);
@@ -171,12 +171,11 @@ namespace Chess.ComputerPlayer
                     {*/
                     // Конец хода
                     var step = weightedGraphChessBoard.AddEmptyNode();
+                    var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2));
                     step.Data = stepCP2;
                     
                     layer++;
                     MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2, layer);
-
-                    if (layer <= deep) { var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2)); }
                     /*}*/
                 }
             }
