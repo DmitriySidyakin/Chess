@@ -59,6 +59,7 @@ namespace Chess.ComputerPlayer
                 // Начальная фигура хода
                 CellPoint rootCP = availableSteps.Keys.ElementAt(i);
                 var root = weightedGraphChessBoards[i].AddEmptyNode();
+                root.Data = rootCP;
 
                 for (int j = 0; j < availableSteps[availableSteps.Keys.ElementAt(i)].Count; j++)
                 {
@@ -69,6 +70,7 @@ namespace Chess.ComputerPlayer
                     if (IsAvailableStep(availableSteps, stepCP.X, stepCP.Y))
                     {
                         var step = weightedGraphChessBoards[i].AddEmptyNode();
+                        step.Data = stepCP;
                         var edge = weightedGraphChessBoards[i].AddEdge(root, step, GetFigureWeight(stepCP));
                         MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
                     }
@@ -76,13 +78,9 @@ namespace Chess.ComputerPlayer
                 }
 
                 (var path, long w) = FindStep(weightedGraphChessBoards[i]);
+                Step stepCurrent = new Step(weightedGraphChessBoards[i].GetNode(path?[0].Id ?? 0).Data, weightedGraphChessBoards[i].GetNode(path?[1].Id ?? 1).Data);
 
-                //weightedGraphChessBoards[i].GetNode(path?[1].Id ?? 1).
-                
-
-                //CellPoint end = availableSteps.
-
-                //Step stepCurrent = new Step(rootCP, end);
+                shortestPaths[i] = (stepCurrent, w);
             }
 
             int maxI = 0;
@@ -163,6 +161,7 @@ namespace Chess.ComputerPlayer
                 // Начальная фигура хода
                 CellPoint rootCP2 = availableSteps.Keys.ElementAt(i);
                 var root = weightedGraphChessBoard.AddEmptyNode();
+                root.Data = rootCP2;
 
                 for (int j = 0; j < availableSteps[availableSteps.Keys.ElementAt(i)].Count; j++)
                 {
@@ -173,6 +172,7 @@ namespace Chess.ComputerPlayer
                     {
                         // Конец хода
                         var step = weightedGraphChessBoard.AddEmptyNode();
+                        step.Data = stepCP2;
                         var edge = weightedGraphChessBoard.AddEdge(root, step, GetFigureWeight(stepCP2));
                         MakeStep2(weightedGraphChessBoard, board, rootCP2, stepCP2);
                     }
