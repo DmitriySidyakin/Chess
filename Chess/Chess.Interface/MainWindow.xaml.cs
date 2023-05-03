@@ -21,6 +21,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace Chess
 {
@@ -148,6 +149,7 @@ namespace Chess
                                     if (this.GameSettings.Player2Black == PlayerType.Computer)
                                     {
                                         MakeComputerStep();
+                                        
                                         currentStepSide = board.CurrentStepSide;
                                     }
                                 }
@@ -182,18 +184,26 @@ namespace Chess
             try
             {
                 if (this.GameSettings.Player1White == PlayerType.Computer && blocked)
+                {
                     MakeComputerStep();
+
+                    currentStepSide = board.CurrentStepSide;
+                }
             }
             catch (GameEndedException ex) { }
             /*UnselectCurrent();
             Redraw();*/
         }
-
+        Step step;
         private void MakeComputerStep()
         {
             blocked = true;
-            FiveStepPlayer computerPlayer = new(board);
-            var step = computerPlayer.MakeStep();
+            Thread T = new Thread(MakeComputerPlayerStepThread, 2000*1024*1024);
+            T.Start();
+            while(T.ThreadState == ThreadState.Running)
+            {
+                Thread.Sleep(100);
+            };
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
@@ -204,6 +214,12 @@ namespace Chess
             availableSteps = board.GetAvailableSteps(currentStepSide);
             UnselectCurrent();
             Redraw();
+        }
+
+        private void MakeComputerPlayerStepThread()
+        {
+            FiveStepPlayer computerPlayer = new(board);
+            step = computerPlayer.MakeStep();
         }
 
         private string GetCurrentLogString()
