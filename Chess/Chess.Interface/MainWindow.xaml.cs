@@ -148,11 +148,9 @@ namespace Chess
 
                                 try
                                 {
-                                    if (this.GameSettings.Player2Black == PlayerType.Computer)
+                                    if (this.GameSettings.Player1White == PlayerType.Computer)
                                     {
                                         MakeComputerStep();
-                                        
-                                        currentStepSide = board.CurrentStepSide;
                                     }
                                 }
                                 catch (GameEndedException ex) { }
@@ -175,8 +173,8 @@ namespace Chess
             blocked = true;
             bool eat = board.Positions[x, y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
+            //board.CurrentStepSide = board.CurrentStepSide == Side.White ? Side.Black : Side.White;
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
-            currentStepSide = board.CurrentStepSide;
             PrintLog();
             if (!CkeckState())
                 blocked = false;
@@ -185,14 +183,17 @@ namespace Chess
             Redraw();
             try
             {
-                if (this.GameSettings.Player1White == PlayerType.Computer && blocked)
+                if ((this.GameSettings.Player2Black == PlayerType.Computer) && !blocked)
                 {
                     MakeComputerStep();
-
-                    currentStepSide = board.CurrentStepSide;
+                }
+                else
+                {
+                    
                 }
             }
             catch (GameEndedException ex) { }
+            CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
             /*UnselectCurrent();
             Redraw();*/
         }
@@ -200,20 +201,21 @@ namespace Chess
         private void MakeComputerStep()
         {
             blocked = true;
-            Thread T = new Thread(MakeComputerPlayerStepThread, 2000*1024*1024);
+            Thread T = new Thread(MakeComputerPlayerStepThread, 2000 * 1024 * 1024);
             T.Start();
-            while(T.ThreadState == ThreadState.Running)
+            while (T.ThreadState == ThreadState.Running)
             {
                 Thread.Sleep(100);
             };
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
-            currentStepSide = board.CurrentStepSide;
+            
             PrintLog();
             if (!CkeckState())
                 blocked = false;
             availableSteps = board.GetAvailableSteps(currentStepSide);
+
             UnselectCurrent();
             Redraw();
         }
@@ -222,6 +224,7 @@ namespace Chess
         {
             FiveStepPlayer computerPlayer = new(board);
             step = computerPlayer.MakeStep();
+            CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
         }
 
         private void PlayStepSound(string v)
@@ -483,7 +486,12 @@ namespace Chess
             blocked = this.GameSettings.Player1White == PlayerType.Computer;
 
             if (blocked)
-                MakeComputerStep();
+            {
+                if (this.GameSettings.Player1White == PlayerType.Computer)
+                {
+                    MakeComputerStep();
+                }
+            }
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
