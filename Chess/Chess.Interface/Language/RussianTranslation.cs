@@ -97,17 +97,17 @@ namespace Chess.InterfaceTranslation
 
                 int logEntityTypeId = 0;
 
-                if(le.IsCheck) { logEntityTypeId = 1; }
+                if(le.IsCheckmate) { logEntityTypeId = 1; }
                 else if(le.IsMate) { logEntityTypeId = 2; }
-                else if(le.IsCheckmate) { logEntityTypeId = 3; }
+                else if(le.IsCheck) { logEntityTypeId = 3; }
 
                 string stepString = $"Шаг {step.Id}: {stepSide} c {Board.GetStringCellName((byte)step.Step.Start.X, (byte)step.Step.Start.Y)} на {Board.GetStringCellName((byte)step.Step.End.X, (byte)step.Step.End.Y)}";
                 string leText = logEntityTypeId switch
                 {
                     0 => stepString,
-                    1 => $"{stepString}.{stepSide} поставили Шах!",
+                    3 => $"{stepString}.{stepSide} поставили Шах!",
                     2 => $"{stepString}.\n{stepSide} поставили Мат!",
-                    3 => $"{stepString}.\n{stepSide} поставили Шах и Мат!",
+                    1 => $"{stepString}.\n{stepSide} поставили Шах и Мат!",
                     _ => "Log Error"
                 };
 
