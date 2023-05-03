@@ -81,7 +81,7 @@ namespace Chess
                     ComputerName1.Visibility = Visibility.Visible;
                 }
 
-                SetHardLevelVisibility(Visibility.Visible);
+                //SetHardLevelVisibility(Visibility.Visible);
             }
             else
             {
@@ -96,7 +96,7 @@ namespace Chess
                     ComputerName1.Visibility = Visibility.Hidden;
                 }
 
-                SetHardLevelVisibility(Visibility.Hidden);
+                //SetHardLevelVisibility(Visibility.Hidden);
             }
         }
 
