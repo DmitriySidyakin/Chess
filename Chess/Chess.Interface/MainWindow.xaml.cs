@@ -155,9 +155,7 @@ namespace Chess
                                             blocked = false;
                                     }
                                     else
-                                    {
-                                        CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
-                                    }
+                                    { }
                                 }
                                 catch (GameEndedException ex) { }
                             }
