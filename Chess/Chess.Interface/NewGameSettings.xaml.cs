@@ -126,12 +126,6 @@ namespace Chess
             mainWindow.GameSettings.Player1White = PlayerName1.Visibility == Visibility.Visible ? Settings.PlayerType.Player : Settings.PlayerType.Computer;
             mainWindow.GameSettings.Player2Black = PlayerName2.Visibility == Visibility.Visible ? Settings.PlayerType.Player : Settings.PlayerType.Computer;
 
-            if (mainWindow.GameSettings.Player1White == Settings.PlayerType.Computer || mainWindow.GameSettings.Player2Black == Settings.PlayerType.Computer)
-            {
-                MessageBox.Show("ComputerPlayerIsNotAvailiableNow");
-                return;
-            }
-
             mainWindow.GameSettings.Player1WhiteName = PlayerName1.Text;
             mainWindow.GameSettings.Player2BlackName = PlayerName2.Text;
 

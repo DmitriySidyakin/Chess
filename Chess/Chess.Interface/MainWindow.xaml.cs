@@ -1,10 +1,12 @@
-﻿using Chess.Entity;
+﻿using Chess.ComputerPlayer;
+using Chess.Entity;
 using Chess.InterfaceTranslation;
 using Chess.Logging;
 using Chess.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,11 +15,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
 
 namespace Chess
 {
@@ -38,7 +42,7 @@ namespace Chess
 
         private UIElement?[,] figurePathPositions = new UIElement?[Board.CellBoardSize, Board.CellBoardSize];
 
-        public ILanguage language; 
+        public ILanguage language;
 
         private bool started = false;
         public bool blocked = false;
@@ -76,7 +80,7 @@ namespace Chess
 
         private object activateHover = new object();
         private CellPoint activeCellPoint = CellPoint.Unexisted;
-        
+
         public ILanguage CurrentLanguage { get; set; }
 
         public CellPoint ActiveCellPoint
@@ -135,12 +139,23 @@ namespace Chess
                 {
                     if (started && !blocked)
                     {
-                        if ((value.X != clickCellPoint.X || value.Y != clickCellPoint.Y ))
+                        if ((value.X != clickCellPoint.X || value.Y != clickCellPoint.Y))
                         {
                             if (IsAvailableStep(value.X, value.Y))
                             {
                                 MakeStep(value.X, value.Y);
                                 availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+
+                                try
+                                {
+                                    if (this.GameSettings.Player2Black == PlayerType.Computer)
+                                    {
+                                        MakeComputerStep();
+                                        
+                                        currentStepSide = board.CurrentStepSide;
+                                    }
+                                }
+                                catch (GameEndedException ex) { }
                             }
 
                             clickCellPoint = value;
@@ -163,11 +178,50 @@ namespace Chess
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             currentStepSide = board.CurrentStepSide;
             PrintLog();
-            if(!CkeckState())
+            if (!CkeckState())
                 blocked = false;
             PlayStepSound("");
             UnselectCurrent();
             Redraw();
+            try
+            {
+                if (this.GameSettings.Player1White == PlayerType.Computer && blocked)
+                {
+                    MakeComputerStep();
+
+                    currentStepSide = board.CurrentStepSide;
+                }
+            }
+            catch (GameEndedException ex) { }
+            /*UnselectCurrent();
+            Redraw();*/
+        }
+        Step step;
+        private void MakeComputerStep()
+        {
+            blocked = true;
+            Thread T = new Thread(MakeComputerPlayerStepThread, 2000*1024*1024);
+            T.Start();
+            while(T.ThreadState == ThreadState.Running)
+            {
+                Thread.Sleep(100);
+            };
+            bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
+            board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
+            Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
+            currentStepSide = board.CurrentStepSide;
+            PrintLog();
+            if (!CkeckState())
+                blocked = false;
+            availableSteps = board.GetAvailableSteps(currentStepSide);
+            UnselectCurrent();
+            Redraw();
+        }
+
+        private void MakeComputerPlayerStepThread()
+        {
+            FiveStepPlayer computerPlayer = new(board);
+            step = computerPlayer.MakeStep();
         }
 
         private void PlayStepSound(string v)
@@ -193,7 +247,7 @@ namespace Chess
             logText = "";
             foreach (var e in Logger.log)
             {
-                if(e is StepEntity)
+                if (e is StepEntity)
                 {
                     PrintStepLogEntity(e);
                 }
@@ -306,7 +360,7 @@ namespace Chess
 
         private void DeleteHighlightBoxes()
         {
-            foreach(var box in selectedFigureUIEStepsBoxes)
+            foreach (var box in selectedFigureUIEStepsBoxes)
                 ChessBoard.Children.Remove(box);
 
             selectedFigureUIEStepsBoxes.Clear();
@@ -314,15 +368,15 @@ namespace Chess
 
         private void DrawHiglightBoxes(CellPoint clickCellPointCurrent)
         {
-            if(availableSteps.Keys.Where(k => k.X == clickCellPointCurrent.X && k.Y == clickCellPointCurrent.Y).Count() > 0)
+            if (availableSteps.Keys.Where(k => k.X == clickCellPointCurrent.X && k.Y == clickCellPointCurrent.Y).Count() > 0)
             {
                 CellPoint startCellPoint = availableSteps.Keys.Where(k => k.X == clickCellPointCurrent.X && k.Y == clickCellPointCurrent.Y).First();
-                foreach(var endStep in availableSteps[startCellPoint])
+                foreach (var endStep in availableSteps[startCellPoint])
                 {
                     DrawSquaresHighlighter(GetSize(), endStep.X, endStep.Y);
                 }
             }
-            
+
         }
 
         double size;
@@ -380,7 +434,7 @@ namespace Chess
             BlackPlayerNameLabel.Content = GameSettings.Player2BlackName;
             WhitePlayerNameLabel.Content = GameSettings.Player1WhiteName;
             started = true;
-            blocked = true;
+            blocked = this.GameSettings.Player1White == PlayerType.Computer;
             Logger = new(GameSettings);
             logId = 0;
             ShowText(CurrentLanguage.MessagesStrings["TheGameIsStarted"]);
@@ -394,35 +448,42 @@ namespace Chess
             started = false;
             blocked = true;
         }
-        
-        Label gameInfoLabel = new Label() { Name = "LabelInfo", Content = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 48, FontWeight = FontWeights.Bold, Opacity = 0, Foreground = Brushes.Blue};
+
+        Label gameInfoLabel = new Label() { Name = "LabelInfo", Content = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, FontSize = 48, FontWeight = FontWeights.Bold, Opacity = 0, Foreground = Brushes.Blue };
         public void ShowText(string text)
         {
-            Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
-
-            _ = grid?.Children.Add(gameInfoLabel);
-
-            Grid.SetColumn(gameInfoLabel, 0);
-
-            if (text != null)
+            try
             {
-                gameInfoLabel.Content = text;
-                gameInfoLabel.Opacity = 100;
-                gameInfoLabel.FontSize = 28 * GetScale();
-                DoubleAnimation textAnimation = new DoubleAnimation();
-                textAnimation.From = 100;
-                textAnimation.To = 0;
-                textAnimation.Duration = TimeSpan.FromMilliseconds(3000);
-                textAnimation.Completed += Window_CompliteShowText;
-                gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation);
+                Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
+
+                _ = grid?.Children.Add(gameInfoLabel);
+
+                Grid.SetColumn(gameInfoLabel, 0);
+
+                if (text != null)
+                {
+                    gameInfoLabel.Content = text;
+                    gameInfoLabel.Opacity = 100;
+                    gameInfoLabel.FontSize = 28 * GetScale();
+                    DoubleAnimation textAnimation = new DoubleAnimation();
+                    textAnimation.From = 100;
+                    textAnimation.To = 0;
+                    textAnimation.Duration = TimeSpan.FromMilliseconds(3000);
+                    textAnimation.Completed += Window_CompliteShowText;
+                    gameInfoLabel.BeginAnimation(Label.OpacityProperty, textAnimation);
+                }
             }
+            catch { }
         }
 
         private void Window_CompliteShowText(object? sender, EventArgs e)
         {
             Grid? grid = (Grid?)ChessBoard.FindName("MainGrid");
             grid?.Children.Remove(gameInfoLabel);
-            blocked = false;
+            blocked = this.GameSettings.Player1White == PlayerType.Computer;
+
+            if (blocked)
+                MakeComputerStep();
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -524,10 +585,10 @@ namespace Chess
             {
                 int leftNum = ChessBoard.Children.Add(new Label() { Content = rowNum, Padding = new Thickness(0, 0, 0, 0), FontSize = baseFontSize * (size / 396) });
                 Canvas.SetLeft(ChessBoard.Children[leftNum], baseFontSize / 3 * (size / 396));
-                Canvas.SetTop(ChessBoard.Children[leftNum], 10 * (size / 396) + (47 / 2) * (size / 396) + 47 * (size / 396) * row - baseFontSize/2 * (size / 396));
+                Canvas.SetTop(ChessBoard.Children[leftNum], 10 * (size / 396) + (47 / 2) * (size / 396) + 47 * (size / 396) * row - baseFontSize / 2 * (size / 396));
                 int rightNum = ChessBoard.Children.Add(new Label() { Content = rowNum, Padding = new Thickness(0, 0, 0, 0), FontSize = baseFontSize * (size / 396) });
                 Canvas.SetLeft(ChessBoard.Children[rightNum], 386 * (size / 396) + baseFontSize / 3 * (size / 396));
-                Canvas.SetTop(ChessBoard.Children[rightNum], 10 * (size / 396) + (47 / 2) * (size / 396) + 47 * (size / 396) * row - baseFontSize/2 * (size / 396));
+                Canvas.SetTop(ChessBoard.Children[rightNum], 10 * (size / 396) + (47 / 2) * (size / 396) + 47 * (size / 396) * row - baseFontSize / 2 * (size / 396));
                 row++;
             }
         }
@@ -569,12 +630,12 @@ namespace Chess
         // Метод для подстветки возможных ходов
         private void DrawSquaresHighlighter(double size, int col, int row)
         {
-            UIElement cellHighlight = new Rectangle() { Width = Math.Round(47 * (size / 396), 0) + 2, Height = Math.Round(47 * (size / 396), 0) + 2, Fill = Brushes.Green, StrokeThickness = 4, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = .5  };
+            UIElement cellHighlight = new Rectangle() { Width = Math.Round(47 * (size / 396), 0) + 2, Height = Math.Round(47 * (size / 396), 0) + 2, Fill = Brushes.Green, StrokeThickness = 4, Stroke = Brushes.Red, Name = $"CellHighlight_{col}_{row}", Opacity = .5 };
             int newBox = ChessBoard.Children.Add(cellHighlight);
             selectedFigureUIEStepsBoxes.Add(cellHighlight);
             Canvas.SetLeft(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * col, 0) - 1);
             Canvas.SetTop(ChessBoard.Children[newBox], Math.Round(10 * (size / 396) + 47 * (size / 396) * row, 0) - 1);
-                
+
         }
 
         private void DrawFigureBorder(int col, int row, string color, ref UIElement? activeId)
@@ -590,7 +651,7 @@ namespace Chess
         {
             Entity.Figures.Pawn => (System.Windows.Shapes.Path)System.Windows.Markup.XamlReader.Parse(
                 @$"<Path xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Stroke='{strokeColor}'
-StrokeThickness='{(int)(2*scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side)}'>
+StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side)}'>
   <Path.Data>
     <PathGeometry>
       <PathGeometry.Figures>
@@ -623,11 +684,11 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
     <PathGeometry>
       <PathGeometry.Figures>
         <PathFigureCollection>
-          <PathFigure StartPoint='{(int)((9+1) * scale)},{(int)(43 * scale)}'>
+          <PathFigure StartPoint='{(int)((9 + 1) * scale)},{(int)(43 * scale)}'>
             <PathFigure.Segments>
               <PathSegmentCollection>
                 <QuadraticBezierSegment Point1='{(int)((9 + 1) * scale)},{(int)(35 * scale)}' Point2='{(int)((15 + 1) * scale)},{(int)(35 * scale)}' />
-                <QuadraticBezierSegment Point1='{(int)((15 + 1) * scale)},{(int)(35 * scale)}' Point2='{(int)((15 + 1)  * scale)},{(int)(20 * scale)}' />
+                <QuadraticBezierSegment Point1='{(int)((15 + 1) * scale)},{(int)(35 * scale)}' Point2='{(int)((15 + 1) * scale)},{(int)(20 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((15 + 1) * scale)},{(int)(20 * scale)}' Point2='{(int)((12 + 1) * scale)},{(int)(20 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((12 + 1) * scale)},{(int)(20 * scale)}' Point2='{(int)((12 + 1) * scale)},{(int)(7 * scale)}' />
                 <QuadraticBezierSegment Point1='{(int)((12 + 1) * scale)},{(int)(7 * scale)}' Point2='{(int)((16 + 1) * scale)},{(int)(7 * scale)}' />
@@ -786,7 +847,8 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
             _ => throw new ArgumentOutOfRangeException(nameof(figure.Man)),
         };
 
-        private string GetHtmlColorOfFigureSide(Chess.Entity.Side side) => side switch {
+        private string GetHtmlColorOfFigureSide(Chess.Entity.Side side) => side switch
+        {
             Entity.Side.Black => "#000000",
             Entity.Side.White => "#FFFFFF",
             _ => throw new ArgumentOutOfRangeException()
@@ -817,7 +879,7 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
 
         public delegate void MouseEventSimpleHandler(CellPoint cellPoint);
 
-        public void MouseEventsSimple(object sender, MouseEventArgs e, MouseEventSimpleHandler selectHandler, MouseEventSimpleHandler unexistedHandler) 
+        public void MouseEventsSimple(object sender, MouseEventArgs e, MouseEventSimpleHandler selectHandler, MouseEventSimpleHandler unexistedHandler)
         {
             var mousePosition = e.GetPosition(ChessBoard);
             var boxSize = 47 * GetScale();
@@ -828,7 +890,7 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
             {
                 int cellColumn = (int)Math.Truncate(mousePosition.X / boxSize);
                 int cellRow = (int)Math.Truncate(mousePosition.Y / boxSize);
-                
+
                 CellPoint cellPoint = new CellPoint() { X = (sbyte)cellColumn, Y = (sbyte)cellRow };
 
                 selectHandler(cellPoint);
@@ -860,6 +922,10 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
         private void Russian_Click(object sender, RoutedEventArgs e)
         {
             ChangeLanguage(new RussianTranslation());
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

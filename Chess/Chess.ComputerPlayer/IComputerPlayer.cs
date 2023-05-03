@@ -13,7 +13,7 @@ namespace Chess.ComputerPlayer
 
         public Board CurrentBoard { get; set; }
 
-        public Side Side { get; }
+        public Side CurrentStepSide { get; set; }
 
         public Step MakeStep();
     }
