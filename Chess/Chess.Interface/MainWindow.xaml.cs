@@ -178,8 +178,8 @@ namespace Chess
             }
             catch (GameEndedException ex) { }
             //CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
-            /*UnselectCurrent();
-            Redraw();*/
+            UnselectCurrent();
+            Redraw();
         }
         Step step;
         private void MakeComputerStep()
@@ -193,13 +193,14 @@ namespace Chess
             };
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
-            
+            CurrentStepSide = board.CurrentStepSide;
+
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             PrintLog();
             if (!CkeckState()) 
                 blocked = false;
 
-            CurrentStepSide = board.CurrentStepSide;
+            
             availableSteps = board.GetAvailableSteps(currentStepSide);
 
             UnselectCurrent();
