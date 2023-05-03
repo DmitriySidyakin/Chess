@@ -234,10 +234,7 @@ namespace Chess
                 step = computerPlayer.MakeStep();
             }
             catch(GameEndedException ex)
-            {
-                // TODO: Добавить обработчик окончания игры
-            }
-            CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
+            { }
         }
 
         private void PlayStepSound(string v)
