@@ -175,8 +175,6 @@ namespace Chess
             try
             {
                     MakeComputerStep();
-                    if (!CkeckState())
-                        blocked = false;
             }
             catch (GameEndedException ex) { }
             //CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
@@ -293,12 +291,12 @@ namespace Chess
                 if (currentStepSide != Side.Black)
                 {
                     ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheck"]);
-                    return false;
+                    return true;
                 }
                 else
                 {
                     ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheck"]);
-                    return false ;
+                    return true;
                 }
             }
 
