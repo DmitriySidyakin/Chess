@@ -179,7 +179,7 @@ namespace Chess
             blocked = true;
             bool eat = board.Positions[x, y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
-            
+            CurrentStepSide = board.CurrentStepSide;
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             PrintLog();
             if (!CkeckState())
@@ -197,7 +197,7 @@ namespace Chess
                 }
                 else
                 {
-                    CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
+                    
                 }
             }
             catch (GameEndedException ex) { }
@@ -217,6 +217,7 @@ namespace Chess
             };
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
+            CurrentStepSide = board.CurrentStepSide;
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             PrintLog();
             if (!CkeckState())
@@ -284,7 +285,7 @@ namespace Chess
         {
             if (board.IsCheckmate(Side.Black) || board.IsCheckmate(Side.White))
             {
-                if (currentStepSide == Side.Black)
+                if (currentStepSide != Side.Black)
                 {
                     ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheckmate"]);
                     return true;
@@ -298,7 +299,7 @@ namespace Chess
 
             if (board.IsMate(Side.Black) || board.IsMate(Side.White))
             {
-                if (currentStepSide == Side.Black)
+                if (currentStepSide != Side.Black)
                 {
                     ShowText(CurrentLanguage.MessagesStrings["BlackIsOnMate"]);
                     return true;
@@ -312,7 +313,7 @@ namespace Chess
 
             if (board.IsCheck(Side.Black) || board.IsCheck(Side.White))
             {
-                if (currentStepSide == Side.Black)
+                if (currentStepSide != Side.Black)
                 {
                     ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheck"]);
                     return true;
