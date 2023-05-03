@@ -53,6 +53,8 @@ namespace Chess
 
         public string logText = "";
 
+        private MediaPlayer mediaPlayer = new MediaPlayer();
+
         private Side CurrentStepSide
         {
             get
@@ -178,7 +180,7 @@ namespace Chess
             PrintLog();
             if (!CkeckState())
                 blocked = false;
-
+            PlayStepSound("");
             UnselectCurrent();
             Redraw();
             try
@@ -222,12 +224,19 @@ namespace Chess
             step = computerPlayer.MakeStep();
         }
 
+        private void PlayStepSound(string v)
+        {
+            Uri stepSoundPath = new Uri("sound\\step.mp3", UriKind.Relative);
+            mediaPlayer.Open(stepSoundPath);
+            mediaPlayer.Play();
+        }
+
         private string GetCurrentLogString()
         {
             return logText;
         }
 
-        private void AddLogString(LogEntity e)
+        private void AddLogString(StepEntity e)
         {
             logText += language.MakeShortLogString(e);
         }
@@ -240,7 +249,7 @@ namespace Chess
             {
                 if (e is StepEntity)
                 {
-                    PrintStepLogEntity(e as StepEntity);
+                    PrintStepLogEntity(e);
                 }
             }
         }
@@ -393,19 +402,19 @@ namespace Chess
             language = lng;
             language.MakeInterfaceTranslation(this, newGameSettings);
 
-            foreach (MenuItem l in this.Language.Items)
+            foreach (MenuItem l in this.SelectLanguage.Items)
                 l.IsChecked = false;
 
             CurrentLanguage = language;
 
             if (language is EnglishLanguage)
             {
-                ((MenuItem)Language.FindName("English")).IsChecked = true;
+                ((MenuItem)SelectLanguage.FindName("English")).IsChecked = true;
             }
 
             if (language is RussianTranslation)
             {
-                ((MenuItem)Language.FindName("Russian")).IsChecked = true;
+                ((MenuItem)SelectLanguage.FindName("Russian")).IsChecked = true;
             }
 
             PrintLog();
@@ -556,22 +565,6 @@ namespace Chess
             return figureCurrent;
         }
 
-        private static void GetColAndRowOfFigure(MouseEventArgs e, out int col, out int row)
-        {
-            (col, row) = (-1, -1);
-            if (e.Source is Path)
-            {
-                var path = e.Source as Path;
-                if (path is not null && path.Name.StartsWith("Figure_"))
-                {
-                    string cellNumber = path.Name.Substring(7, path.Name.Length - 7);
-                    var colRowNums = cellNumber.Split('_');
-                    col = int.Parse(colRowNums[0]);
-                    row = int.Parse(colRowNums[1]);
-                }
-            }
-        }
-
         public void DrawBoard(double size)
         {
             ChessBoard.Children.Clear();
@@ -651,22 +644,6 @@ namespace Chess
             {
                 if (!(board.Positions[col, row].Man is Figures.Empty))
                     activeId = DrawFigure(GetScale(), board.Positions[col, row].Man, board.Positions[col, row].Side, col, row, color);
-            }
-        }
-
-        private static void GetColAndRowOfRectangle(MouseEventArgs e, out int col, out int row)
-        {
-            (col, row) = (-1, -1);
-            if (e.Source is Rectangle)
-            {
-                var rectangle = e.Source as Rectangle;
-                if (rectangle is not null && rectangle.Name.StartsWith("Cell_"))
-                {
-                    string cellNumber = rectangle.Name.Substring(5, rectangle.Name.Length - 5);
-                    var colRowNums = cellNumber.Split('_');
-                    col = int.Parse(colRowNums[0]);
-                    row = int.Parse(colRowNums[1]);
-                }
             }
         }
 
@@ -867,20 +844,13 @@ StrokeThickness='{(int)(2 * scale)}' Fill='{GetHtmlColorOfFigureSide(figure.Side
     </PathGeometry>
   </Path.Data>
 </Path>"),
-            //_ => throw new ArgumentOutOfRangeException(nameof(figure.Man)),
+            _ => throw new ArgumentOutOfRangeException(nameof(figure.Man)),
         };
 
         private string GetHtmlColorOfFigureSide(Chess.Entity.Side side) => side switch
         {
             Entity.Side.Black => "#000000",
             Entity.Side.White => "#FFFFFF",
-            _ => throw new ArgumentOutOfRangeException()
-        };
-
-        private string GetHtmlColorOfFigureSideBorder(Chess.Entity.Side side) => side switch
-        {
-            Entity.Side.Black => "#FFFFFF",
-            Entity.Side.White => "#000000",
             _ => throw new ArgumentOutOfRangeException()
         };
 

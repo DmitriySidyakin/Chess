@@ -62,14 +62,14 @@
             <MenuItem x:Name="GameLog" Header="GameLog" />
             <MenuItem x:Name="OpenGame" Header="OpenGame" />
             <MenuItem x:Name="SaveGame" Header="SaveGame" />
-            <MenuItem x:Name="Language" Header="Language" AllowDrop="True">
+            <MenuItem x:Name="SelectLanguage" Header="Language" AllowDrop="True">
                 <MenuItem x:Name="English" Header="English" IsChecked="True" Click="English_Click"/>
                 <MenuItem x:Name="Russian" Header="Русский / Russian" Click="Russian_Click"/>
             </MenuItem>
         </Menu>
         <Canvas Margin="100,29,0,9" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Left" Width="396" MouseMove="ChessBoard_MouseMove" Mouse.MouseDown="ChessBoard_MouseDown" Grid.Column="0" MouseLeave="ChessBoard_MouseLeave"/>
         <TextBox x:Name="InfoDesk" Grid.Column="1" Margin="20,39,20,20" IsEnabled="true" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" TextChanged="InfoDesk_TextChanged"
-         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True">
         </TextBox>
         <Label x:Name="BlackPlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,29,10,0" VerticalAlignment="Top" FontSize="18"/>
         <Label x:Name="WhitePlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,0,10,9" VerticalAlignment="Bottom" FontSize="18"/>
