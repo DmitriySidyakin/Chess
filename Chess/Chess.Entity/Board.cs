@@ -920,9 +920,13 @@ namespace Chess.Entity
         /// <returns>Положения туры (Rook) до рокировки. Возможны 0, 1на, 2е рокировки</returns>
         private List<CellPoint> GetRookPositionsBeforeCastling(CellPoint start)
         {
-            var figure = Positions[start.X, start.Y];
+            
 
             List<CellPoint> results = new List<CellPoint>();
+            if (start.X == -1 || start.Y == -1)
+                return results;
+            var figure = Positions[start.X, start.Y];
+
             Side side = figure.Side;
 
             // Короткая рокировка

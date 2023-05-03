@@ -223,7 +223,14 @@ namespace Chess
         private void MakeComputerPlayerStepThread()
         {
             FiveStepPlayer computerPlayer = new(board);
-            step = computerPlayer.MakeStep();
+            try
+            {
+                step = computerPlayer.MakeStep();
+            }
+            catch(GameEndedException ex)
+            {
+                // TODO: Добавить обработчик окончания игры
+            }
             CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
         }
 
