@@ -175,7 +175,7 @@ namespace Chess
         private void MakeStep(sbyte x, sbyte y)
         {
             blocked = true;
-            bool eat = board.Positions[x, y].Man != Figures.Empty;
+            
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
             CurrentStepSide = board.CurrentStepSide;
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
@@ -213,7 +213,7 @@ namespace Chess
             {
                 Thread.Sleep(100);
             };
-            bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
+            
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
             CurrentStepSide = board.CurrentStepSide;
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
