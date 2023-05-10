@@ -193,7 +193,7 @@ namespace Chess
                 catch (GameEndedException ex) { }
             }
 
-            if (!CkeckState())
+            if (!CkeckState2())
                 blocked = false;
             UnselectCurrent();
             Redraw();
