@@ -506,7 +506,7 @@ namespace Chess
 
                 MakeComputerStep();
 
-                if (!CkeckState())
+                if (!CkeckState2())
                     blocked = false;
                 availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
                 PlayStepSound("");
