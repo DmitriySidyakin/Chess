@@ -5,14 +5,14 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Chess.ComputerPlayer
 {
-    public class FiveStepPlayer : IComputerPlayer
+    public class GraphStepPlayer : IComputerPlayer
     {
-        public string Name => "FiveStepPlayer";
+        public string Name => "GraphStepPlayer";
 
         Board board;
         Side currentStepSide;
 
-        public FiveStepPlayer(Board board) { this.board = new Board(board.ToByteArray()); currentStepSide = board.CurrentStepSide; }
+        public GraphStepPlayer(Board board) { this.board = new Board(board.ToByteArray()); currentStepSide = board.CurrentStepSide; }
 
         public Board CurrentBoard
         {
@@ -48,7 +48,7 @@ namespace Chess.ComputerPlayer
 
 
         // TODO: Fix a current step error
-        public Step MakeStep()
+        public Step MakeStep(int deep)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board.ToByteArray());
@@ -76,7 +76,7 @@ namespace Chess.ComputerPlayer
                     var step = weightedGraphChessBoards[i].AddEmptyNode();
                     step.Data = stepCP;
                     var edge = weightedGraphChessBoards[i].AddEdge(root, step, GetFigureWeight(stepCP));
-                    MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP);
+                    MakeStep2(weightedGraphChessBoards[i], newBoard, rootCP, stepCP, deep);
                     /*}*/
                     GC.Collect();
                 }
@@ -145,9 +145,8 @@ namespace Chess.ComputerPlayer
             }
         }
 
-        public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
+        public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int deep, int layer = 0)
         {
-            int deep = 0; // Повышает сложность ИИ, но снижает производительность. = 5
             if (layer == deep) return;
 
             var newBoard = new Board(board.ToByteArray());

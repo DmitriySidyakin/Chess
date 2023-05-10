@@ -29,7 +29,7 @@
             <ComboBoxItem IsSelected="True"/>
         </ComboBox>
         <ComboBox x:Name="ComputerName2" HorizontalAlignment="Center" Margin="0,129,0,0" VerticalAlignment="Top" Width="168" FontSize="18" IsEditable="False" Visibility="Hidden" Grid.Column="1" Height="30">
-            <ComboBoxItem x:Name="ShortestPath2" Content="ShortestPath" IsSelected="True"/>
+            <ComboBoxItem IsSelected="True"/>
         </ComboBox>
         <Button x:Name="StartNewGameButton" Content="StartNewGame" HorizontalAlignment="Center" Margin="0,216,0,0" VerticalAlignment="Top" FontSize="18" Click="StartNewGameButton_Click" Grid.ColumnSpan="2" Height="28" Width="265"/>
         <Label x:Name="GameLevelLabel" Content="GameLevel" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" FontSize="18" Visibility="Hidden" Height="34" Width="97"  Grid.Column="0"/>

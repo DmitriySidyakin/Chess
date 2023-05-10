@@ -223,10 +223,10 @@ namespace Chess
         private /*async Task<int>*/ void MakeComputerPlayerStepThread()
         {
             int result = 0;
-            FiveStepPlayer computerPlayer = new(board);
+            GraphStepPlayer computerPlayer = new(board);
             try
             {
-                step = computerPlayer.MakeStep();
+                step = computerPlayer.MakeStep(0);
             }
             catch (GameEndedException ex)
             { result = -1; }

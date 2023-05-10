@@ -15,6 +15,6 @@ namespace Chess.ComputerPlayer
 
         public Side CurrentStepSide { get; set; }
 
-        public Step MakeStep();
+        public Step MakeStep(int deep);
     }
 }
