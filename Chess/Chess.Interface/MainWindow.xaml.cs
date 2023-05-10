@@ -193,10 +193,16 @@ namespace Chess
 
         }
         Step step;
+        AutoResetEvent waitHandler = new AutoResetEvent(true);  // объект-событие
         private async void MakeComputerStep()
         {
             blocked = true;
-            await MakeComputerPlayerStepThread();
+            //await MakeComputerPlayerStepThread();
+            Thread myThread = new(MakeComputerPlayerStepThread, 2000 * 1024 * 1024);
+            myThread.Name = $"Поток ИИ";
+            waitHandler.WaitOne();  // ожидаем сигнала
+            myThread.Start();
+            waitHandler.WaitOne();  // ожидаем сигнала
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
             CurrentStepSide = board.CurrentStepSide;
@@ -206,7 +212,7 @@ namespace Chess
             
         }
 
-        private async Task<int> MakeComputerPlayerStepThread()
+        private /*async Task<int>*/ void MakeComputerPlayerStepThread()
         {
             int result = 0;
             FiveStepPlayer computerPlayer = new(board);
@@ -216,8 +222,8 @@ namespace Chess
             }
             catch(GameEndedException ex)
             { result = -1; }
-
-            return result;
+            waitHandler.Set();  //  сигнализируем, что waitHandler в сигнальном состоянии
+            //return result;
         }
 
         private void PlayStepSound(string v)
