@@ -173,7 +173,7 @@ namespace Chess
             Redraw();
 
             bool doesPCThink = false;
-            if (!CkeckState())
+            if (!CkeckState2())
             {
                 blocked = false;
                 doesPCThink = true;
@@ -210,7 +210,7 @@ namespace Chess
             myThread.Name = $"Поток ИИ";
             waitHandler.WaitOne();  // ожидаем сигнала
             myThread.Start();
-            waitHandler.WaitOne();  // ожидаем сигнала
+            waitHandler.WaitOne(); waitHandler.Set();
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
             CurrentStepSide = board.CurrentStepSide;
@@ -314,6 +314,55 @@ namespace Chess
                 {
                     ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheck"]);
                     return true;
+                }
+            }
+
+
+
+            return false;
+        }
+
+        private bool CkeckState2()
+        {
+            if (board.IsCheckmate(Side.Black) || board.IsCheckmate(Side.White))
+            {
+                if (currentStepSide != Side.Black)
+                {
+                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheckmate"]);
+                    return true;
+                }
+                else
+                {
+                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheckmate"]);
+                    return true;
+                }
+            }
+
+            if (board.IsMate(Side.Black) || board.IsMate(Side.White))
+            {
+                if (currentStepSide != Side.Black)
+                {
+                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnMate"]);
+                    return true;
+                }
+                else
+                {
+                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnMate"]);
+                    return true;
+                }
+            }
+
+            if (board.IsCheck(Side.Black) || board.IsCheck(Side.White))
+            {
+                if (currentStepSide != Side.Black)
+                {
+                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheck"]);
+                    return false;
+                }
+                else
+                {
+                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheck"]);
+                    return false;
                 }
             }
 
