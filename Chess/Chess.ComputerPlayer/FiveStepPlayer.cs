@@ -91,8 +91,8 @@ namespace Chess.ComputerPlayer
             if (shortestPaths.Count() > 0)
             {
                 maxI = new Random().Next(shortestPaths.Count() - 1);
-                long maxV = shortestPaths[0].Item2;
-                for (int i = 1; i < shortestPaths.Length; i++)
+                long maxV = shortestPaths[maxI].Item2;
+                for (int i = 0; i < shortestPaths.Length; i++)
                 {
                     if (shortestPaths[i].Item2 > maxV)
                     {
@@ -147,7 +147,7 @@ namespace Chess.ComputerPlayer
 
         public void MakeStep2(WeightedGraph<CellPoint> weightedGraphChessBoard, Board board, CellPoint rootCP, CellPoint stepCP, int layer = 0)
         {
-            int deep = 0; // Повышает сложность ИИ, но снижает производительность.
+            int deep = 5; // Повышает сложность ИИ, но снижает производительность. = 5
             if (layer == deep) return;
 
             var newBoard = new Board(board.ToByteArray());
