@@ -181,6 +181,7 @@ namespace Chess
                 try
                 {
                     MakeComputerStep();
+                    PlayStepSound("");
                 }
                 catch (GameEndedException ex) { }
             }
