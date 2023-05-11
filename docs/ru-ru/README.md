@@ -19,6 +19,9 @@
 
 Шаги:
 
+### 2.0. Зависимоть от проекта https://github.com/DmitriySidyakin/Graph.
+Скачайте проект https://github.com/DmitriySidyakin/Graph. В решении есть зависимость от него.
+
 ### 2.1. Откройте Visual Studion 2022 Community
 
 Кликните на значёк:
