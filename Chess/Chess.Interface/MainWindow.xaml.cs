@@ -165,6 +165,7 @@ namespace Chess
             bool eat = board.Positions[x, y].Man != Figures.Empty;
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
             CurrentStepSide = board.CurrentStepSide;
+            availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             PrintLog();
 
@@ -191,10 +192,6 @@ namespace Chess
                     availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
                 }
                 catch (GameEndedException ex) { }
-            }
-            else
-            {
-                availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
             }
 
             if (!CkeckState2())
