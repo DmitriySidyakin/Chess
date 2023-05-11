@@ -7,7 +7,8 @@
 
 1. **Загружается Visual Studion 2022 Community** из сайта Microsoft: [https://visualstudio.microsoft.com/vs/community/](https://visualstudio.microsoft.com/vs/community/)
 2. **Опубликуйте проект из корня**: [https://github.com/DmitriySidyakin/Chess](https://github.com/DmitriySidyakin/Chess)
-3. **Начните игру**
+  2.1. В решении есть зависимоть от проекта https://github.com/DmitriySidyakin/Graph    
+4. **Начните игру**
 
 *Смотрите как это*:
 
