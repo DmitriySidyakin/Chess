@@ -7,7 +7,8 @@ Documentation is from: 26/04/2023
 
 1. **Download Visual Studion 2022 Community** from Microsoft's site: [https://visualstudio.microsoft.com/vs/community/](https://visualstudio.microsoft.com/vs/community/)
 2. **Publish the project from the root** [Chess]([https://github.com/DmitriySidyakin/Chess])[https://github.com/DmitriySidyakin/Chess]
-3. **Start the game**
+  2.1. The solution has a dependency on the project https://github.com/DmitriySidyakin/Graph
+4. **Start the game**
 
 *See how does it is*:
 
