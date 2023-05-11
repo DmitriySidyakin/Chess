@@ -192,6 +192,10 @@ namespace Chess
                 }
                 catch (GameEndedException ex) { }
             }
+            else
+            {
+                availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+            }
 
             if (!CkeckState2())
                 blocked = false;
