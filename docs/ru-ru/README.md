@@ -6,9 +6,8 @@
 ## Инструкция для Visual Studio 2022 Community
 
 1. **Загружается Visual Studion 2022 Community** из сайта Microsoft: [https://visualstudio.microsoft.com/vs/community/](https://visualstudio.microsoft.com/vs/community/)
-2. **Опубликуйте проект из корня**: [https://github.com/DmitriySidyakin/Chess](https://github.com/DmitriySidyakin/Chess)
-  2.1. В решении есть зависимоть от проекта https://github.com/DmitriySidyakin/Graph    
-4. **Начните игру**
+2. **Опубликуйте проект из корня**: [https://github.com/DmitriySidyakin/Chess](https://github.com/DmitriySidyakin/Chess). В решении есть зависимоть от проекта https://github.com/DmitriySidyakin/Graph    
+3. **Начните игру**
 
 *Смотрите как это*:
 
