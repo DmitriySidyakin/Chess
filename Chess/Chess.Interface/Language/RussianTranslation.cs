@@ -44,8 +44,8 @@ namespace Chess.InterfaceTranslation
             newGameSettings.Computer2.Content = "Компьютерный игрок";
             newGameSettings.Player1.Content = "Игрок";
             newGameSettings.Player2.Content = "Игрок";
-            newGameSettings.ComputerName1.Items[0] = "Простой игрок";
-            newGameSettings.ComputerName2.Items[0] = "Простой игрок";
+            newGameSettings.ComputerName1.Items[0] = "Для детей";
+            newGameSettings.ComputerName2.Items[0] = "Для детей";
             newGameSettings.ComputerName1.SelectedIndex = 0;
             newGameSettings.ComputerName2.SelectedIndex = 0;
             newGameSettings.StartNewGameButton.Content = "Начать новую игру";
