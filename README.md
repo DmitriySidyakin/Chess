@@ -16,4 +16,5 @@ Artificial intelligence is written on my graph library: [Graph](https://github.c
 ## Описание игры и кода (на русском)
 
 В игру можно играть в двоём на одном компьютере. В игре также есть режим "Для Детей".
+
 Искуственный интелект написан на моей библиотеки для графов: [Graph](https://github.com/DmitriySidyakin/Graph)
