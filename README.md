@@ -9,7 +9,7 @@ English description: [en-us](docs/en-us/README.md)
 
 ## Description of the game and code (in English)
 
-The game can be played together on the same computer. The game also has "For Kids" mode.
+The game can be played together on the same computer. The game also has "For Children" mode.
 
 Artificial intelligence is written on my graph library: [Graph](https://github.com/DmitriySidyakin/Graph )
 
