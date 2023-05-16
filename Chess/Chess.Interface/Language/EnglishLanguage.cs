@@ -112,8 +112,8 @@ namespace Chess.InterfaceTranslation
                 {
                     0 => stepString,
                     3 => $"{stepString}. {stepSide} is on Check!",
-                    2 => $"{stepString}. {stepSide} is on Mate!",
-                    1 => $"{stepString}. {stepSide} is on Checkmate!",
+                    2 => $"{stepString}.\n{stepSide} is on Mate!",
+                    1 => $"{stepString}.\n{stepSide} is on Checkmate!",
                     _ => "Log Error"
                 };
 
