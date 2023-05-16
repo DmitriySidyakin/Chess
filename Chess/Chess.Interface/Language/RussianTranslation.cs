@@ -105,7 +105,7 @@ namespace Chess.InterfaceTranslation
                 string leText = logEntityTypeId switch
                 {
                     0 => stepString,
-                    3 => $"{stepString}.{stepSide} поставили Шах!",
+                    3 => $"{stepString}. {stepSide} поставили Шах!",
                     2 => $"{stepString}.\n{stepSide} поставили Мат!",
                     1 => $"{stepString}.\n{stepSide} поставили Шах и Мат!",
                     _ => "Log Error"
