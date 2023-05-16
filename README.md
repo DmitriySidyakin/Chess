@@ -1,6 +1,6 @@
 # Chess / Шахматы
 
-## How to comile / Как скомпилировать
+## How to compile / Как скомпилировать
 
 
 English description: [en-us](docs/en-us/README.md)
