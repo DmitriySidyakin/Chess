@@ -73,12 +73,12 @@ namespace Chess.InterfaceTranslation
                 return new Dictionary<string, string>()
                 {
                     ["TheGameIsStarted"] = "The Game Is Started",
-                    ["BlackIsOnCheckmate"] = "Black Is On Checkmate",
-                    ["WhiteIsOnCheckmate"] = "White Is On Checkmate",
-                    ["BlackIsOnCheck"] = "Black Is On Check",
-                    ["WhiteIsOnCheck"] = "White Is On Check",
-                    ["BlackIsOnMate"] = "Black Is On Mate",
-                    ["WhiteIsOnMate"] = "White Is On Mate",
+                    ["BlackIsOnCheckmate"] = "Black make Checkmate",
+                    ["WhiteIsOnCheckmate"] = "White make Checkmate",
+                    ["BlackIsOnCheck"] = "Black make Check",
+                    ["WhiteIsOnCheck"] = "White make Check",
+                    ["BlackIsOnMate"] = "Black make Mate",
+                    ["WhiteIsOnMate"] = "White make Mate",
                     /*
                     [""] = "",
                     [""] = "",
