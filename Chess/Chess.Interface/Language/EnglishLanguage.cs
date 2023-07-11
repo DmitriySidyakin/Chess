@@ -111,9 +111,9 @@ namespace Chess.InterfaceTranslation
                 string leText = logEntityTypeId switch
                 {
                     0 => stepString,
-                    3 => $"{stepString}. {stepSide} is on Check!",
-                    2 => $"{stepString}.\n{stepSide} is on Mate!",
-                    1 => $"{stepString}.\n{stepSide} is on Checkmate!",
+                    3 => $"{stepString}. {stepSide} make Check!",
+                    2 => $"{stepString}.\n{stepSide} make Mate!",
+                    1 => $"{stepString}.\n{stepSide} make Checkmate!",
                     _ => "Log Error"
                 };
 
