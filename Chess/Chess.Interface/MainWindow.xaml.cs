@@ -502,6 +502,8 @@ namespace Chess
 
             blocked = this.GameSettings.Player1White == PlayerType.Computer;
 
+            availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+
             if (blocked)
             {
 
