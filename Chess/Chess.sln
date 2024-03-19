@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Entity", "Chess.Entit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Tests", "Chess.Tests\Chess.Tests.csproj", "{C6B9A1E7-3E5B-48A7-B637-5FC27B1682DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphAlgorithms", "..\..\Graph\GraphAlgorithms\GraphAlgorithms.csproj", "{0457AE4E-E981-455A-BCFA-2B080CB3DE63}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.CrazyEducator", "Chess.Educator\Chess.CrazyEducator.csproj", "{BCE49E87-2997-4C6F-8022-6BDCF63C2354}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.ComputerPlayer", "Chess.ComputerPlayer\Chess.ComputerPlayer.csproj", "{07129923-436E-4B96-964E-667F75BD0260}"
@@ -18,6 +16,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Settings", "Chess.Settings\Chess.Settings.csproj", "{CDE854E4-8B6A-4A15-A3AE-702334A12F3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Logging", "Chess.Logging\Chess.Logging.csproj", "{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphAlgorithms", "GraphAlgorithms\GraphAlgorithms.csproj", "{4E4F464B-8606-4A38-ABCD-6882CFE276A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,14 +51,6 @@ Global
 		{C6B9A1E7-3E5B-48A7-B637-5FC27B1682DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6B9A1E7-3E5B-48A7-B637-5FC27B1682DC}.Release|x64.ActiveCfg = Release|Any CPU
 		{C6B9A1E7-3E5B-48A7-B637-5FC27B1682DC}.Release|x64.Build.0 = Release|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Debug|x64.Build.0 = Debug|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Release|x64.ActiveCfg = Release|Any CPU
-		{0457AE4E-E981-455A-BCFA-2B080CB3DE63}.Release|x64.Build.0 = Release|Any CPU
 		{BCE49E87-2997-4C6F-8022-6BDCF63C2354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCE49E87-2997-4C6F-8022-6BDCF63C2354}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE49E87-2997-4C6F-8022-6BDCF63C2354}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -91,6 +83,14 @@ Global
 		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Release|x64.ActiveCfg = Release|Any CPU
 		{6C4B0D26-B2DA-404F-9525-A6429B71A9EA}.Release|x64.Build.0 = Release|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Debug|x64.Build.0 = Debug|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Release|x64.ActiveCfg = Release|Any CPU
+		{4E4F464B-8606-4A38-ABCD-6882CFE276A7}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

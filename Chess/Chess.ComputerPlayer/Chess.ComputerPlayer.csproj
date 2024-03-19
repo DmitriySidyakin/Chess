@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Graph\GraphAlgorithms\GraphAlgorithms.csproj" />
     <ProjectReference Include="..\Chess.Entity\Chess.Entity.csproj" />
+    <ProjectReference Include="..\GraphAlgorithms\GraphAlgorithms.csproj" />
   </ItemGroup>
 
 </Project>
