@@ -174,7 +174,7 @@ namespace Chess
             Redraw();
 
             bool doesPCThink = false;
-            if (!CkeckState2())
+            if (!CkeckState())
             {
                 blocked = false;
                 doesPCThink = true;
@@ -194,7 +194,7 @@ namespace Chess
                 catch (GameEndedException ex) { }
             }
 
-            if (!CkeckState2())
+            if (!CkeckState())
                 blocked = false;
             UnselectCurrent();
             Redraw();
@@ -275,55 +275,6 @@ namespace Chess
         }
 
         private bool CkeckState()
-        {
-            if (board.IsCheckmate(Side.Black) || board.IsCheckmate(Side.White))
-            {
-                if (currentStepSide != Side.Black)
-                {
-                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheckmate"]);
-                    return true;
-                }
-                else
-                {
-                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheckmate"]);
-                    return true;
-                }
-            }
-
-            if (board.IsMate(Side.Black) || board.IsMate(Side.White))
-            {
-                if (currentStepSide != Side.Black)
-                {
-                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnMate"]);
-                    return true;
-                }
-                else
-                {
-                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnMate"]);
-                    return true;
-                }
-            }
-
-            if (board.IsCheck(Side.Black) || board.IsCheck(Side.White))
-            {
-                if (currentStepSide != Side.Black)
-                {
-                    ShowText(CurrentLanguage.MessagesStrings["BlackIsOnCheck"]);
-                    return true;
-                }
-                else
-                {
-                    ShowText(CurrentLanguage.MessagesStrings["WhiteIsOnCheck"]);
-                    return true;
-                }
-            }
-
-
-
-            return false;
-        }
-
-        private bool CkeckState2()
         {
             if (board.IsCheckmate(Side.Black) || board.IsCheckmate(Side.White))
             {
@@ -509,7 +460,7 @@ namespace Chess
 
                 MakeComputerStep();
 
-                if (!CkeckState2())
+                if (!CkeckState())
                     blocked = false;
                 availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
                 PlayStepSound("");
