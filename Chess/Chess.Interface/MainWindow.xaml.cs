@@ -191,7 +191,9 @@ namespace Chess
                     PlayStepSound("");
                     availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
                 }
-                catch (GameEndedException ex) { }
+                catch (GameEndedException ex) {
+                    _ = CkeckState();
+                }
             }
 
             if (!CkeckState())
@@ -203,7 +205,7 @@ namespace Chess
         }
         Step step;
         AutoResetEvent waitHandler = new AutoResetEvent(true);  // объект-событие
-        private async void MakeComputerStep()
+        private void MakeComputerStep()
         {
             blocked = true;
             //await MakeComputerPlayerStepThread();
