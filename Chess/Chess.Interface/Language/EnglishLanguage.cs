@@ -24,7 +24,7 @@ namespace Chess.InterfaceTranslation
                     ["GameLog"] = "Game Log",
                     ["OpenGame"] = "Open Game",
                     ["SaveGame"] = "Save Game",
-                    ["Language"] = "Language",
+                    ["SelectLanguage"] = "Language",
                     /*
                     [""] = "",
                     [""] = "",

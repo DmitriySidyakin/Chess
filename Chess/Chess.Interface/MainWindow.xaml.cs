@@ -229,7 +229,8 @@ namespace Chess
             GraphStepPlayer computerPlayer = new(board);
             try
             {
-                step = computerPlayer.MakeStep(0);
+                step = computerPlayer.MakeStep(0);//0 - default
+                //step = computerPlayer.MakeStep(1);
             }
             catch (GameEndedException ex)
             { result = -1; }
