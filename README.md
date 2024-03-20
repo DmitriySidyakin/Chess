@@ -9,7 +9,7 @@ English description: [en-us](docs/en-us/README.md)
 
 ## Description of the game and code (in English)
 
-The game can be played together on the same computer. The game also has "For Children" mode.
+The game can be played together on the same computer. The game also has "For Kids" mode.
 
 Artificial intelligence is written on my graph library: [Graph](https://github.com/DmitriySidyakin/Graph ), but it is not for PC. The AI problem for chess is: [Shannon number](https://en.wikipedia.org/wiki/Shannon_number).
 The game just use its the "For Kids" mode. It just is a random step. 
