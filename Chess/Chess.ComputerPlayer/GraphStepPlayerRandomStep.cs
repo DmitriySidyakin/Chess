@@ -5,14 +5,14 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Chess.ComputerPlayer
 {
-    public class GraphStepPlayer : IComputerPlayer
+    public class GraphStepPlayerRandomStep : IComputerPlayer
     {
         public string Name => "GraphStepPlayer";
 
         Board board;
         Side currentStepSide;
 
-        public GraphStepPlayer(Board board) { this.board = new Board(board.ToByteArray()); currentStepSide = board.CurrentStepSide; }
+        public GraphStepPlayerRandomStep(Board board) { this.board = new Board(board.ToByteArray()); currentStepSide = board.CurrentStepSide; }
 
         public Board CurrentBoard
         {

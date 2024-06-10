@@ -196,7 +196,7 @@ namespace Chess
                 }
             }
 
-            if (!CkeckState())
+            if (!CkeckState() && availableSteps.Count > 0)
                 blocked = false;
             UnselectCurrent();
             Redraw();
@@ -226,7 +226,7 @@ namespace Chess
         private /*async Task<int>*/ void MakeComputerPlayerStepThread()
         {
             int result = 0;
-            GraphStepPlayer computerPlayer = new(board);
+            GraphStepPlayerRandomStep computerPlayer = new(board);
             try
             {
                 step = computerPlayer.MakeStep(0);//0 - default
@@ -320,8 +320,6 @@ namespace Chess
                     return false;
                 }
             }
-
-
 
             return false;
         }
