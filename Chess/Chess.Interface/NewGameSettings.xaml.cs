@@ -1,4 +1,5 @@
 ﻿using Chess.Interface;
+using Chess.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,6 +120,28 @@ namespace Chess
                 }
             }
         }
+        private ComputerType GetLevelOfComputerPlayer()
+        {
+            
+            if (ComboBoxPlayer1.SelectedIndex == 1 /* Computer */)
+            {
+                switch (ComputerName1.SelectedIndex)
+                {
+                    case 0: return ComputerType.ForKids;
+                    case 1: return ComputerType.SimpleComputerPlayer;
+                }
+            }
+            else if (ComboBoxPlayer2.SelectedIndex == 1 /* Computer */) {
+                switch (ComputerName2.SelectedIndex)
+                {
+                    case 0: return ComputerType.ForKids;
+                    case 1: return ComputerType.SimpleComputerPlayer;
+                }
+            }
+
+            // Не достижимо по логике
+            return ComputerType.ForKids;
+        }
 
         private void StartNewGameButton_Click(object sender, RoutedEventArgs e)
         {
@@ -128,6 +151,8 @@ namespace Chess
 
             mainWindow.GameSettings.Player1WhiteName = PlayerName1.Text;
             mainWindow.GameSettings.Player2BlackName = PlayerName2.Text;
+
+            mainWindow.GameSettings.ComputerType = GetLevelOfComputerPlayer();
 
             this.Visibility = Visibility.Hidden;
             mainWindow.EndGame();

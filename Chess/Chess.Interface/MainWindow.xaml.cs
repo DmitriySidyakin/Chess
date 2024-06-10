@@ -209,7 +209,7 @@ namespace Chess
         {
             blocked = true;
             //await MakeComputerPlayerStepThread();
-            Thread myThread = new(MakeComputerPlayerStepThread, 2000 * 1024 * 1024);
+            Thread myThread = new(MakeComputerPlayerStepThread, 20 * 1024 * 1024);
             myThread.Name = $"Поток ИИ";
             waitHandler.WaitOne();  // ожидаем сигнала
             myThread.Start();
@@ -223,17 +223,31 @@ namespace Chess
 
         }
 
-        private /*async Task<int>*/ void MakeComputerPlayerStepThread()
+        private void MakeComputerPlayerStepThread()
         {
             int result = 0;
-            GraphStepPlayerRandomStep computerPlayer = new(board);
-            try
+            if (GameSettings.ComputerType == ComputerType.ForKids)
             {
-                step = computerPlayer.MakeStep(0);//0 - default
-                //step = computerPlayer.MakeStep(1);
+                GraphStepPlayerRandomStep computerPlayer = new(board);
+                try
+                {
+                    step = computerPlayer.MakeStep(0);//0 - default
+                                                      //step = computerPlayer.MakeStep(1);
+                }
+                catch (GameEndedException ex)
+                { result = -1; }
             }
-            catch (GameEndedException ex)
-            { result = -1; }
+            else if (GameSettings.ComputerType == ComputerType.SimpleComputerPlayer)
+            {
+                SimpleComputerPlayer computerPlayer = new(board);
+                try
+                {
+                    step = computerPlayer.MakeStep(0);//0 - default
+                                                      //step = computerPlayer.MakeStep(1);
+                }
+                catch (GameEndedException ex)
+                { result = -1; }
+            }
             waitHandler.Set();  //  сигнализируем, что waitHandler в сигнальном состоянии
             //return result;
         }

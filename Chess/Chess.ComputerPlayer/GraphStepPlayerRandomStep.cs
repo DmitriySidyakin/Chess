@@ -46,8 +46,6 @@ namespace Chess.ComputerPlayer
             return availableSteps.Count(s => s.Key.X == x && s.Key.Y == y && s.Value.Count(v => v.X == x && v.Y == y) > 0) > 0;
         }
 
-
-        // TODO: Fix a current step error
         public Step MakeStep(int deep)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур

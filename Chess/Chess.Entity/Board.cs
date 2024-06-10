@@ -324,11 +324,44 @@ namespace Chess.Entity
             
         }
 
+        public Dictionary<CellPoint, List<CellPoint>> GetAvailableSteps(Side side, CellPoint cell)
+        {
+            var availableSteps = GetAvailableStepsPre(side);
+
+            Dictionary<CellPoint, List<CellPoint>> filteredSteps = new Dictionary<CellPoint, List<CellPoint>>();
+
+            foreach (var stepStart in availableSteps.Keys)
+            {
+                foreach (var stepEnd in availableSteps[stepStart])
+                {
+                    if (!IsStepInFutureCheck(stepStart, stepEnd)/*true*/)
+                    {
+                        if (!filteredSteps.ContainsKey(stepStart))
+                        {
+                            filteredSteps.Add(stepStart, new List<CellPoint>());
+                        }
+
+                        filteredSteps[stepStart].Add(stepEnd);
+                    }
+                }
+            }
+
+            return filteredSteps;
+
+        }
+
         public Dictionary<CellPoint, List<CellPoint>> GetAvailableStepsPre(Side side)
         {
             var resultPositions = GetStepsWithoutCastlingPre(side);
 
             AddCastlingsInResult(ref resultPositions, side);
+
+            return resultPositions;
+        }
+
+        public Dictionary<CellPoint, List<CellPoint>> GetAvailableStepsPre(Side side, CellPoint cell)
+        {
+            var resultPositions = GetStepsWithoutCastlingPre(cell);
 
             return resultPositions;
         }
@@ -377,6 +410,19 @@ namespace Chess.Entity
                         result.Add(current, GetAvailiableStepsWithoutCastlingForPre(current));
                     }
                 }
+
+            return result;
+        }
+
+        private Dictionary<CellPoint, List<CellPoint>> GetStepsWithoutCastlingPre(CellPoint cell)
+        {
+            Dictionary<CellPoint, List<CellPoint>> result = new Dictionary<CellPoint, List<CellPoint>>();
+
+            if (Positions[cell.X, cell.Y].Man != Figures.Empty)
+            {
+                var current = new CellPoint() { X = (sbyte)cell.X, Y = (sbyte)cell.Y };
+                result.Add(current, GetAvailiableStepsWithoutCastlingForPre(current));
+            }
 
             return result;
         }

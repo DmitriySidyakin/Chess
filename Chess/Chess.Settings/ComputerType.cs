@@ -8,6 +8,8 @@ namespace Chess.Settings
 {
     public enum ComputerType : byte
     {
-        ShortestPath = 0,
+        ShortestPath = 0, // Impossible by hardness of computation
+        ForKids = 1,
+        SimpleComputerPlayer = 2,
     }
 }
