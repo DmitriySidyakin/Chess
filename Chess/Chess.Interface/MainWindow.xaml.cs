@@ -192,18 +192,25 @@ namespace Chess
                 {
                     MakeComputerStep();
                     PlayStepSound("");
-                    availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+                    availableSteps = board.GetAvailableSteps(Board.GetOppositeSide(board.CurrentStepSide));
                 }
-                catch (GameEndedException ex) {
+                catch (GameEndedException ex)
+                {
+                    if (availableSteps.Count == 0)
+                    {
+                        board.CurrentStepSide = Board.GetOppositeSide(board.CurrentStepSide);
+                    }
                     _ = CkeckState();
                 }
             }
 
             if (!CkeckState() && availableSteps.Count > 0)
                 blocked = false;
+            /*else
+                CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;*/
             UnselectCurrent();
             Redraw();
-            //CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;
+            
 
         }
         Step step;
