@@ -210,8 +210,6 @@ namespace Chess
                 CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;*/
             UnselectCurrent();
             Redraw();
-            
-
         }
         Step step;
         AutoResetEvent waitHandler = new AutoResetEvent(true);  // объект-событие
@@ -229,7 +227,6 @@ namespace Chess
 
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             PrintLog();
-
         }
 
         private void MakeComputerPlayerStepThread()

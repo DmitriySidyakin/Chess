@@ -79,8 +79,7 @@ namespace Chess.ComputerPlayer
             }
 
             // Код уклонения от удара. 
-            // Отступаем, возможно под другой удар.
-            // Исправить ход не под другой удар. Если нет такого, то не важно.
+            // Ход не под другой удар. Если нет такого, то не важно.
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             var anotherPlayerLastStep = new CellPoint() { X = (sbyte)lastPlayerX, Y = (sbyte)lastPlayerY }; // Конвертируем в нужный тип данных
             var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep); // Получаем его ходы атаки
@@ -107,7 +106,7 @@ namespace Chess.ComputerPlayer
                                     foreach (var reallyStep in steps)
                                     {
                                         if (availableStep.X == reallyStep.X && availableStep.Y == reallyStep.X)
-                                        { 
+                                        {
                                             continue; 
                                         }
                                         else
@@ -137,7 +136,9 @@ namespace Chess.ComputerPlayer
                     CellPoint stepCP = availableSteps[rootCP]
                             .ToArray()[j];
 
-                    if (!IsItDangerous(stepCP)) { return new Step(rootCP, stepCP); }
+                    if (!IsItDangerous(stepCP)) {
+                        return new Step(rootCP, stepCP);
+                    }
                 }
             }
 
