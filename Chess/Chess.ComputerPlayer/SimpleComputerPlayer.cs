@@ -92,7 +92,6 @@ namespace Chess.ComputerPlayer
                     // Начальная фигура хода
                     CellPoint rootCP = awaySteps.Keys.ElementAt(0);
 
-                    
                     // Конец хода
                     CellPoint stepCP = availableSteps[rootCP].First();
 
