@@ -103,7 +103,7 @@ namespace Chess.ComputerPlayer
                 }
             }
 
-            // Если не съели и не уклонились, то случайно ходим, но не под удар.
+            // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
             int maxIterations = 1000;
             int k = 0;
@@ -125,12 +125,17 @@ namespace Chess.ComputerPlayer
             // Иначе, случайно ходим:
             CellPoint rootCPEnd = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
             CellPoint stepCPEnd = rootCPEnd;
+            
+            while(availableSteps[rootCPEnd].Count < 1)
+            {
+                rootCPEnd = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
+            }
 
             for (int j = 0; j < availableSteps[rootCPEnd].Count; j++)
             {
                 // Конец хода
                 stepCPEnd = availableSteps[rootCPEnd]
-                        .ToArray()[j];
+                        .ToArray()[random.Next(availableSteps[rootCPEnd].Count - 1)];
                 break;
             }
 
