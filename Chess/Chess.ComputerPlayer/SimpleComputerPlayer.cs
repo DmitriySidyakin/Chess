@@ -10,7 +10,7 @@ namespace Chess.ComputerPlayer
 {
     public class SimpleComputerPlayer : IComputerPlayer
     {
-        Random random = new Random(234);
+        static readonly Random random = new Random(234);
 
         public string Name => "SimpleComputerPlayer";
 
@@ -80,7 +80,7 @@ namespace Chess.ComputerPlayer
 
             // Код уклонения от удара. 
             // Отступаем, возможно под другой удар.
-            // TODO: Исправить ход не под другой удар. Если нет такого, то не важно.
+            // Исправить ход не под другой удар. Если нет такого, то не важно.
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             var anotherPlayerLastStep = new CellPoint() { X = (sbyte)lastPlayerX, Y = (sbyte)lastPlayerY }; // Конвертируем в нужный тип данных
             var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep); // Получаем его ходы атаки

@@ -1259,6 +1259,15 @@ namespace Chess.Entity
                 return true;
             return false;
         }
+
+        /// <summary>
+        /// Это ничья? Возвращает true, если на поле остались только короли, это считается ничьёй. Иначе false.
+        /// </summary>
+        /// <returns>Возвращает true, если на поле остались только короли, это считается ничьёй.</returns>
+        public bool IsDraw()
+        {
+            throw new NotImplementedException();
+        }
         
         /// <summary>
         /// Метод делает ход без его проверки под шах.
