@@ -166,6 +166,9 @@ namespace Chess
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
             CurrentStepSide = board.CurrentStepSide;
             availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
+            // Сохраняем последний ход
+            board.LastHumanStepPosition[0] = (byte)clickCellPoint.X;
+            board.LastHumanStepPosition[1] = (byte)clickCellPoint.Y;
             Logger.Add(new StepEntity(new Step(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[x, y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
             PrintLog();
 
@@ -208,7 +211,6 @@ namespace Chess
         private void MakeComputerStep()
         {
             blocked = true;
-            //await MakeComputerPlayerStepThread();
             Thread myThread = new(MakeComputerPlayerStepThread, 20 * 1024 * 1024);
             myThread.Name = $"Поток ИИ";
             waitHandler.WaitOne();  // ожидаем сигнала

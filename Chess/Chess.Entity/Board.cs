@@ -24,6 +24,11 @@ namespace Chess.Entity
         public Side CurrentStepSide { get; set; }
 
         /// <summary>
+        /// Сторона (белые или чёрные), которая должна сделать ход.
+        /// </summary>
+        public byte[] LastHumanStepPosition { get; set; } = new byte[2]; // нулевой х от нуля до семи, следующий y от нуля до семи
+
+        /// <summary>
         /// Чёрные уже использовали рокировку.
         /// </summary>
         private bool blackCastlingWasMade = false;
@@ -413,7 +418,6 @@ namespace Chess.Entity
 
             return result;
         }
-
         private Dictionary<CellPoint, List<CellPoint>> GetStepsWithoutCastlingPre(CellPoint cell)
         {
             Dictionary<CellPoint, List<CellPoint>> result = new Dictionary<CellPoint, List<CellPoint>>();
@@ -442,7 +446,7 @@ namespace Chess.Entity
         /// </summary>
         /// <param name="start">Начальная позиция фигуры для хода</param>
         /// <returns>Список доступных ходов, с возможностью короля ходить под урар!</returns>
-        private List<CellPoint> GetAvailiableStepsWithoutCastlingForPre(CellPoint start)
+        public List<CellPoint> GetAvailiableStepsWithoutCastlingForPre(CellPoint start)
         {
             var figure = Positions[start.X, start.Y];
 
