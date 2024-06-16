@@ -123,7 +123,7 @@ namespace Chess.ComputerPlayer
 
             // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
-            int maxIterations = 1000;
+            int maxIterations = 10000;
             int k = 0;
             while (!found && ++k < maxIterations)
             {
@@ -137,6 +137,7 @@ namespace Chess.ComputerPlayer
                             .ToArray()[j];
 
                     if (!IsItDangerous(stepCP)) {
+                        found = true;
                         return new Step(rootCP, stepCP);
                     }
                 }
@@ -168,18 +169,18 @@ namespace Chess.ComputerPlayer
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board.ToByteArray());
-            Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
+            Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
 
             // Цикл съедания:
-            for (int i = 0; i < availableSteps.Keys.Count; i++)
+            for (int i = 0; i < availableOppositeSteps.Keys.Count; i++)
             {
                 // Начальная фигура хода
-                CellPoint rootCP = availableSteps.Keys.ElementAt(i);
+                CellPoint rootCP = availableOppositeSteps.Keys.ElementAt(i);
 
-                for (int j = 0; j < availableSteps[availableSteps.Keys.ElementAt(i)].Count; j++)
+                for (int j = 0; j < availableOppositeSteps[availableOppositeSteps.Keys.ElementAt(i)].Count; j++)
                 {
                     // Конец хода
-                    CellPoint stepCPEnd = availableSteps[rootCP]
+                    CellPoint stepCPEnd = availableOppositeSteps[rootCP]
                             .ToArray()[j];
 
                     if (stepCP.X == stepCPEnd.X && stepCP.Y == stepCPEnd.Y)
