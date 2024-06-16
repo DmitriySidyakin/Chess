@@ -84,29 +84,41 @@ namespace Chess.ComputerPlayer
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             var anotherPlayerLastStep = new CellPoint() { X = (sbyte)lastPlayerX, Y = (sbyte)lastPlayerY }; // Конвертируем в нужный тип данных
             var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep); // Получаем его ходы атаки
+            Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
             foreach (var attacked in attackSteps)
             {
-                if (newBoard.Positions[attacked.X, attacked.Y].Man != Figures.Empty && newBoard.Positions[attacked.X, attacked.Y].Side == newBoard.CurrentStepSide) 
+                if (newBoard.Positions[attacked.X, attacked.Y].Man != Figures.Empty && newBoard.Positions[attacked.X, attacked.Y].Side == newBoard.CurrentStepSide)
                 {
-
                     var awaySteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide, new CellPoint() { X = (sbyte)attacked.X, Y = (sbyte)attacked.Y });
 
                     // Начальная фигура хода. Фигура в массиве одна.
                     CellPoint startFigure = awaySteps.Keys.ElementAt(0);
 
-                    if(availableSteps.ContainsKey(startFigure))
-                    {   
+                    if (availableSteps.ContainsKey(startFigure))
+                    {
                         // Концы хода
                         var steps = availableSteps[startFigure];
-                        foreach (var avalableStep in steps)
+                        foreach (var availableStep in steps)
                         {
-                            if (newBoard.Positions[avalableStep.X, avalableStep.Y].Man == Figures.Empty /*Исправить ход не под другой удар. Если нет такого, то не важно.*/ )
+                            foreach (var figure in oppositeAvailableSteps)
                             {
-                                return new Step(startFigure, avalableStep);
+                                foreach (var step in figure.Value)
+                                {
+                                    foreach (var reallyStep in steps)
+                                    {
+                                        if (availableStep.X == reallyStep.X && availableStep.Y == reallyStep.X)
+                                        { 
+                                            continue; 
+                                        }
+                                        else
+                                        {
+                                            return new Step(startFigure, availableStep);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-
                 }
             }
 
@@ -132,8 +144,8 @@ namespace Chess.ComputerPlayer
             // Иначе, случайно ходим:
             CellPoint rootCPEnd = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
             CellPoint stepCPEnd = rootCPEnd;
-            
-            while(availableSteps[rootCPEnd].Count < 1)
+
+            while (availableSteps[rootCPEnd].Count < 1)
             {
                 rootCPEnd = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
             }
