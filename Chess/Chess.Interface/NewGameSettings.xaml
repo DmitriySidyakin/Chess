@@ -25,11 +25,11 @@
         <Label x:Name="BlackPlayerNameLabel" Content="BlackPlayerName" HorizontalAlignment="Center" Margin="0,127,0,0" VerticalAlignment="Top" FontSize="18" Height="34" Width="170"/>
         <TextBox x:Name="PlayerName1" HorizontalAlignment="Center" Margin="0,92,0,0" TextWrapping="NoWrap" Text="Player1Name" VerticalAlignment="Top" Width="168" FontSize="18" MaxLength="100" Grid.Column="1" Height="26"/>
         <TextBox x:Name="PlayerName2" HorizontalAlignment="Center" Margin="0,131,0,0" TextWrapping="NoWrap" Text="Player2Name" VerticalAlignment="Top" Width="168" FontSize="18" MaxLength="100" Grid.Column="1" Height="26"/>
-        <ComboBox x:Name="ComputerName1" HorizontalAlignment="Center" Margin="0,92,0,0" VerticalAlignment="Top" Width="168" FontSize="18" IsEditable="False" Visibility="Hidden" Height="30"  Grid.Column="1">
+        <ComboBox x:Name="ComputerName1" HorizontalAlignment="Center" Margin="0,92,0,0" VerticalAlignment="Top" Width="215" FontSize="18" IsEditable="False" Visibility="Hidden" Height="30"  Grid.Column="1">
             <ComboBoxItem IsSelected="True"/>
             <ComboBoxItem IsSelected="False"/>
         </ComboBox>
-        <ComboBox x:Name="ComputerName2" HorizontalAlignment="Center" Margin="0,129,0,0" VerticalAlignment="Top" Width="168" FontSize="18" IsEditable="False" Visibility="Hidden" Grid.Column="1" Height="30">
+        <ComboBox x:Name="ComputerName2" HorizontalAlignment="Center" Margin="0,129,0,0" VerticalAlignment="Top" Width="215" FontSize="18" IsEditable="False" Visibility="Hidden" Grid.Column="1" Height="30">
             <ComboBoxItem IsSelected="True"/>
             <ComboBoxItem IsSelected="False"/>
         </ComboBox>
