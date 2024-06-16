@@ -99,7 +99,7 @@ namespace Chess.ComputerPlayer
                         var steps = availableSteps[startFigure];
                         foreach (var avalableStep in steps)
                         {
-                            if (newBoard.Positions[avalableStep.X, avalableStep.Y].Man == Figures.Empty)
+                            if (newBoard.Positions[avalableStep.X, avalableStep.Y].Man == Figures.Empty /*Исправить ход не под другой удар. Если нет такого, то не важно.*/ )
                             {
                                 return new Step(startFigure, avalableStep);
                             }
