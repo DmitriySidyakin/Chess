@@ -109,8 +109,6 @@ namespace Chess.ComputerPlayer
             int k = 0;
             while (!found && ++k < maxIterations)
             {
-
-
                 // Начальная фигура хода
                 CellPoint rootCP = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
 
@@ -143,16 +141,30 @@ namespace Chess.ComputerPlayer
         // Возвращает true, если ход под удар.
         private bool IsItDangerous(CellPoint stepCP)
         {
-            (byte lx, byte ly) = (board.LastHumanStepPosition[0], board.LastHumanStepPosition[1]); // Последний ход противоположной стороны
-            var anotherPlayerLastStep = new CellPoint() { X = (sbyte)lx, Y = (sbyte)ly }; // Конвертируем в нужный тип данных
-            var attackedSteps = board.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep); // Получаем его ходы атаки
-            foreach (var attacked in attackedSteps)
+            // Создаём пустой массив ходов (графов) с начальными позициями фигур
+            var newBoard = new Board(board.ToByteArray());
+            Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
+
+            // Цикл съедания:
+            for (int i = 0; i < availableSteps.Keys.Count; i++)
             {
-                if (stepCP.X == attacked.X && stepCP.Y == attacked.Y)
+                // Начальная фигура хода
+                CellPoint rootCP = availableSteps.Keys.ElementAt(i);
+
+                for (int j = 0; j < availableSteps[availableSteps.Keys.ElementAt(i)].Count; j++)
                 {
-                    return true;
+                    // Конец хода
+                    CellPoint stepCPEnd = availableSteps[rootCP]
+                            .ToArray()[j];
+
+                    if (stepCP.X == stepCPEnd.X && stepCP.Y == stepCPEnd.Y)
+                    {
+                        return true;
+                    }
                 }
+
             }
+
             return false;
         }
     }
