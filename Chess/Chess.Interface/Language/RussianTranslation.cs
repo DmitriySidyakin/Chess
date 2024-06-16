@@ -76,6 +76,7 @@ namespace Chess.InterfaceTranslation
                     ["WhiteIsOnCheck"] = "Белые поставили шах",
                     ["BlackIsOnMate"] = "Чёрные поставили мат",
                     ["WhiteIsOnMate"] = "Белые поставили мат",
+                    ["Draw"] = "Ничья",
                     /*
                     [""] = "",
                     [""] = "",

@@ -341,6 +341,12 @@ namespace Chess
                 }
             }
 
+            if (board.IsDraw())
+            {
+                ShowText(CurrentLanguage.MessagesStrings["Draw"]);
+                return true;
+            }
+
             return false;
         }
 

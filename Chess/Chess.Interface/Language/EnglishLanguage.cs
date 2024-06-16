@@ -81,6 +81,7 @@ namespace Chess.InterfaceTranslation
                     ["WhiteIsOnCheck"] = "White make Check",
                     ["BlackIsOnMate"] = "Black make Mate",
                     ["WhiteIsOnMate"] = "White make Mate",
+                    ["Draw"] = "Draw",
                     /*
                     [""] = "",
                     [""] = "",
