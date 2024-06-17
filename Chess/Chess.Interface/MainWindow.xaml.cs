@@ -177,12 +177,12 @@ namespace Chess
             Redraw();
 
             bool doesPCThink = false;
+
             if (!CkeckState())
             {
                 blocked = false;
                 doesPCThink = true;
             }
-
             if (
                     ((CurrentStepSide == Side.White && this.GameSettings.Player1White == PlayerType.Computer) ||
                     (CurrentStepSide == Side.Black && this.GameSettings.Player2Black == PlayerType.Computer))
@@ -192,22 +192,15 @@ namespace Chess
                 {
                     MakeComputerStep();
                     PlayStepSound("");
-                    availableSteps = board.GetAvailableSteps(Board.GetOppositeSide(board.CurrentStepSide));
                 }
-                catch (GameEndedException ex)
-                {
-                    if (availableSteps.Count == 0)
-                    {
-                        board.CurrentStepSide = Board.GetOppositeSide(board.CurrentStepSide);
-                    }
+                catch (GameEndedException)
+                {           
                     _ = CkeckState();
                 }
             }
 
             if (!CkeckState() && availableSteps.Count > 0)
                 blocked = false;
-            /*else
-                CurrentStepSide = CurrentStepSide == Side.White ? Side.Black : Side.White;*/
             UnselectCurrent();
             Redraw();
         }

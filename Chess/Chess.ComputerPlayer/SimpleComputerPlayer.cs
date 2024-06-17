@@ -78,40 +78,69 @@ namespace Chess.ComputerPlayer
 
             }
 
-            // Код уклонения от удара. 
-            // Ход не под другой удар. Если нет такого, то не важно.
+            // Код уклонения от удара.
+            // Уклонение от удара последнего хода.
+            /*
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             var anotherPlayerLastStep = new CellPoint() { X = (sbyte)lastPlayerX, Y = (sbyte)lastPlayerY }; // Конвертируем в нужный тип данных
             var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep); // Получаем его ходы атаки
-            Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
-            foreach (var attacked in attackSteps)
+
+            for (int i = 0; i < availableSteps.Keys.Count; i++)
             {
-                if (newBoard.Positions[attacked.X, attacked.Y].Man != Figures.Empty && newBoard.Positions[attacked.X, attacked.Y].Side == newBoard.CurrentStepSide)
+                // Начальная фигура хода
+                CellPoint rootCP = availableSteps.Keys.ElementAt(i);
+
+                for (int j = 0; j < availableSteps[availableSteps.Keys.ElementAt(i)].Count; j++)
                 {
-                    var awaySteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide, new CellPoint() { X = (sbyte)attacked.X, Y = (sbyte)attacked.Y });
+                    // Конец хода
+                    CellPoint stepCP = availableSteps[rootCP]
+                            .ToArray()[j];
 
-                    // Начальная фигура хода. Фигура в массиве одна.
-                    CellPoint startFigure = awaySteps.Keys.ElementAt(0);
-
-                    if (availableSteps.ContainsKey(startFigure))
+                    if (board.Positions[stepCP.X, stepCP.Y].Side == Board.GetOppositeSide(newBoard.CurrentStepSide) && board.Positions[stepCP.X, stepCP.Y].Man != Figures.Empty)
                     {
-                        // Концы хода
-                        var steps = availableSteps[startFigure];
-                        foreach (var availableStep in steps)
+                        return new Step(rootCP, stepCP);
+                    }
+                }
+
+            }
+            */
+            // Ход не под другой удар. Если нет такого, то не важно.
+            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
+            Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
+            var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
+            if (lastPlayerStep.Count() > 0)
+            {
+                var anotherPlayerLastStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY).First(); // Конвертируем в нужный тип данных
+                var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep.Key); // Получаем его ходы атаки      
+                foreach (var attacked in attackSteps)
+                {
+                    if (newBoard.Positions[attacked.X, attacked.Y].Man != Figures.Empty && newBoard.Positions[attacked.X, attacked.Y].Side == newBoard.CurrentStepSide)
+                    {
+                        var awaySteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide, attacked);
+
+                        // Начальная фигура хода. Фигура в массиве одна.
+                        CellPoint startFigure = awaySteps.Keys.ElementAt(0);
+
+                        if (availableSteps.ContainsKey(startFigure))
                         {
-                            foreach (var figure in oppositeAvailableSteps)
+                            // Концы хода
+                            var steps = availableSteps[startFigure];
+                            foreach (var availableStep in steps)
                             {
-                                foreach (var step in figure.Value)
+                                foreach (var figure in oppositeAvailableSteps)
                                 {
-                                    foreach (var reallyStep in steps)
+                                    foreach (var step in figure.Value)
                                     {
-                                        if (availableStep.X == reallyStep.X && availableStep.Y == reallyStep.X)
+                                        foreach (var reallyStep in steps)
                                         {
-                                            continue; 
-                                        }
-                                        else
-                                        {
-                                            return new Step(startFigure, availableStep);
+                                            if (availableStep.X == reallyStep.X && availableStep.Y == reallyStep.X)
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                return new Step(startFigure, availableStep);
+                                            }
                                         }
                                     }
                                 }
@@ -120,7 +149,6 @@ namespace Chess.ComputerPlayer
                     }
                 }
             }
-
             // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
             int maxIterations = 10000;
