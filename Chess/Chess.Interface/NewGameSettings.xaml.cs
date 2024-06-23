@@ -159,5 +159,10 @@ namespace Chess
             mainWindow.ResetBoard();
             mainWindow.StartGame();
         }
+
+        private void PlayerName1_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

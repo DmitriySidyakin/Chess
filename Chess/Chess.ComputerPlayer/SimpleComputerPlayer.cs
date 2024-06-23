@@ -108,10 +108,12 @@ namespace Chess.ComputerPlayer
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
             var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
+            List<Step> resultSteps = new();
             if (lastPlayerStep.Count() > 0)
             {
                 var anotherPlayerLastStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY).First(); // Конвертируем в нужный тип данных
-                var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep.Key); // Получаем его ходы атаки      
+                var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep.Key); // Получаем его ходы атаки
+                
                 foreach (var attacked in attackSteps)
                 {
                     if (newBoard.Positions[attacked.X, attacked.Y].Man != Figures.Empty && newBoard.Positions[attacked.X, attacked.Y].Side == newBoard.CurrentStepSide)
@@ -137,9 +139,8 @@ namespace Chess.ComputerPlayer
                                             {
                                                 continue;
                                             }
-                                            else
                                             {
-                                                return new Step(startFigure, availableStep);
+                                                resultSteps.Add(new Step(startFigure, availableStep));
                                             }
                                         }
                                     }
@@ -149,6 +150,9 @@ namespace Chess.ComputerPlayer
                     }
                 }
             }
+            if(resultSteps.Count > 0)
+                return resultSteps[random.Next(resultSteps.Count - 1)];
+
             // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
             int maxIterations = 10000;
