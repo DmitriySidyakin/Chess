@@ -342,6 +342,12 @@ namespace Chess
                 }
             }
 
+            if (board.IsDraw())
+            {
+                ShowText(CurrentLanguage.MessagesStrings["Draw"]);
+                return true;
+            }
+
             if (board.IsCheck(Side.Black) || board.IsCheck(Side.White))
             {
                 if (currentStepSide != Side.Black)
@@ -356,11 +362,7 @@ namespace Chess
                 }
             }
 
-            if (board.IsDraw())
-            {
-                ShowText(CurrentLanguage.MessagesStrings["Draw"]);
-                return true;
-            }
+
 
             return false;
         }
