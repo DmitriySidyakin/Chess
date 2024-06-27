@@ -186,7 +186,6 @@ namespace Chess.ComputerPlayer
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board);
-            //newBoard.CurrentStepSide = Board.GetOppositeSide(newBoard.CurrentStepSide);
 
             if (stepCP is not null)
                 newBoard.Positions[stepCP.X, stepCP.Y] = new Figure((byte)Figures.Empty);
