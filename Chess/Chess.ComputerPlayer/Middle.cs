@@ -143,7 +143,7 @@ namespace Chess.ComputerPlayer
 
             // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
-            int maxIterations = 1000000;
+            int maxIterations = 10000;
             int k = 0;
             while (!found && ++k < maxIterations)
             {
@@ -211,7 +211,7 @@ namespace Chess.ComputerPlayer
                             .ToArray()[j];
 
                     if(stepCP is not null)
-                    if (stepCP == stepCPEnd)
+                    if (stepCP.Equals(stepCPEnd))
                     {
                         return true;
                     }
