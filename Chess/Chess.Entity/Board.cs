@@ -26,7 +26,7 @@ namespace Chess.Entity
         /// <summary>
         /// Сторона (белые или чёрные), которая должна сделать ход.
         /// </summary>
-        public byte[] LastHumanStepPosition { get; set; } = new byte[2]; // нулевой х от нуля до семи, следующий y от нуля до семи
+        public byte[] LastHumanStepPosition { get; set; } = new byte[4]; // нулевой х от нуля до семи, следующий y от нуля до семи
 
         /// <summary>
         /// Чёрные уже использовали рокировку.
@@ -120,7 +120,10 @@ namespace Chess.Entity
             }
 
             CurrentStepSide = board.CurrentStepSide;
-            LastHumanStepPosition = board.LastHumanStepPosition;
+            LastHumanStepPosition[0] = board.LastHumanStepPosition[0];
+            LastHumanStepPosition[1] = board.LastHumanStepPosition[1];
+            LastHumanStepPosition[2] = board.LastHumanStepPosition[2];
+            LastHumanStepPosition[3] = board.LastHumanStepPosition[3];
         }
 
         /// <summary>
@@ -971,8 +974,6 @@ namespace Chess.Entity
         /// <returns>Положения туры (Rook) до рокировки. Возможны 0, 1на, 2е рокировки</returns>
         private List<CellPoint> GetRookPositionsBeforeCastling(CellPoint start)
         {
-            
-
             List<CellPoint> results = new List<CellPoint>();
             if (start.X == -1 || start.Y == -1)
                 return results;

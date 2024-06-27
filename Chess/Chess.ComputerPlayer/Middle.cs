@@ -36,7 +36,7 @@ namespace Chess.ComputerPlayer
         Board board;
         Side currentStepSide;
 
-        public Middle(Board board) { this.board = new Board(board.ToByteArray()); currentStepSide = board.CurrentStepSide; }
+        public Middle(Board board) { this.board = new Board(board); currentStepSide = board.CurrentStepSide;  }
 
         public Board CurrentBoard
         {
@@ -73,7 +73,7 @@ namespace Chess.ComputerPlayer
         public Step MakeStep(int deep)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
-            var newBoard = new Board(board.ToByteArray());
+            var newBoard = new Board(board);
             Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
 
             // Первым делом съесть, что возможно
@@ -98,17 +98,16 @@ namespace Chess.ComputerPlayer
             }
 
             // Удаляем съедание под удар:
-            eatSteps = eatSteps.Where(s => s.End != null ? IsItDangerous(s.End) : false).ToList();
+            eatSteps = eatSteps.Where(s => !IsItDangerous(s.End)).ToList();
 
             // Сортируем по важности съеденной фигуры, первая самая важная для съедания.
             eatSteps.Sort(new StepComparer(newBoard, currentStepSide));
 
-            //
             if(eatSteps.Count > 0 )
                 return eatSteps.First();
 
-            // Уклоняемся от удара последнего хода. Если нет такого, то не важно.
-            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
+            // Уклоняемся.
+            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[2], newBoard.LastHumanStepPosition[3]); // Последний ход противоположной стороны
             Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
             var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
             List<Step> resultAwaySteps = new();
@@ -130,24 +129,10 @@ namespace Chess.ComputerPlayer
                         {
                             // Концы хода
                             var steps = availableSteps[startFigure];
-                            foreach (var availableStep in steps)
+                            foreach (var aStep in steps)
                             {
-                                foreach (var figure in oppositeAvailableSteps)
-                                {
-                                    foreach (var step in figure.Value)
-                                    {
-                                        foreach (var reallyStep in steps)
-                                        {
-                                            if (availableStep.X == reallyStep.X && availableStep.Y == reallyStep.X)
-                                            {
-                                                continue;
-                                            }
-                                            {
-                                                resultAwaySteps.Add(new Step(startFigure, availableStep));
-                                            }
-                                        }
-                                    }
-                                }
+                                if (!IsItDangerous(aStep))
+                                    resultAwaySteps.Add(new Step(startFigure, aStep));
                             }
                         }
                     }
@@ -158,7 +143,7 @@ namespace Chess.ComputerPlayer
 
             // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
-            int maxIterations = 10000;
+            int maxIterations = 1000000;
             int k = 0;
             while (!found && ++k < maxIterations)
             {
@@ -200,12 +185,19 @@ namespace Chess.ComputerPlayer
         }
 
 
+        
         // Возвращает true, если ход под удар.
-        private bool IsItDangerous(CellPoint stepCP)
+        private bool IsItDangerous(CellPoint? stepCP)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
-            var newBoard = new Board(board.ToByteArray());
-            Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
+            var newBoard = new Board(board);
+            newBoard.CurrentStepSide = Board.GetOppositeSide(newBoard.CurrentStepSide);
+
+            if (stepCP is not null)
+                newBoard.Positions[stepCP.X, stepCP.Y] = new Figure((byte)Figures.Empty);
+
+            // TODO: Получить вместо возможных ходов, все движения фигур противоположной стороны.
+            Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
 
             // Цикл съедания:
             for (int i = 0; i < availableOppositeSteps.Keys.Count; i++)
@@ -213,13 +205,14 @@ namespace Chess.ComputerPlayer
                 // Начальная фигура хода
                 CellPoint rootCP = availableOppositeSteps.Keys.ElementAt(i);
 
-                for (int j = 0; j < availableOppositeSteps[availableOppositeSteps.Keys.ElementAt(i)].Count; j++)
+                for (int j = 0; j < availableOppositeSteps[rootCP].Count; j++)
                 {
                     // Конец хода
                     CellPoint stepCPEnd = availableOppositeSteps[rootCP]
                             .ToArray()[j];
 
-                    if (stepCP.X == stepCPEnd.X && stepCP.Y == stepCPEnd.Y)
+                    if(stepCP is not null)
+                    if (stepCP == stepCPEnd)
                     {
                         return true;
                     }

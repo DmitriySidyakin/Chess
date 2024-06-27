@@ -54,7 +54,7 @@ namespace Chess.ComputerPlayer
         public Step MakeStep(int deep)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
-            var newBoard = new Board(board.ToByteArray());
+            var newBoard = new Board(board);
             Dictionary<CellPoint, List<CellPoint>> availableSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
 
             // Первым делом съесть, что возможно
@@ -78,16 +78,16 @@ namespace Chess.ComputerPlayer
 
             }
 
-            // Уклоняемся от удара последнего хода. Если нет такого, то не важно.
-            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
+            // Уклоняемся.
+            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[2], newBoard.LastHumanStepPosition[3]); // Последний ход противоположной стороны
             Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
             var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
-            List<Step> resultSteps = new();
+            List<Step> resultAwaySteps = new();
             if (lastPlayerStep.Count() > 0)
             {
                 var anotherPlayerLastStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY).First(); // Конвертируем в нужный тип данных
                 var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep.Key); // Получаем его ходы атаки
-                
+
                 foreach (var attacked in attackSteps)
                 {
                     if (newBoard.Positions[attacked.X, attacked.Y].Man != Figures.Empty && newBoard.Positions[attacked.X, attacked.Y].Side == newBoard.CurrentStepSide)
@@ -101,31 +101,20 @@ namespace Chess.ComputerPlayer
                         {
                             // Концы хода
                             var steps = availableSteps[startFigure];
-                            foreach (var availableStep in steps)
+                            foreach (var aStep in steps)
                             {
-                                foreach (var figure in oppositeAvailableSteps)
-                                {
-                                    foreach (var step in figure.Value)
-                                    {
-                                        foreach (var reallyStep in steps)
-                                        {
-                                            if (availableStep.X == reallyStep.X && availableStep.Y == reallyStep.X)
-                                            {
-                                                continue;
-                                            }
-                                            {
-                                                resultSteps.Add(new Step(startFigure, availableStep));
-                                            }
-                                        }
-                                    }
-                                }
+
+
+                                if (!IsItDangerous(aStep))
+                                    resultAwaySteps.Add(new Step(startFigure, aStep));
+
                             }
                         }
                     }
                 }
             }
-            if(resultSteps.Count > 0)
-                return resultSteps[random.Next(resultSteps.Count - 1)];
+            if (resultAwaySteps.Count > 0)
+                return resultAwaySteps[random.Next(resultAwaySteps.Count - 1)];
 
             // Если не съели и не уклонились, то ходим, но не под удар.
             bool found = false;
@@ -174,7 +163,7 @@ namespace Chess.ComputerPlayer
         private bool IsItDangerous(CellPoint stepCP)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
-            var newBoard = new Board(board.ToByteArray());
+            var newBoard = new Board(board);
             Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
 
             // Цикл съедания:
