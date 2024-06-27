@@ -98,7 +98,7 @@ namespace Chess.ComputerPlayer
             }
 
             // Удаляем съедание под удар:
-            eatSteps = eatSteps.Where(s => !IsItDangerous(s.End)).ToList();
+            eatSteps = eatSteps.Where(s => !IsItDangerous(s)).ToList();
 
             // Сортируем по важности съеденной фигуры, первая самая важная для съедания.
             eatSteps.Sort(new StepComparer(newBoard, currentStepSide));
@@ -130,7 +130,7 @@ namespace Chess.ComputerPlayer
                             var steps = availableSteps[startFigure];
                             foreach (var aStep in steps)
                             {
-                                if (!IsItDangerous(aStep))
+                                if (!IsItDangerous(new Step(startFigure, aStep)))
                                     resultAwaySteps.Add(new Step(startFigure, aStep));
                             }
                         }
@@ -150,7 +150,7 @@ namespace Chess.ComputerPlayer
                     CellPoint stepCP = availableSteps[rootCP]
                             .ToArray()[j];
 
-                    if (!IsItDangerous(stepCP))
+                    if (!IsItDangerous(new Step(rootCP,stepCP)))
                     {
                         resultsRandomSteps.Add(new Step(rootCP, stepCP));
                     }
@@ -182,13 +182,12 @@ namespace Chess.ComputerPlayer
 
         
         // Возвращает true, если ход под удар.
-        private bool IsItDangerous(CellPoint? stepCP)
+        private bool IsItDangerous(Step step)
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board);
 
-            if (stepCP is not null)
-                newBoard.Positions[stepCP.X, stepCP.Y] = new Figure((byte)Figures.Empty);
+            newBoard.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
 
             Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
 
@@ -204,8 +203,8 @@ namespace Chess.ComputerPlayer
                     CellPoint stepCPEnd = availableOppositeSteps[rootCP]
                             .ToArray()[j];
 
-                    if(stepCP is not null)
-                    if (stepCP.Equals(stepCPEnd))
+                    if(step is not null)
+                    if (step.Equals(stepCPEnd))
                     {
                         return true;
                     }
