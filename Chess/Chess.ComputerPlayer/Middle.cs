@@ -196,7 +196,6 @@ namespace Chess.ComputerPlayer
             if (stepCP is not null)
                 newBoard.Positions[stepCP.X, stepCP.Y] = new Figure((byte)Figures.Empty);
 
-            // TODO: Получить вместо возможных ходов, все движения фигур противоположной стороны.
             Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
 
             // Цикл съедания:
