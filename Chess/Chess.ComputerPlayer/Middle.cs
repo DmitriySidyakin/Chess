@@ -10,7 +10,7 @@ namespace Chess.ComputerPlayer
 {
     public class Middle : IComputerPlayer
     {
-        static readonly Random random = new Random(234);
+        static readonly Random random = new Random(8234);
 
         public class StepComparer : IComparer<Step>
         {
