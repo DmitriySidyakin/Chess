@@ -142,14 +142,9 @@ namespace Chess.ComputerPlayer
                 return resultAwaySteps[random.Next(resultAwaySteps.Count - 1)];
 
             // Если не съели и не уклонились, то ходим, но не под удар.
-            bool found = false;
-            int maxIterations = 10000;
-            int k = 0;
-            while (!found && ++k < maxIterations)
-            {
-                // Начальная фигура хода
-                CellPoint rootCP = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
-
+            List<Step> resultsRandomSteps = new();
+            foreach (CellPoint rootCP in availableSteps.Keys)
+            {          
                 for (int j = 0; j < availableSteps[rootCP].Count; j++)
                 {
                     // Конец хода
@@ -158,11 +153,12 @@ namespace Chess.ComputerPlayer
 
                     if (!IsItDangerous(stepCP))
                     {
-                        found = true;
-                        return new Step(rootCP, stepCP);
+                        resultsRandomSteps.Add(new Step(rootCP, stepCP));
                     }
                 }
             }
+            if (resultsRandomSteps.Count > 0)
+                return resultsRandomSteps[random.Next(resultAwaySteps.Count - 1)];
 
             // Иначе, случайно ходим:
             CellPoint rootCPEnd = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
@@ -191,12 +187,12 @@ namespace Chess.ComputerPlayer
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board);
-            newBoard.CurrentStepSide = Board.GetOppositeSide(newBoard.CurrentStepSide);
+            //newBoard.CurrentStepSide = Board.GetOppositeSide(newBoard.CurrentStepSide);
 
             if (stepCP is not null)
                 newBoard.Positions[stepCP.X, stepCP.Y] = new Figure((byte)Figures.Empty);
 
-            Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide);
+            Dictionary<CellPoint, List<CellPoint>> availableOppositeSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
 
             // Цикл съедания:
             for (int i = 0; i < availableOppositeSteps.Keys.Count; i++)
