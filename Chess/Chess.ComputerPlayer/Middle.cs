@@ -158,7 +158,7 @@ namespace Chess.ComputerPlayer
                 }
             }
             if (resultsRandomSteps.Count > 0)
-                return resultsRandomSteps[random.Next(resultAwaySteps.Count - 1)];
+                return resultsRandomSteps[random.Next(resultsRandomSteps.Count - 1)];
 
             // Иначе, случайно ходим:
             CellPoint rootCPEnd = availableSteps.Keys.ElementAt(random.Next(availableSteps.Keys.Count - 1));
