@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Chess.ComputerPlayer
 {
-    public class Middle : IComputerPlayer
+    public abstract class AbstarctMiddle
     {
         static readonly Random random = new Random(8234);
 
@@ -25,18 +25,18 @@ namespace Chess.ComputerPlayer
 
             int IComparer<Step>.Compare(Step? x, Step? y)
             {
-                long weightX = Middle.GetFigureWeight(board, x.End);
-                long weightY = Middle.GetFigureWeight(board, y.End);
+                long weightX = AbstarctMiddle.GetFigureWeight(board, x.End);
+                long weightY = AbstarctMiddle.GetFigureWeight(board, y.End);
                 return weightY.CompareTo(weightX);
             }
         }
 
-        public string Name => "Middle";
+        public virtual string Name => "AbstarctMiddle";
 
-        Board board;
-        Side currentStepSide;
+        internal Board board;
+        internal Side currentStepSide;
 
-        public Middle(Board board) { this.board = new Board(board); currentStepSide = board.CurrentStepSide;  }
+        public AbstarctMiddle(Board board) { this.board = new Board(board); currentStepSide = board.CurrentStepSide;  }
 
         public Board CurrentBoard
         {
@@ -69,8 +69,15 @@ namespace Chess.ComputerPlayer
         {
             return availableSteps.Count(s => s.Key.X == x && s.Key.Y == y && s.Value.Count(v => v.X == x && v.Y == y) > 0) > 0;
         }
+       public virtual Step MakeStep(int deep)
+        {
+            //TODO: Реализовать давку офицерами и конями с прогнозом на 3 шага в перёд.
 
-        public Step MakeStep(int deep)
+            // В случает отсутствия стратегии сделать простой шаг.
+            return MakeSimpleStep();
+        }
+
+        private Step MakeSimpleStep()
         {
             // Создаём пустой массив ходов (графов) с начальными позициями фигур
             var newBoard = new Board(board);
@@ -103,7 +110,7 @@ namespace Chess.ComputerPlayer
             // Сортируем по важности съеденной фигуры, первая самая важная для съедания.
             eatSteps.Sort(new StepComparer(newBoard, currentStepSide));
 
-            if(eatSteps.Count > 0 )
+            if (eatSteps.Count > 0)
                 return eatSteps.First();
 
             // Уклоняемся.
@@ -143,14 +150,14 @@ namespace Chess.ComputerPlayer
             // Если не съели и не уклонились, то ходим, но не под удар.
             List<Step> resultsRandomSteps = new();
             foreach (CellPoint rootCP in availableSteps.Keys)
-            {          
+            {
                 for (int j = 0; j < availableSteps[rootCP].Count; j++)
                 {
                     // Конец хода
                     CellPoint stepCP = availableSteps[rootCP]
                             .ToArray()[j];
 
-                    if (!IsItDangerous(new Step(rootCP,stepCP)))
+                    if (!IsItDangerous(new Step(rootCP, stepCP)))
                     {
                         resultsRandomSteps.Add(new Step(rootCP, stepCP));
                     }
@@ -180,7 +187,7 @@ namespace Chess.ComputerPlayer
         }
 
 
-        
+
         // Возвращает true, если ход под удар.
         private bool IsItDangerous(Step step)
         {

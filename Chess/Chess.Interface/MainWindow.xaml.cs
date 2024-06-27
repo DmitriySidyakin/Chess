@@ -252,7 +252,7 @@ namespace Chess
             }
             else if (GameSettings.ComputerType == ComputerType.Middle)
             {
-                Middle computerPlayer = new(board);
+                Middle1 computerPlayer = new(board);
                 try
                 {
                     step = computerPlayer.MakeStep(0);//0 - default
@@ -263,7 +263,7 @@ namespace Chess
             }
             else if (GameSettings.ComputerType == ComputerType.MiddleStrategy1)
             {
-                MiddleStrategy1 computerPlayer = new(board);
+                Middle2 computerPlayer = new(board);
                 try
                 {
                     step = computerPlayer.MakeStep(0);//0 - default
