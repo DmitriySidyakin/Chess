@@ -55,6 +55,10 @@ namespace Chess.InterfaceTranslation
             newGameSettings.ComputerName2.Items[0] = "For Kids";
             newGameSettings.ComputerName1.Items[1] = "Simple Computer Player";
             newGameSettings.ComputerName2.Items[1] = "Simple Computer Player";
+            newGameSettings.ComputerName1.Items[2] = "Middle (testing)";
+            newGameSettings.ComputerName2.Items[2] = "Middle (testing)";
+            newGameSettings.ComputerName1.Items[3] = "Middle Stategy 1 (testing)";
+            newGameSettings.ComputerName2.Items[3] = "Middle Stategy 1 (testing)";
             newGameSettings.ComputerName1.SelectedIndex = 0;
             newGameSettings.ComputerName2.SelectedIndex = 0;
             newGameSettings.StartNewGameButton.Content = "Start New Game";

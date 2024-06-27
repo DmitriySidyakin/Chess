@@ -129,6 +129,8 @@ namespace Chess
                 {
                     case 0: return ComputerType.ForKids;
                     case 1: return ComputerType.SimpleComputerPlayer;
+                    case 2: return ComputerType.Middle;
+                    case 3: return ComputerType.MiddleStrategy1;
                 }
             }
             else if (ComboBoxPlayer2.SelectedIndex == 1 /* Computer */) {
@@ -136,6 +138,8 @@ namespace Chess
                 {
                     case 0: return ComputerType.ForKids;
                     case 1: return ComputerType.SimpleComputerPlayer;
+                    case 2: return ComputerType.Middle;
+                    case 3: return ComputerType.MiddleStrategy1;
                 }
             }
 
@@ -158,11 +162,6 @@ namespace Chess
             mainWindow.EndGame();
             mainWindow.ResetBoard();
             mainWindow.StartGame();
-        }
-
-        private void PlayerName1_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
     }
 }

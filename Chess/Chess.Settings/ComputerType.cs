@@ -11,5 +11,7 @@ namespace Chess.Settings
         ShortestPath = 0, // Impossible by hardness of computation
         ForKids = 1,
         SimpleComputerPlayer = 2,
+        Middle = 3,
+        MiddleStrategy1 = 4
     }
 }

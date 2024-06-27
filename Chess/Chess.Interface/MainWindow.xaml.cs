@@ -247,6 +247,28 @@ namespace Chess
                 catch (GameEndedException ex)
                 { result = -1; }
             }
+            else if (GameSettings.ComputerType == ComputerType.Middle)
+            {
+                Middle computerPlayer = new(board);
+                try
+                {
+                    step = computerPlayer.MakeStep(0);//0 - default
+                                                      //step = computerPlayer.MakeStep(1);
+                }
+                catch (GameEndedException ex)
+                { result = -1; }
+            }
+            else if (GameSettings.ComputerType == ComputerType.MiddleStrategy1)
+            {
+                MiddleStrategy1 computerPlayer = new(board);
+                try
+                {
+                    step = computerPlayer.MakeStep(0);//0 - default
+                                                      //step = computerPlayer.MakeStep(1);
+                }
+                catch (GameEndedException ex)
+                { result = -1; }
+            }
             waitHandler.Set();  //  сигнализируем, что waitHandler в сигнальном состоянии
             //return result;
         }

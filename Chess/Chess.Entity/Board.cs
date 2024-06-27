@@ -120,6 +120,7 @@ namespace Chess.Entity
             }
 
             CurrentStepSide = board.CurrentStepSide;
+            LastHumanStepPosition = board.LastHumanStepPosition;
         }
 
         /// <summary>
@@ -1283,6 +1284,7 @@ namespace Chess.Entity
             Side side = figure.Side;
             Side oppositeSide = GetOppositeSide(side);
 
+            // Это рокировка?
             var isCastling = GetKingPositionAfterCastling(end) != CellPoint.Unexisted;
 
             if (isCastling && ((side == Side.Black && !blackCastlingWasMade) || (side == Side.White && !whiteCastlingWasMade)))
@@ -1302,6 +1304,7 @@ namespace Chess.Entity
                 if (side == Side.White) whiteCastlingWasMade = true;
                 else blackCastlingWasMade = true;
 
+                // Меняем сторону хода, т.к. его сделали на следующего игрока.
                 CurrentStepSide = oppositeSide;
                 return;
             }
@@ -1310,8 +1313,10 @@ namespace Chess.Entity
             Positions[end.X, end.Y] = Positions[start.X, start.Y];
             Positions[start.X, start.Y] = new EmptyCell();
 
+            // Меняем сторону хода, т.к. его сделали на следующего игрока.
             CurrentStepSide = oppositeSide;
 
+            // Превратить пешки в дамки, которые дошли.
             MakePawnFiguresTransformationIfIsItAvailable();
         }
 
