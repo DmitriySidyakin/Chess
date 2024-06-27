@@ -80,31 +80,8 @@ namespace Chess.ComputerPlayer
 
             // Код уклонения от удара.
             // Уклонение от удара последнего хода.
-            /*
-            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
-            var anotherPlayerLastStep = new CellPoint() { X = (sbyte)lastPlayerX, Y = (sbyte)lastPlayerY }; // Конвертируем в нужный тип данных
-            var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep); // Получаем его ходы атаки
-
-            for (int i = 0; i < availableSteps.Keys.Count; i++)
-            {
-                // Начальная фигура хода
-                CellPoint rootCP = availableSteps.Keys.ElementAt(i);
-
-                for (int j = 0; j < availableSteps[availableSteps.Keys.ElementAt(i)].Count; j++)
-                {
-                    // Конец хода
-                    CellPoint stepCP = availableSteps[rootCP]
-                            .ToArray()[j];
-
-                    if (board.Positions[stepCP.X, stepCP.Y].Side == Board.GetOppositeSide(newBoard.CurrentStepSide) && board.Positions[stepCP.X, stepCP.Y].Man != Figures.Empty)
-                    {
-                        return new Step(rootCP, stepCP);
-                    }
-                }
-
-            }
-            */
             // Ход не под другой удар. Если нет такого, то не важно.
+            // Делает один из возможных ходов этих условий.
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
             var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
