@@ -78,10 +78,7 @@ namespace Chess.ComputerPlayer
 
             }
 
-            // Код уклонения от удара.
-            // Уклонение от удара последнего хода.
             // Ход не под другой удар. Если нет такого, то не важно.
-            // Делает один из возможных ходов этих условий.
             (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[0], newBoard.LastHumanStepPosition[1]); // Последний ход противоположной стороны
             Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
             var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
