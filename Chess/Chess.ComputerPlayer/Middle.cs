@@ -107,14 +107,13 @@ namespace Chess.ComputerPlayer
                 return eatSteps.First();
 
             // Уклоняемся.
-            (byte lastPlayerX, byte lastPlayerY) = (newBoard.LastHumanStepPosition[2], newBoard.LastHumanStepPosition[3]); // Последний ход противоположной стороны
+            var lastOppositeStep = new CellPoint() { X = (sbyte)newBoard.LastHumanStepPosition[2], Y = (sbyte)newBoard.LastHumanStepPosition[3] }; // Последний ход противоположной стороны
             Dictionary<CellPoint, List<CellPoint>> oppositeAvailableSteps = newBoard.GetAvailableSteps(Board.GetOppositeSide(newBoard.CurrentStepSide));
-            var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY);
+            var lastPlayerStep = oppositeAvailableSteps.Where((i) => i.Key == lastOppositeStep);
             List<Step> resultAwaySteps = new();
             if (lastPlayerStep.Count() > 0)
             {
-                var anotherPlayerLastStep = oppositeAvailableSteps.Where((i) => i.Key.X == (sbyte)lastPlayerX && i.Key.Y == (sbyte)lastPlayerY).First(); // Конвертируем в нужный тип данных
-                var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(anotherPlayerLastStep.Key); // Получаем его ходы атаки
+                var attackSteps = newBoard.GetAvailiableStepsWithoutCastlingForPre(lastOppositeStep); // Получаем его ходы атаки
 
                 foreach (var attacked in attackSteps)
                 {
@@ -122,7 +121,7 @@ namespace Chess.ComputerPlayer
                     {
                         var awaySteps = newBoard.GetAvailableSteps(newBoard.CurrentStepSide, attacked);
 
-                        // Начальная фигура хода. Фигура в массиве одна.
+                        // Начальная фигура хода. Фигура в массиве ключей одна.
                         CellPoint startFigure = awaySteps.Keys.ElementAt(0);
 
                         if (availableSteps.ContainsKey(startFigure))

@@ -212,7 +212,7 @@ namespace Chess
         private void MakeComputerStep()
         {
             blocked = true;
-            Thread myThread = new(MakeComputerPlayerStepThread, 20 * 1024 * 1024);
+            Thread myThread = new(MakeComputerPlayerStepThread, 200 * 1024 * 1024);
             myThread.Name = $"Поток ИИ";
             waitHandler.WaitOne();  // ожидаем сигнала
             myThread.Start();
