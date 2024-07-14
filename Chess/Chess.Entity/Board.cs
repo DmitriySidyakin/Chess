@@ -1268,7 +1268,7 @@ namespace Chess.Entity
         /// <returns>Возвращает true, если на поле остались только короли, это считается ничьёй.</returns>
         public bool IsDraw()
         {
-            if(Positions.Length == 2) return true;
+            if(Positions.Length == 1) return true;
             return false;
         }
         
