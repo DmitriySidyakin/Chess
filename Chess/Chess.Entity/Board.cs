@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -1268,7 +1269,7 @@ namespace Chess.Entity
         /// <returns>Возвращает true, если на поле остались только короли, это считается ничьёй.</returns>
         public bool IsDraw()
         {
-            if(Positions.Length == 1) return true;
+            if(GetAvailableSteps(Side.Black).Keys.Count == 1 && GetAvailableSteps(Side.White).Keys.Count == 1 ) return true;
             return false;
         }
         
