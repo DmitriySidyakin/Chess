@@ -68,10 +68,13 @@
             </MenuItem>
         </Menu>
         <Canvas Margin="100,29,0,9" Background="#FFDEDDFF" Name="ChessBoard" HorizontalAlignment="Left" Width="396" MouseMove="ChessBoard_MouseMove" Mouse.MouseDown="ChessBoard_MouseDown" Grid.Column="0" MouseLeave="ChessBoard_MouseLeave"/>
-        <TextBox x:Name="InfoDesk" Grid.Column="1" Margin="20,39,20,20" IsEnabled="true" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" TextChanged="InfoDesk_TextChanged"
+        <TextBox x:Name="InfoDesk" Grid.Column="1" Margin="20,96,20,75" IsEnabled="true" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" TextChanged="InfoDesk_TextChanged"
          ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True">
         </TextBox>
         <Label x:Name="BlackPlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,29,10,0" VerticalAlignment="Top" FontSize="18"/>
         <Label x:Name="WhitePlayerNameLabel" Content="" HorizontalAlignment="Right" Margin="0,0,10,9" VerticalAlignment="Bottom" FontSize="18"/>
+        <Canvas Margin="20,31,20,0" Background="#FFDEDDFF" x:Name="BlackPlayerEatedCanvas" Grid.Column="1" Height="60" VerticalAlignment="Top"/>
+        <Canvas Margin="20,0,20,10" Background="#FFDEDDFF" x:Name="WhitePlayerEatedCanvas" Grid.Column="1" Height="60" VerticalAlignment="Bottom"/>
+
     </Grid>
 </Window>

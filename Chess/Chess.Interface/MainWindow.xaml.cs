@@ -572,6 +572,25 @@ namespace Chess
         {
             DrawDesk(GetSize());
             DrawSelectedAndHoveredFigures();
+            DrawEatedFigures(GetScale());
+        }
+
+        private void DrawEatedFigures(double scale)
+        {
+            BlackPlayerEatedCanvas.Children.Clear();
+            WhitePlayerEatedCanvas.Children.Clear();
+            for (byte row = 0; row < 2; row++)
+            {
+                for(byte col = 0; col < 8; col++)
+                {
+                    int newBoxBlack = BlackPlayerEatedCanvas.Children.Add(new Rectangle() { Width = Math.Round((double)BlackPlayerEatedCanvas.ActualWidth / 8, 0), Height = Math.Round((double)BlackPlayerEatedCanvas.ActualHeight / 2, 0), Fill = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, StrokeThickness = 1, Stroke = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, Name = $"CellEated_{col}_{row}" });
+                    Canvas.SetLeft(BlackPlayerEatedCanvas.Children[newBoxBlack], Math.Round((double)BlackPlayerEatedCanvas.ActualWidth / 8 * col, 0));
+                    Canvas.SetTop(BlackPlayerEatedCanvas.Children[newBoxBlack], Math.Round((double)BlackPlayerEatedCanvas.ActualHeight / 2 * row, 0));
+                    int newBoxWhite = WhitePlayerEatedCanvas.Children.Add(new Rectangle() { Width = Math.Round((double)WhitePlayerEatedCanvas.ActualWidth / 8, 0), Height = Math.Round((double)WhitePlayerEatedCanvas.ActualHeight / 2, 0), Fill = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, StrokeThickness = 1, Stroke = (col + row) % 2 > 0 ? Brushes.Gray : Brushes.Azure, Name = $"CellEated_{col}_{row}" });
+                    Canvas.SetLeft(WhitePlayerEatedCanvas.Children[newBoxWhite], Math.Round((double)WhitePlayerEatedCanvas.ActualWidth / 8 * col, 0));
+                    Canvas.SetTop(WhitePlayerEatedCanvas.Children[newBoxWhite], Math.Round((double)WhitePlayerEatedCanvas.ActualHeight / 2 * row, 0));
+                }
+            }
         }
 
         private void DrawSelectedAndHoveredFigures()
