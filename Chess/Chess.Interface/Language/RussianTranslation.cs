@@ -48,8 +48,8 @@ namespace Chess.InterfaceTranslation
             newGameSettings.ComputerName2.Items[0] = "Для детей";
             newGameSettings.ComputerName1.Items[1] = "Простой компьютерный игрок";
             newGameSettings.ComputerName2.Items[1] = "Простой компьютерный игрок";
-            newGameSettings.ComputerName1.Items[2] = "Средний (в разработке)";
-            newGameSettings.ComputerName2.Items[2] = "Средний (в разработке)";
+            newGameSettings.ComputerName1.Items[2] = "Средний (не реализовано)";
+            newGameSettings.ComputerName2.Items[2] = "Средний (не реализовано)";
             newGameSettings.ComputerName1.Items[3] = "Средний 2 (не реализовано)";
             newGameSettings.ComputerName2.Items[3] = "Средний 2 (не реализовано)";
 

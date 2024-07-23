@@ -15,48 +15,6 @@
             <RowDefinition Height="100*"/>
         </Grid.RowDefinitions>
         <Menu Height="26" VerticalAlignment="Top" Grid.ColumnSpan="2" FontSize="18">
-            <!--
-            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="NewGame" Name="NewGame2" Click="NewGame_Click">
-                <RibbonButton.Effect>
-                    <DropShadowEffect/>
-                </RibbonButton.Effect>
-            </RibbonButton>
-            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="GameLevel" x:Name="GameLevel2">
-                <RibbonButton.Effect>
-                    <DropShadowEffect/>
-                </RibbonButton.Effect>
-            </RibbonButton>
-            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="GameLog" x:Name="GameLog2">
-                <RibbonButton.Effect>
-                    <DropShadowEffect/>
-                </RibbonButton.Effect>
-            </RibbonButton>
-            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="OpenGame" x:Name="OpenGame2">
-                <RibbonButton.Effect>
-                    <DropShadowEffect/>
-                </RibbonButton.Effect>
-            </RibbonButton>
-            <RibbonButton Height="19" Width="80" FontWeight="Normal" Label="SaveGame" x:Name="SaveGame2">
-                <RibbonButton.Effect>
-                    <DropShadowEffect/>
-                </RibbonButton.Effect>
-            </RibbonButton>
-            <RibbonMenuButton Height="19" Width="80" FontWeight="Normal" Label="Language" x:Name="Language2">
-                <RibbonMenuButton.Effect>
-                    <DropShadowEffect/>
-                </RibbonMenuButton.Effect>
-
-                <RibbonButton Height="19" Width="120" FontWeight="Normal" Label="English" x:Name="English2">
-                    <RibbonButton.Effect>
-                        <DropShadowEffect/>
-                    </RibbonButton.Effect>
-                </RibbonButton>
-                <RibbonButton Height="19" Width="120" FontWeight="Normal" Label="Русский / Russian" x:Name="Russian2">
-                    <RibbonButton.Effect>
-                        <DropShadowEffect/>
-                    </RibbonButton.Effect>
-                </RibbonButton>
-            </RibbonMenuButton>-->
             <MenuItem x:Name="NewGame" Header="NewGame" Click="NewGame_Click"/>
             <!--<MenuItem x:Name="MainWindowGameSettings" Header="GameSettings" />-->
             <!--<MenuItem x:Name="GameLog" Header="GameLog" /> -->
