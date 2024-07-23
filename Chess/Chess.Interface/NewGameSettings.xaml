@@ -28,13 +28,9 @@
         <ComboBox x:Name="ComputerName1" HorizontalAlignment="Center" Margin="0,92,0,0" VerticalAlignment="Top" Width="215" FontSize="18" IsEditable="False" Visibility="Hidden" Height="30"  Grid.Column="1">
             <ComboBoxItem IsSelected="True"/>
             <ComboBoxItem IsSelected="False"/>
-            <ComboBoxItem IsSelected="False"/>
-            <ComboBoxItem IsSelected="False"/>
         </ComboBox>
         <ComboBox x:Name="ComputerName2" HorizontalAlignment="Center" Margin="0,129,0,0" VerticalAlignment="Top" Width="215" FontSize="18" IsEditable="False" Visibility="Hidden" Grid.Column="1" Height="30">
             <ComboBoxItem IsSelected="True"/>
-            <ComboBoxItem IsSelected="False"/>
-            <ComboBoxItem IsSelected="False"/>
             <ComboBoxItem IsSelected="False"/>
         </ComboBox>
         <Button x:Name="StartNewGameButton" Content="StartNewGame" HorizontalAlignment="Center" Margin="0,216,0,0" VerticalAlignment="Top" FontSize="18" Click="StartNewGameButton_Click" Grid.ColumnSpan="2" Height="28" Width="265"/>
