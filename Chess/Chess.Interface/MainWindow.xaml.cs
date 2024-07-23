@@ -22,6 +22,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Reflection;
+using System.Security.Policy;
 
 namespace Chess
 {
@@ -80,6 +82,11 @@ namespace Chess
 
         private object activateHover = new object();
         private CellPoint activeCellPoint = CellPoint.Unexisted;
+
+
+
+        public List<Entity.Figures> EatedFiguresByBlacks = new List<Entity.Figures>();
+        public List<Entity.Figures> EatedFiguresByWhites = new List<Entity.Figures>();
 
         public ILanguage CurrentLanguage { get; set; }
 
@@ -162,12 +169,15 @@ namespace Chess
         private void MakeStep(sbyte x, sbyte y)
         {
             blocked = true;
+
             bool eat = board.Positions[x, y].Man != Figures.Empty;
+            AddEatedFigureIfIsIt(x, y, eat);
+
             board.MakeStepWithoutChecking(new CellPoint() { X = clickCellPoint.X, Y = clickCellPoint.Y }, new CellPoint() { X = x, Y = y });
             CurrentStepSide = board.CurrentStepSide;
             availableSteps = board.GetAvailableSteps(board.CurrentStepSide);
             // Сохраняем последний ход
-            
+
             board.LastHumanStepPosition[0] = (byte)clickCellPoint.X;
             board.LastHumanStepPosition[1] = (byte)clickCellPoint.Y;
             board.LastHumanStepPosition[2] = (byte)x;
@@ -198,7 +208,7 @@ namespace Chess
                     PrintLog();
                 }
                 catch (GameEndedException)
-                {           
+                {
                     _ = CkeckState();
                     Logger.Add(new StepEntity(new Step(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y }), Board.GetOppositeSide(board.CurrentStepSide), board.CurrentStepSide, board.Positions[step.End.X, step.End.Y], eat, board.IsCheck(board.CurrentStepSide), board.IsMate(board.CurrentStepSide), board.IsCheckmate(board.CurrentStepSide), ++logId, DateTime.UtcNow));
                     PrintLog();
@@ -210,6 +220,23 @@ namespace Chess
             UnselectCurrent();
             Redraw();
         }
+
+        private void AddEatedFigureIfIsIt(sbyte x, sbyte y, bool eat)
+        {
+            if (eat)
+            {
+                var eatedSide = board.Positions[x, y].Side;
+                if (eatedSide == Side.Black)
+                {
+                    EatedFiguresByWhites.Add(board.Positions[x, y].Man);
+                }
+                else
+                {
+                    EatedFiguresByBlacks.Add(board.Positions[x, y].Man);
+                }
+            }
+        }
+
         Step step;
         AutoResetEvent waitHandler = new AutoResetEvent(true);  // объект-событие
         private void MakeComputerStep()
@@ -221,6 +248,7 @@ namespace Chess
             myThread.Start();
             waitHandler.WaitOne(); waitHandler.Set();
             bool eat = board.Positions[step.End.X, step.End.Y].Man != Figures.Empty;
+            AddEatedFigureIfIsIt(step.End.X, step.End.Y, eat);
             board.MakeStepWithoutChecking(new CellPoint() { X = step.Start.X, Y = step.Start.Y }, new CellPoint() { X = step.End.X, Y = step.End.Y });
             CurrentStepSide = board.CurrentStepSide;
 
@@ -591,6 +619,40 @@ namespace Chess
                     Canvas.SetTop(WhitePlayerEatedCanvas.Children[newBoxWhite], Math.Round((double)WhitePlayerEatedCanvas.ActualHeight / 2 * row, 0));
                 }
             }
+
+            // TODO: Доделать
+            int colB = 0, rowB = 0;
+            foreach(var eatedByBlacks in EatedFiguresByBlacks)
+            {
+                DrawFigureEated(BlackPlayerEatedCanvas, 0.5, eatedByBlacks, Entity.Side.White, colB, rowB);
+
+                colB++;
+                if (colB >= 8) { colB = 0; rowB++; }
+                if (rowB >=2 ) rowB = 0;
+            }
+
+            colB = 0; rowB = 0;
+            foreach (var eatedByWhites in EatedFiguresByWhites)
+            {
+                DrawFigureEated(WhitePlayerEatedCanvas, 0.5, eatedByWhites, Entity.Side.Black, colB, rowB);
+
+                colB++;
+                if (colB >= 8) { colB = 0; rowB++; }
+                if (rowB >= 2) rowB = 0;
+            }
+        }
+
+        /**
+         * TODO: Добавить позиционирование шахматных фигур по центру.
+         * */
+        private UIElement DrawFigureEated(Canvas eatedCanvas, double scale, Chess.Entity.Figures figure, Entity.Side side, int col, int row, string? strokeColor = null)
+        {
+            Path figureCurrent = DrawFigure(scale, new(side, figure), strokeColor is null ? "#AAAAAA" : strokeColor);
+            figureCurrent.Name = $"EatedFigure_{col}_{row}";
+            eatedCanvas.Children.Add(figureCurrent);
+            Canvas.SetLeft(figureCurrent, Math.Round((double)eatedCanvas.ActualWidth / 8 * col, 0));
+            Canvas.SetTop(figureCurrent, Math.Round((double)eatedCanvas.ActualHeight / 2 * row, 0));
+            return figureCurrent;
         }
 
         private void DrawSelectedAndHoveredFigures()
