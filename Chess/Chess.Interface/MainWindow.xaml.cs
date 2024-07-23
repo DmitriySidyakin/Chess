@@ -620,7 +620,6 @@ namespace Chess
                 }
             }
 
-            // TODO: Доделать
             int colB = 0, rowB = 0;
             foreach(var eatedByBlacks in EatedFiguresByBlacks)
             {
