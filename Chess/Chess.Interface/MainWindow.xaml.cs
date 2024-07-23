@@ -648,12 +648,33 @@ namespace Chess
         {
             Path figureCurrent = DrawFigure(scale, new(side, figure), strokeColor is null ? "#AAAAAA" : strokeColor);
             figureCurrent.Name = $"EatedFigure_{col}_{row}";
-            eatedCanvas.Children.Add(figureCurrent);
-            Canvas.SetLeft(figureCurrent, Math.Round((double)eatedCanvas.ActualWidth / 8 * col, 0));
-            Canvas.SetTop(figureCurrent, Math.Round((double)eatedCanvas.ActualHeight / 2 * row, 0));
+            int indexOfFigure = eatedCanvas.Children.Add(figureCurrent);
+            Canvas.SetLeft(figureCurrent, Math.Round((double)eatedCanvas.ActualWidth / 8 * col + (eatedCanvas.ActualWidth / 8 - GetWidthOfFigure(figure) * scale) / 2, 0));
+            Canvas.SetTop(figureCurrent, Math.Round((double)eatedCanvas.ActualHeight / 2 * row + (eatedCanvas.ActualHeight / 2 - GetHeightOfFigure(figure) * scale) / 2, 0));
             return figureCurrent;
         }
 
+        private double GetHeightOfFigure(Figures figure) => figure switch
+        {
+            Entity.Figures.Pawn => 43,
+            Entity.Figures.Rook => 43,
+            Entity.Figures.Knight => 43,
+            Entity.Figures.Bishop => 43,
+            Entity.Figures.King => 43,
+            Entity.Figures.Queen => 43,
+            _ => throw new ArgumentOutOfRangeException(nameof(figure) + $", code = {figure}."),
+        };
+
+        private double GetWidthOfFigure(Figures figure) => figure switch
+        {
+            Entity.Figures.Pawn => 43,
+            Entity.Figures.Rook => 37,
+            Entity.Figures.Knight => 37,
+            Entity.Figures.Bishop => 38,
+            Entity.Figures.King => 43,
+            Entity.Figures.Queen => 37,
+            _ => throw new ArgumentOutOfRangeException(nameof(figure) + $", code = {figure}."),
+        };
         private void DrawSelectedAndHoveredFigures()
         {
             if (started && !blocked)
